@@ -301,6 +301,160 @@ const translations: Translations = {
     EN: 'Welcome to the True/False Questions section. Test your understanding with true or false statements.',
     ZH: '欢迎来到判断题区。通过判断对错来测试您的理解。',
   },
+  
+  // Vocabulary Page
+  filters: {
+    EN: 'Filters',
+    ZH: '筛选',
+  },
+  toggleFilters: {
+    EN: 'Toggle Filters',
+    ZH: '切换筛选',
+  },
+  showFilters: {
+    EN: 'Show Filters',
+    ZH: '显示筛选',
+  },
+  hideFilters: {
+    EN: 'Hide Filters',
+    ZH: '隐藏筛选',
+  },
+  resetFilters: {
+    EN: 'Reset Filters',
+    ZH: '重置筛选',
+  },
+  term: {
+    EN: 'Term',
+    ZH: '学期',
+  },
+  week: {
+    EN: 'Week',
+    ZH: '周',
+  },
+  difficultyLevel: {
+    EN: 'Difficulty',
+    ZH: '难度',
+  },
+  allLevels: {
+    EN: 'All Levels',
+    ZH: '所有难度',
+  },
+  easy: {
+    EN: 'Easy',
+    ZH: '简单',
+  },
+  medium: {
+    EN: 'Medium',
+    ZH: '中等',
+  },
+  hard: {
+    EN: 'Hard',
+    ZH: '困难',
+  },
+  enterTerm: {
+    EN: 'Enter term...',
+    ZH: '输入学期...',
+  },
+  enterWeek: {
+    EN: 'Enter week...',
+    ZH: '输入周数...',
+  },
+  loadingVocabularies: {
+    EN: 'Loading vocabularies...',
+    ZH: '加载词汇中...',
+  },
+  noVocabularies: {
+    EN: 'No vocabularies found. Try adjusting your filters.',
+    ZH: '未找到词汇。尝试调整筛选条件。',
+  },
+  showing: {
+    EN: 'Showing',
+    ZH: '显示',
+  },
+  of: {
+    EN: 'of',
+    ZH: '共',
+  },
+  retry: {
+    EN: 'Retry',
+    ZH: '重试',
+  },
+  translation: {
+    EN: 'Translation',
+    ZH: '翻译',
+  },
+  definition: {
+    EN: 'Definition',
+    ZH: '定义',
+  },
+  example: {
+    EN: 'Example',
+    ZH: '例句',
+  },
+  synonyms: {
+    EN: 'Synonyms',
+    ZH: '同义词',
+  },
+  partsOfSpeech: {
+    EN: 'Parts of Speech',
+    ZH: '词性',
+  },
+  noun: {
+    EN: 'Noun',
+    ZH: '名词',
+  },
+  verb: {
+    EN: 'Verb',
+    ZH: '动词',
+  },
+  adjective: {
+    EN: 'Adjective',
+    ZH: '形容词',
+  },
+  adverb: {
+    EN: 'Adverb',
+    ZH: '副词',
+  },
+  form: {
+    EN: 'Form',
+    ZH: '形式',
+  },
+  meaning: {
+    EN: 'Meaning',
+    ZH: '含义',
+  },
+  plural: {
+    EN: 'Plural',
+    ZH: '复数',
+  },
+  simplePast: {
+    EN: 'Simple Past',
+    ZH: '一般过去时',
+  },
+  pastPerfect: {
+    EN: 'Past Perfect',
+    ZH: '过去完成时',
+  },
+  presentParticiple: {
+    EN: 'Present Participle',
+    ZH: '现在分词',
+  },
+  comparative: {
+    EN: 'Comparative',
+    ZH: '比较级',
+  },
+  superlative: {
+    EN: 'Superlative',
+    ZH: '最高级',
+  },
+  viewInDictionary: {
+    EN: 'View in Dictionary',
+    ZH: '在词典中查看',
+  },
+  close: {
+    EN: 'Close',
+    ZH: '关闭',
+  },
 }
 
 /**
