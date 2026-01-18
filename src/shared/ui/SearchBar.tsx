@@ -32,10 +32,13 @@ function SearchBar({ onSearch, placeholder, initialValue = '' }: SearchBarProps)
         style={{
           padding: '0.5rem 1rem',
           borderRadius: '6px',
-          border: '1px solid #ccc',
+          border: '1px solid var(--input-border)',
           fontSize: '1rem',
           flex: 1,
           minWidth: '200px',
+          backgroundColor: 'var(--input-bg)',
+          color: 'var(--text-primary)',
+          transition: 'all 0.2s ease'
         }}
       />
       <button
@@ -43,11 +46,13 @@ function SearchBar({ onSearch, placeholder, initialValue = '' }: SearchBarProps)
         style={{
           padding: '0.5rem 1.5rem',
           borderRadius: '6px',
-          border: '1px solid #646cff',
-          backgroundColor: '#646cff',
-          color: '#fff',
+          border: '1px solid var(--accent-primary)',
+          backgroundColor: 'var(--accent-primary)',
+          color: 'var(--text-inverse)',
           cursor: 'pointer',
           fontSize: '1rem',
+          fontWeight: '500',
+          transition: 'all 0.2s ease'
         }}
       >
         {t('search', language)}

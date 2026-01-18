@@ -7,12 +7,17 @@ function Footer() {
 
   return (
     <footer style={{ 
-      padding: '1rem', 
-      borderTop: '1px solid #ccc', 
+      padding: '1.5rem', 
+      borderTop: '1px solid var(--footer-border)', 
       textAlign: 'center',
-      marginTop: 'auto'
+      marginTop: 'auto',
+      backgroundColor: 'var(--bg-elevated)',
+      color: 'var(--text-secondary)',
+      transition: 'all 0.3s ease'
     }}>
-      <p>© {new Date().getFullYear()} Rubi Learning | {t('version', language)}: {appVersion}</p>
+      <p style={{ fontSize: '0.9rem' }}>
+        © {new Date().getFullYear()} Rubi Learning | {t('version', language)}: {appVersion}
+      </p>
     </footer>
   )
 }

@@ -54,16 +54,24 @@ function Pagination({
   const pageNumbers = getPageNumbers()
 
   return (
-    <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
+    <div style={{ 
+      display: 'flex', 
+      gap: '0.5rem', 
+      alignItems: 'center',
+      flexWrap: 'wrap'
+    }}>
       <button
         onClick={() => onPageChange(currentPage - 1)}
         disabled={currentPage === 1}
         style={{
           padding: '0.5rem 1rem',
           borderRadius: '6px',
-          border: '1px solid #ccc',
+          border: '1px solid var(--border-primary)',
+          backgroundColor: 'var(--button-bg)',
+          color: 'var(--text-primary)',
           cursor: currentPage === 1 ? 'not-allowed' : 'pointer',
           opacity: currentPage === 1 ? 0.5 : 1,
+          transition: 'all 0.2s ease'
         }}
       >
         {t('previous', language)}
@@ -77,17 +85,30 @@ function Pagination({
             style={{
               padding: '0.5rem 1rem',
               borderRadius: '6px',
-              border: '1px solid #ccc',
+              border: currentPage === page 
+                ? '1px solid var(--accent-primary)' 
+                : '1px solid var(--border-primary)',
               cursor: 'pointer',
-              backgroundColor: currentPage === page ? '#646cff' : 'transparent',
-              color: currentPage === page ? '#fff' : 'inherit',
+              backgroundColor: currentPage === page 
+                ? 'var(--accent-primary)' 
+                : 'var(--button-bg)',
+              color: currentPage === page 
+                ? 'var(--text-inverse)' 
+                : 'var(--text-primary)',
               fontWeight: currentPage === page ? 'bold' : 'normal',
+              transition: 'all 0.2s ease'
             }}
           >
             {page}
           </button>
         ) : (
-          <span key={index} style={{ padding: '0 0.5rem' }}>
+          <span 
+            key={index} 
+            style={{ 
+              padding: '0 0.5rem',
+              color: 'var(--text-muted)'
+            }}
+          >
             {page}
           </span>
         )
@@ -99,9 +120,12 @@ function Pagination({
         style={{
           padding: '0.5rem 1rem',
           borderRadius: '6px',
-          border: '1px solid #ccc',
+          border: '1px solid var(--border-primary)',
+          backgroundColor: 'var(--button-bg)',
+          color: 'var(--text-primary)',
           cursor: currentPage === totalPages ? 'not-allowed' : 'pointer',
           opacity: currentPage === totalPages ? 0.5 : 1,
+          transition: 'all 0.2s ease'
         }}
       >
         {t('next', language)}

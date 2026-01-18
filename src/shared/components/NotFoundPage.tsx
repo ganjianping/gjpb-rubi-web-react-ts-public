@@ -28,26 +28,46 @@ function NotFoundPage() {
       justifyContent: 'center', 
       minHeight: '100vh',
       textAlign: 'center',
-      padding: '2rem'
+      padding: '2rem',
+      backgroundColor: 'var(--bg-primary)',
+      color: 'var(--text-primary)'
     }}>
-      <h1 style={{ fontSize: '6rem', margin: 0 }}>
+      <h1 style={{ 
+        fontSize: '6rem', 
+        margin: 0,
+        background: 'linear-gradient(135deg, var(--accent-primary), var(--accent-light))',
+        WebkitBackgroundClip: 'text',
+        WebkitTextFillColor: 'transparent',
+        backgroundClip: 'text'
+      }}>
         {errorStatus || '404'}
       </h1>
-      <h2 style={{ fontSize: '2rem', marginBottom: '1rem' }}>
+      <h2 style={{ 
+        fontSize: '2rem', 
+        marginBottom: '1rem',
+        color: 'var(--text-primary)'
+      }}>
         {errorMessage}
       </h2>
-      <p style={{ fontSize: '1.2rem', marginBottom: '2rem', color: '#666' }}>
+      <p style={{ 
+        fontSize: '1.2rem', 
+        marginBottom: '2rem', 
+        color: 'var(--text-secondary)'
+      }}>
         {t('pageNotFoundDesc', language)}
       </p>
       <Link 
         to="/" 
         style={{ 
           padding: '0.8rem 1.5rem', 
-          backgroundColor: '#646cff', 
-          color: 'white', 
+          backgroundColor: 'var(--accent-primary)', 
+          color: 'var(--text-inverse)', 
           textDecoration: 'none',
           borderRadius: '8px',
-          fontSize: '1rem'
+          fontSize: '1rem',
+          fontWeight: '500',
+          transition: 'all 0.2s ease',
+          boxShadow: 'var(--shadow-md)'
         }}
       >
         {t('goHome', language)}

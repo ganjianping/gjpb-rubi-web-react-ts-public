@@ -16,8 +16,6 @@ function ThemeColorPicker() {
   const [isOpen, setIsOpen] = useState(false)
   const dropdownRef = useRef<HTMLDivElement>(null)
 
-  const currentColor = colors.find(c => c.name === themeColor)?.value || colors[0].value
-
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
@@ -40,18 +38,19 @@ function ThemeColorPicker() {
           width: '40px',
           height: '40px',
           borderRadius: '50%',
-          border: `1px solid ${currentColor}`,
+          border: '1px solid var(--border-primary)',
           cursor: 'pointer',
-          backgroundColor: '#fff',
+          backgroundColor: 'var(--button-bg)',
           padding: 0,
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
-          transition: 'all 0.2s ease'
+          transition: 'all 0.2s ease',
+          boxShadow: 'var(--shadow-sm)'
         }}
       >
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10c.61 0 1.09-.54 1-1.12-.12-.61-.45-1.42-.45-1.88 0-.59.48-1 1-1h1.18c2.76 0 5.27-2.24 5.27-5 0-4.42-4.03-8-9-8zm-5.5 9c-.83 0-1.5-.67-1.5-1.5S5.67 8 6.5 8 8 8.67 8 9.5 7.33 11 6.5 11zm3-4C8.67 7 8 6.33 8 5.5S8.67 4 9.5 4s1.5.67 1.5 1.5S10.33 7 9.5 7zm5 0c-.83 0-1.5-.67-1.5-1.5S13.67 4 14.5 4s1.5.67 1.5 1.5S15.33 7 14.5 7zm3 4c-.83 0-1.5-.67-1.5-1.5S16.67 8 17.5 8s1.5.67 1.5 1.5-.67 1.5-1.5 1.5z" fill={currentColor}/>
+          <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10c.61 0 1.09-.54 1-1.12-.12-.61-.45-1.42-.45-1.88 0-.59.48-1 1-1h1.18c2.76 0 5.27-2.24 5.27-5 0-4.42-4.03-8-9-8zm-5.5 9c-.83 0-1.5-.67-1.5-1.5S5.67 8 6.5 8 8 8.67 8 9.5 7.33 11 6.5 11zm3-4C8.67 7 8 6.33 8 5.5S8.67 4 9.5 4s1.5.67 1.5 1.5S10.33 7 9.5 7zm5 0c-.83 0-1.5-.67-1.5-1.5S13.67 4 14.5 4s1.5.67 1.5 1.5S15.33 7 14.5 7zm3 4c-.83 0-1.5-.67-1.5-1.5S16.67 8 17.5 8s1.5.67 1.5 1.5-.67 1.5-1.5 1.5z" fill="var(--accent-primary)"/>
         </svg>
       </button>
       {isOpen && (
@@ -59,15 +58,16 @@ function ThemeColorPicker() {
           position: 'absolute',
           top: '45px',
           right: '0',
-          backgroundColor: '#fff',
-          border: '1px solid #ccc',
+          backgroundColor: 'var(--bg-elevated)',
+          border: '1px solid var(--border-primary)',
           borderRadius: '8px',
           padding: '8px',
-          boxShadow: '0 4px 6px rgba(0,0,0,0.1)',
+          boxShadow: 'var(--shadow-lg)',
           zIndex: 1000,
           display: 'flex',
           flexDirection: 'column',
-          gap: '8px'
+          gap: '8px',
+          minWidth: '150px'
         }}>
           {colors.map(({ name, value, i18nKey }) => (
             <button
@@ -81,16 +81,19 @@ function ThemeColorPicker() {
                 display: 'flex',
                 alignItems: 'center',
                 gap: '8px',
-                padding: '6px 12px',
-                border: 'none',
+                padding: '8px 12px',
+                border: themeColor === name ? `1px solid ${value}` : '1px solid transparent',
                 borderRadius: '6px',
                 cursor: 'pointer',
-                backgroundColor: themeColor === name ? '#f0f0f0' : 'transparent',
-                transition: 'background-color 0.2s ease',
+                backgroundColor: themeColor === name ? 'var(--bg-overlay)' : 'transparent',
+                transition: 'all 0.2s ease',
                 textAlign: 'left',
-                whiteSpace: 'nowrap'
+                whiteSpace: 'nowrap',
+                color: 'var(--text-primary)'
               }}
-              onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#f0f0f0'}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.backgroundColor = 'var(--bg-overlay)'
+              }}
               onMouseLeave={(e) => {
                 if (themeColor !== name) e.currentTarget.style.backgroundColor = 'transparent'
               }}
@@ -100,7 +103,8 @@ function ThemeColorPicker() {
                 height: '20px',
                 borderRadius: '50%',
                 backgroundColor: value,
-                border: '2px solid #ccc'
+                border: '2px solid var(--border-primary)',
+                boxShadow: 'var(--shadow-sm)'
               }} />
               <span style={{ fontSize: '14px' }}>{t(i18nKey, language)}</span>
             </button>
