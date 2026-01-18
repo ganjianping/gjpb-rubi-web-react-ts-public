@@ -1,4 +1,4 @@
-# Rubi Learning Web - React TypeScript
+# Rubi Study Hub Web - React TypeScript
 
 A modern React web application built with TypeScript, Vite, and React Router.
 

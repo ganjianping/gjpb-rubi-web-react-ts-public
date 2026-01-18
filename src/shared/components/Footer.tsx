@@ -16,7 +16,7 @@ function Footer() {
       transition: 'all 0.3s ease'
     }}>
       <p style={{ fontSize: '0.9rem' }}>
-        © {new Date().getFullYear()} Rubi Learning | {t('version', language)}: {appVersion}
+        © {new Date().getFullYear()} Rubi Study Hub | {t('version', language)}: {appVersion}
       </p>
     </footer>
   )

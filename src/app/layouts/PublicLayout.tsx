@@ -1,9 +1,13 @@
 import { Outlet } from 'react-router-dom'
 import Footer from '@/shared/components/Footer'
 import Toolbar from '@/shared/components/Toolbar'
+import { useAppSettings } from '@/shared/contexts/AppSettingsContext'
+import { t } from '@/shared/i18n'
 import rubiLogo from '@/assets/rubi-logo.jpg'
 
 function PublicLayout() {
+  const { language } = useAppSettings()
+
   return (
     <div style={{ 
       minHeight: '100vh', 
@@ -27,15 +31,29 @@ function PublicLayout() {
           maxWidth: '1400px',
           margin: '0 auto'
         }}>
-          <img 
-            src={rubiLogo} 
-            alt="Rubi Logo" 
-            style={{ 
-              height: '40px',
-              borderRadius: '8px',
-              boxShadow: 'var(--shadow-sm)'
-            }} 
-          />
+          <div style={{ 
+            display: 'flex', 
+            alignItems: 'center', 
+            gap: '1rem' 
+          }}>
+            <img 
+              src={rubiLogo} 
+              alt="Rubi Logo" 
+              style={{ 
+                height: '40px',
+                borderRadius: '8px',
+                boxShadow: 'var(--shadow-sm)'
+              }} 
+            />
+            <span style={{ 
+              fontSize: '1.5rem', 
+              fontWeight: 'bold', 
+              color: 'var(--text-primary)',
+              transition: 'color 0.3s ease'
+            }}>
+              {t('studyHub', language)}
+            </span>
+          </div>
           <Toolbar />
         </div>
       </header>

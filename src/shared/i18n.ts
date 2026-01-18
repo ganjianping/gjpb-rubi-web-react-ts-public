@@ -13,6 +13,10 @@ const translations: Translations = {
     EN: 'Home',
     ZH: '首页',
   },
+  studyHub: {
+    EN: 'Study Hub',
+    ZH: '学习中心',
+  },
   about: {
     EN: 'About',
     ZH: '关于',
@@ -114,8 +118,8 @@ const translations: Translations = {
   
   // Home Page
   welcomeTitle: {
-    EN: 'Welcome to Rubi Learning',
-    ZH: '欢迎来到 Rubi Learning',
+    EN: 'Welcome to Rubi Study Hub',
+    ZH: '欢迎来到 Rubi Study Hub',
   },
   currentSettings: {
     EN: 'Current Settings',
