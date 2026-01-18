@@ -1,4 +1,3 @@
-import { useState } from 'react'
 import { useAppSettings } from '@/shared/contexts/AppSettingsContext'
 import { t } from '@/shared/i18n'
 import type { VocabularyFilters as Filters } from '@/shared/data/types'
@@ -10,8 +9,10 @@ interface VocabularyFiltersProps {
 }
 
 export default function VocabularyFilters({ filters, onFilterChange }: VocabularyFiltersProps) {
-  const { language } = useAppSettings()
-  const [isOpen, setIsOpen] = useState(false)
+  const { language, getSettingValue } = useAppSettings()
+  
+  // Get difficulty levels from app settings
+  const difficultyLevels = getSettingValue('difficulty_level')?.split(',').map(level => level.trim()) || []
 
   const handleChange = (key: keyof Filters, value: string | number) => {
     const newFilters = { ...filters }
@@ -27,49 +28,40 @@ export default function VocabularyFilters({ filters, onFilterChange }: Vocabular
     onFilterChange(newFilters)
   }
 
-  const handleReset = () => {
-    onFilterChange({ page: 0, size: 20 })
-  }
-
   return (
     <div className="vocabulary-filters-wrapper">
-      <button 
-        className="filters-toggle-btn"
-        onClick={() => setIsOpen(!isOpen)}
-        aria-label={t('toggleFilters', language)}
-      >
-        🔍 {isOpen ? t('hideFilters', language) : t('showFilters', language)}
-      </button>
-
-      {isOpen && (
-        <div className="vocabulary-filters">
+      <div className="vocabulary-filters">
           <div className="filters-grid">
             {/* Term Filter */}
             <div className="filter-group">
               <label htmlFor="term-filter">{t('term', language)}</label>
-              <input
+              <select
                 id="term-filter"
-                type="number"
-                min="1"
-                placeholder={t('enterTerm', language)}
-                value={filters.term ?? ''}
-                onChange={(e) => handleChange('term', e.target.value ? parseInt(e.target.value) : '')}
-                className="filter-input"
-              />
+                value={filters.term ?? 'all'}
+                onChange={(e) => handleChange('term', e.target.value === 'all' ? '' : parseInt(e.target.value))}
+                className="filter-select"
+              >
+                <option value="all">{t('all', language)}</option>
+                {[1, 2, 3, 4].map(term => (
+                  <option key={term} value={term}>{term}</option>
+                ))}
+              </select>
             </div>
 
             {/* Week Filter */}
             <div className="filter-group">
               <label htmlFor="week-filter">{t('week', language)}</label>
-              <input
+              <select
                 id="week-filter"
-                type="number"
-                min="1"
-                placeholder={t('enterWeek', language)}
-                value={filters.week ?? ''}
-                onChange={(e) => handleChange('week', e.target.value ? parseInt(e.target.value) : '')}
-                className="filter-input"
-              />
+                value={filters.week ?? 'all'}
+                onChange={(e) => handleChange('week', e.target.value === 'all' ? '' : parseInt(e.target.value))}
+                className="filter-select"
+              >
+                <option value="all">{t('all', language)}</option>
+                {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14].map(week => (
+                  <option key={week} value={week}>{week}</option>
+                ))}
+              </select>
             </div>
 
             {/* Difficulty Level Filter */}
@@ -82,21 +74,13 @@ export default function VocabularyFilters({ filters, onFilterChange }: Vocabular
                 className="filter-select"
               >
                 <option value="all">{t('allLevels', language)}</option>
-                <option value="Easy">{t('easy', language)}</option>
-                <option value="Medium">{t('medium', language)}</option>
-                <option value="Hard">{t('hard', language)}</option>
+                {difficultyLevels.map(level => (
+                  <option key={level} value={level}>{level}</option>
+                ))}
               </select>
-            </div>
-
-            {/* Reset Button */}
-            <div className="filter-group filter-actions">
-              <button onClick={handleReset} className="reset-button">
-                🔄 {t('resetFilters', language)}
-              </button>
             </div>
           </div>
         </div>
-      )}
     </div>
   )
 }

@@ -1,8 +1,8 @@
 import { useState, useEffect, useCallback, useMemo, useRef } from 'react'
 import { useAppSettings } from '@/shared/contexts/AppSettingsContext'
 import { t } from '@/shared/i18n'
-import { fetchVocabularies } from '@/shared/data/publicApi'
-import type { VocabularyFilters as VocabFilters, Vocabulary } from '@/shared/data/types'
+import { fetchVocabularies, fetchAppSettings } from '@/shared/data/publicApi'
+import type { VocabularyFilters as VocabFilters, Vocabulary, AppSetting } from '@/shared/data/types'
 import VocabularyCardCompact from './VocabularyCardCompact'
 import VocabularyDetail from './VocabularyDetail'
 import VocabularyFilters from './VocabularyFilters'
@@ -17,6 +17,8 @@ export default function VocabulariesPage() {
   const [totalPages, setTotalPages] = useState(0)
   const [totalElements, setTotalElements] = useState(0)
   const [selectedVocabulary, setSelectedVocabulary] = useState<Vocabulary | null>(null)
+  const [appSettings, setAppSettings] = useState<AppSetting[]>([])
+  const [showFilters, setShowFilters] = useState(false)
   
   // Use useMemo for initial filters to prevent recreation on every render
   const initialFilters = useMemo(() => ({
@@ -25,9 +27,34 @@ export default function VocabulariesPage() {
   }), [])
   
   const [filters, setFilters] = useState<VocabFilters>(initialFilters)
+  const [selectedTags, setSelectedTags] = useState<string[]>([])
   
   // Use ref to track if component is mounted
   const isMountedRef = useRef(true)
+  
+  // Get vocabulary tags from app settings
+  const vocabularyTags = useMemo(() => {
+    const tagSetting = appSettings.find(
+      (setting) => setting.name === 'vocabulary_ru_tags' && setting.lang === language
+    )
+    return tagSetting ? tagSetting.value.split(',').map((tag) => tag.trim()) : []
+  }, [appSettings, language])
+  
+  // Fetch app settings on component mount
+  useEffect(() => {
+    const loadAppSettings = async () => {
+      try {
+        const settings = await fetchAppSettings()
+        if (isMountedRef.current) {
+          setAppSettings(settings)
+        }
+      } catch (err) {
+        console.error('Error loading app settings:', err)
+      }
+    }
+    
+    loadAppSettings()
+  }, [])
   
   // Use useCallback for loadVocabularies to prevent recreation
   const loadVocabularies = useCallback(async () => {
@@ -72,6 +99,23 @@ export default function VocabulariesPage() {
     setFilters(newFilters)
   }
 
+  const handleTagClick = (tag: string) => {
+    const newSelectedTags = selectedTags.includes(tag)
+      ? selectedTags.filter(t => t !== tag)
+      : [...selectedTags, tag]
+    
+    setSelectedTags(newSelectedTags)
+    
+    // Update filters with selected tags
+    const tagsString = newSelectedTags.length > 0 ? newSelectedTags.join(',') : undefined
+    setFilters({ ...filters, tags: tagsString, page: 0 })
+  }
+
+  const handleReset = () => {
+    setFilters({ page: 0, size: 20 })
+    setSelectedTags([])
+  }
+
   const handlePageChange = (page: number) => {
     setFilters({ ...filters, page })
     window.scrollTo({ top: 0, behavior: 'smooth' })
@@ -87,13 +131,55 @@ export default function VocabulariesPage() {
 
   return (
     <div className="vocabularies-page">
-      <div className="vocabularies-header">
-        <h1>📚 {t('vocabularies', language)}</h1>
-        <p>{t('vocabulariesDesc', language)}</p>
+      {/* Header with Tags and Filter Button */}
+      <div className="vocabularies-header-tags">
+        <div className="vocabularies-header-content">
+          <h2>{t('vocabularies', language)}:</h2>
+          <div className="vocabularies-tags-container">
+            {vocabularyTags.map((tag, index) => (
+              <span 
+                key={index} 
+                className={`vocabulary-tag ${selectedTags.includes(tag) ? 'vocabulary-tag-selected' : ''}`}
+                onClick={() => handleTagClick(tag)}
+                role="button"
+                tabIndex={0}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault()
+                    handleTagClick(tag)
+                  }
+                }}
+              >
+                {tag}
+              </span>
+            ))}
+          </div>
+        </div>
+        <div className="vocabularies-header-actions">
+          <button 
+            className="vocabularies-reset-btn"
+            onClick={handleReset}
+            aria-label={t('resetFilters', language)}
+            title={t('resetFilters', language)}
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none">
+              <path d="M21.5 2v6h-6M2.5 22v-6h6M2 11.5a10 10 0 0 1 18.8-4.3M22 12.5a10 10 0 0 1-18.8 4.2" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+              <circle cx="12" cy="12" r="2" fill="currentColor"/>
+            </svg>
+          </button>
+          <button 
+            className="vocabularies-filter-btn"
+            onClick={() => setShowFilters(!showFilters)}
+            aria-label={t('toggleFilters', language)}
+            title={showFilters ? t('hideFilters', language) : t('showFilters', language)}
+          >
+            🔍
+          </button>
+        </div>
       </div>
 
       {/* Filters */}
-      <VocabularyFilters filters={filters} onFilterChange={handleFilterChange} />
+      {showFilters && <VocabularyFilters filters={filters} onFilterChange={handleFilterChange} />}
 
       {/* Loading State */}
       {loading && (

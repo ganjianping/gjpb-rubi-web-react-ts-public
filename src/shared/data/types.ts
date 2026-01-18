@@ -81,6 +81,7 @@ export interface VocabularyFilters {
   week?: number
   lang?: 'EN' | 'ZH'
   difficultyLevel?: string
+  tags?: string
   page?: number
   size?: number
 }

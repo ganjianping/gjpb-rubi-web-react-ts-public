@@ -60,7 +60,6 @@ function PublicLayout() {
       
       <main style={{ 
         flex: 1, 
-        padding: '2rem',
         backgroundColor: 'var(--bg-primary)',
         transition: 'background-color 0.3s ease'
       }}>
