@@ -1,3 +1,4 @@
+import { useState, useRef, useEffect } from 'react'
 import { useUI } from '@/shared/contexts/UIContext'
 import { useAppSettings } from '@/shared/contexts/AppSettingsContext'
 import { t } from '@/shared/i18n'
@@ -12,27 +13,100 @@ const colors = [
 function ThemeColorPicker() {
   const { themeColor, setThemeColor } = useUI()
   const { language } = useAppSettings()
+  const [isOpen, setIsOpen] = useState(false)
+  const dropdownRef = useRef<HTMLDivElement>(null)
+
+  const currentColor = colors.find(c => c.name === themeColor)?.value || colors[0].value
+
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+        setIsOpen(false)
+      }
+    }
+
+    if (isOpen) {
+      document.addEventListener('mousedown', handleClickOutside)
+    }
+    return () => document.removeEventListener('mousedown', handleClickOutside)
+  }, [isOpen])
 
   return (
-    <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
-      <span style={{ fontSize: '0.9rem' }}>{t('color', language)}:</span>
-      {colors.map(({ name, value, i18nKey }) => (
-        <button
-          key={name}
-          onClick={() => setThemeColor(name)}
-          title={t(i18nKey, language)}
-          style={{
-            width: '28px',
-            height: '28px',
-            borderRadius: '50%',
-            border: themeColor === name ? '3px solid #000' : '2px solid #ccc',
-            backgroundColor: value,
-            cursor: 'pointer',
-            padding: 0,
-          }}
-          aria-label={t(i18nKey, language)}
-        />
-      ))}
+    <div style={{ position: 'relative' }} ref={dropdownRef}>
+      <button
+        onClick={() => setIsOpen(!isOpen)}
+        title={t('color', language)}
+        style={{
+          width: '40px',
+          height: '40px',
+          borderRadius: '50%',
+          border: `1px solid ${currentColor}`,
+          cursor: 'pointer',
+          backgroundColor: '#fff',
+          padding: 0,
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          transition: 'all 0.2s ease'
+        }}
+      >
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10c.61 0 1.09-.54 1-1.12-.12-.61-.45-1.42-.45-1.88 0-.59.48-1 1-1h1.18c2.76 0 5.27-2.24 5.27-5 0-4.42-4.03-8-9-8zm-5.5 9c-.83 0-1.5-.67-1.5-1.5S5.67 8 6.5 8 8 8.67 8 9.5 7.33 11 6.5 11zm3-4C8.67 7 8 6.33 8 5.5S8.67 4 9.5 4s1.5.67 1.5 1.5S10.33 7 9.5 7zm5 0c-.83 0-1.5-.67-1.5-1.5S13.67 4 14.5 4s1.5.67 1.5 1.5S15.33 7 14.5 7zm3 4c-.83 0-1.5-.67-1.5-1.5S16.67 8 17.5 8s1.5.67 1.5 1.5-.67 1.5-1.5 1.5z" fill={currentColor}/>
+        </svg>
+      </button>
+      {isOpen && (
+        <div style={{
+          position: 'absolute',
+          top: '45px',
+          right: '0',
+          backgroundColor: '#fff',
+          border: '1px solid #ccc',
+          borderRadius: '8px',
+          padding: '8px',
+          boxShadow: '0 4px 6px rgba(0,0,0,0.1)',
+          zIndex: 1000,
+          display: 'flex',
+          flexDirection: 'column',
+          gap: '8px'
+        }}>
+          {colors.map(({ name, value, i18nKey }) => (
+            <button
+              key={name}
+              onClick={() => {
+                setThemeColor(name)
+                setIsOpen(false)
+              }}
+              title={t(i18nKey, language)}
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '8px',
+                padding: '6px 12px',
+                border: 'none',
+                borderRadius: '6px',
+                cursor: 'pointer',
+                backgroundColor: themeColor === name ? '#f0f0f0' : 'transparent',
+                transition: 'background-color 0.2s ease',
+                textAlign: 'left',
+                whiteSpace: 'nowrap'
+              }}
+              onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#f0f0f0'}
+              onMouseLeave={(e) => {
+                if (themeColor !== name) e.currentTarget.style.backgroundColor = 'transparent'
+              }}
+            >
+              <div style={{
+                width: '20px',
+                height: '20px',
+                borderRadius: '50%',
+                backgroundColor: value,
+                border: '2px solid #ccc'
+              }} />
+              <span style={{ fontSize: '14px' }}>{t(i18nKey, language)}</span>
+            </button>
+          ))}
+        </div>
+      )}
     </div>
   )
 }

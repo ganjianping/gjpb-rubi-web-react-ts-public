@@ -66,20 +66,20 @@ const translations: Translations = {
     ZH: '颜色',
   },
   blueTheme: {
-    EN: 'Blue theme',
-    ZH: '蓝色主题',
+    EN: 'Blue',
+    ZH: '蓝色',
   },
   greenTheme: {
-    EN: 'Green theme',
-    ZH: '绿色主题',
+    EN: 'Green',
+    ZH: '绿色',
   },
   purpleTheme: {
-    EN: 'Purple theme',
-    ZH: '紫色主题',
+    EN: 'Purple',
+    ZH: '紫色',
   },
   orangeTheme: {
-    EN: 'Orange theme',
-    ZH: '橙色主题',
+    EN: 'Orange',
+    ZH: '橙色',
   },
   
   // Language
