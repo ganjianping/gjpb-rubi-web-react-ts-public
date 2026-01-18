@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback, useMemo, useRef } from 'react'
 import { useAppSettings } from '@/shared/contexts/AppSettingsContext'
 import { t } from '@/shared/i18n'
 import { fetchVocabularies } from '@/shared/data/publicApi'
@@ -14,23 +14,30 @@ export default function VocabulariesPage() {
   const [vocabularies, setVocabularies] = useState<Vocabulary[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
-  const [filters, setFilters] = useState<VocabFilters>({
-    page: 0,
-    size: 20
-  })
   const [totalPages, setTotalPages] = useState(0)
   const [totalElements, setTotalElements] = useState(0)
   const [selectedVocabulary, setSelectedVocabulary] = useState<Vocabulary | null>(null)
-
-  useEffect(() => {
-    loadVocabularies()
-  }, [filters])
-
-  const loadVocabularies = async () => {
+  
+  // Use useMemo for initial filters to prevent recreation on every render
+  const initialFilters = useMemo(() => ({
+    page: 0,
+    size: 20
+  }), [])
+  
+  const [filters, setFilters] = useState<VocabFilters>(initialFilters)
+  
+  // Use ref to track if component is mounted
+  const isMountedRef = useRef(true)
+  
+  // Use useCallback for loadVocabularies to prevent recreation
+  const loadVocabularies = useCallback(async () => {
     try {
       setLoading(true)
       setError(null)
       const response = await fetchVocabularies(filters)
+      
+      // Only update state if component is still mounted
+      if (!isMountedRef.current) return
       
       if (response.status.code === 200) {
         setVocabularies(response.data.content)
@@ -40,12 +47,26 @@ export default function VocabulariesPage() {
         setError(response.status.message || t('error', language))
       }
     } catch (err) {
+      if (!isMountedRef.current) return
       setError(err instanceof Error ? err.message : t('error', language))
       console.error('Error loading vocabularies:', err)
     } finally {
-      setLoading(false)
+      if (isMountedRef.current) {
+        setLoading(false)
+      }
     }
-  }
+  }, [filters, language])
+
+  useEffect(() => {
+    loadVocabularies()
+  }, [loadVocabularies])
+
+  // Cleanup on unmount
+  useEffect(() => {
+    return () => {
+      isMountedRef.current = false
+    }
+  }, [])
 
   const handleFilterChange = (newFilters: VocabFilters) => {
     setFilters(newFilters)
