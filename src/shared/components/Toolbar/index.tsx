@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, ReactNode } from 'react'
 import { Link } from 'react-router-dom'
 import ThemeToggle from '@/shared/ui/ThemeToggle'
 import ThemeColorPicker from '@/shared/ui/ThemeColorPicker'
@@ -6,46 +6,135 @@ import LanguageToggle from '@/shared/ui/LanguageToggle'
 import { useAppSettings } from '@/shared/contexts/AppSettingsContext'
 import { t } from '@/shared/i18n'
 
+// Define Icons
+const Icons = {
+  Learning: () => (
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--accent-primary)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" />
+      <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z" />
+    </svg>
+  ),
+  Chat: () => (
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--accent-primary)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+    </svg>
+  ),
+  FileText: () => (
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--accent-primary)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+      <polyline points="14 2 14 8 20 8" />
+      <line x1="16" y1="13" x2="8" y2="13" />
+      <line x1="16" y1="17" x2="8" y2="17" />
+      <polyline points="10 9 9 9 8 9" />
+    </svg>
+  ),
+  Newspaper: () => (
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--accent-primary)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M4 22h16a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v16a2 2 0 0 1-2 2Zm0 0a2 2 0 0 1-2-2v-9c0-1.1.9-2 2-2h2" />
+      <path d="M18 14h-8" />
+      <path d="M15 18h-5" />
+      <path d="M10 6h8v4h-8V6Z" />
+    </svg>
+  ),
+  Media: () => (
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--accent-primary)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <polygon points="12 2 2 7 12 12 22 7 12 2" />
+      <polyline points="2 17 12 22 22 17" />
+      <polyline points="2 12 12 17 22 12" />
+    </svg>
+  ),
+  Image: () => (
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--accent-primary)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <rect x="3" y="3" width="18" height="18" rx="2" ry="2" />
+      <circle cx="8.5" cy="8.5" r="1.5" />
+      <polyline points="21 15 16 10 5 21" />
+    </svg>
+  ),
+  Video: () => (
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--accent-primary)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <polygon points="23 7 16 12 23 17 23 7" />
+      <rect x="1" y="5" width="15" height="14" rx="2" ry="2" />
+    </svg>
+  ),
+  Audio: () => (
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--accent-primary)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M3 18v-6a9 9 0 0 1 18 0v6" />
+      <path d="M21 19a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3zM3 19a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2v-3a2 2 0 0 0-2-2H3z" />
+    </svg>
+  ),
+  Question: () => (
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--accent-primary)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <circle cx="12" cy="12" r="10" />
+      <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3" />
+      <line x1="12" y1="17" x2="12.01" y2="17" />
+    </svg>
+  ),
+  CheckSquare: () => (
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--accent-primary)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <polyline points="9 11 12 14 22 4" />
+      <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11" />
+    </svg>
+  ),
+  Edit: () => (
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--accent-primary)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
+      <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
+    </svg>
+  ),
+  Clipboard: () => (
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--accent-primary)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2" />
+      <rect x="8" y="2" width="8" height="4" rx="1" ry="1" />
+    </svg>
+  ),
+  Toggle: () => (
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--accent-primary)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <rect x="1" y="5" width="22" height="14" rx="7" ry="7" />
+      <circle cx="16" cy="12" r="3" />
+    </svg>
+  )
+}
+
 interface MenuItem {
   nameKey: string
   path: string
-  icon: string
+  icon: ReactNode
 }
 
 interface MenuGroup {
   titleKey: string
-  icon: string
+  icon: ReactNode
   items: MenuItem[]
 }
 
 const menuGroups: MenuGroup[] = [
   {
     titleKey: 'learningContent',
-    icon: '📚',
+    icon: <Icons.Learning />,
     items: [
-      { nameKey: 'vocabularies', path: '/vocabularies', icon: '📚' },
-      { nameKey: 'expressions', path: '/expressions', icon: '💬' },
-      { nameKey: 'sentences', path: '/sentences', icon: '📝' },
-      { nameKey: 'articles', path: '/articles', icon: '📰' },
+      { nameKey: 'vocabularies', path: '/vocabularies', icon: <Icons.Learning /> },
+      { nameKey: 'expressions', path: '/expressions', icon: <Icons.Chat /> },
+      { nameKey: 'sentences', path: '/sentences', icon: <Icons.FileText /> },
+      { nameKey: 'articles', path: '/articles', icon: <Icons.Newspaper /> },
     ]
   },
   {
     titleKey: 'media',
-    icon: '🎨',
+    icon: <Icons.Media />,
     items: [
-      { nameKey: 'images', path: '/images', icon: '🖼️' },
-      { nameKey: 'videos', path: '/videos', icon: '🎬' },
-      { nameKey: 'audios', path: '/audios', icon: '🎧' },
+      { nameKey: 'images', path: '/images', icon: <Icons.Image /> },
+      { nameKey: 'videos', path: '/videos', icon: <Icons.Video /> },
+      { nameKey: 'audios', path: '/audios', icon: <Icons.Audio /> },
     ]
   },
   {
     titleKey: 'questions',
-    icon: '❓',
+    icon: <Icons.Question />,
     items: [
-      { nameKey: 'multipleChoice', path: '/questions/multiple-choice', icon: '✅' },
-      { nameKey: 'freeText', path: '/questions/free-text', icon: '✍️' },
-      { nameKey: 'fillBlanks', path: '/questions/fill-blank', icon: '📋' },
-      { nameKey: 'trueFalse', path: '/questions/true-false', icon: '❓' },
+      { nameKey: 'multipleChoice', path: '/questions/multiple-choice', icon: <Icons.CheckSquare /> },
+      { nameKey: 'freeText', path: '/questions/free-text', icon: <Icons.Edit /> },
+      { nameKey: 'fillBlanks', path: '/questions/fill-blank', icon: <Icons.Clipboard /> },
+      { nameKey: 'trueFalse', path: '/questions/true-false', icon: <Icons.Toggle /> },
     ]
   }
 ]

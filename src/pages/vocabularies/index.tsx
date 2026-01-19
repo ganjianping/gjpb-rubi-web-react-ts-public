@@ -18,7 +18,6 @@ export default function VocabulariesPage() {
   const [totalElements, setTotalElements] = useState(0)
   const [selectedVocabulary, setSelectedVocabulary] = useState<Vocabulary | null>(null)
   const [appSettings, setAppSettings] = useState<AppSetting[]>([])
-  const [showFilters, setShowFilters] = useState(false)
   
   // Use useMemo for initial filters to prevent recreation on every render
   const initialFilters = useMemo(() => ({
@@ -131,55 +130,15 @@ export default function VocabulariesPage() {
 
   return (
     <div className="vocabularies-page">
-      {/* Header with Tags and Filter Button */}
-      <div className="vocabularies-header-tags">
-        <div className="vocabularies-header-content">
-          <h2>{t('vocabularies', language)}:</h2>
-          <div className="vocabularies-tags-container">
-            {vocabularyTags.map((tag, index) => (
-              <span 
-                key={index} 
-                className={`vocabulary-tag ${selectedTags.includes(tag) ? 'vocabulary-tag-selected' : ''}`}
-                onClick={() => handleTagClick(tag)}
-                role="button"
-                tabIndex={0}
-                onKeyDown={(e) => {
-                  if (e.key === 'Enter' || e.key === ' ') {
-                    e.preventDefault()
-                    handleTagClick(tag)
-                  }
-                }}
-              >
-                {tag}
-              </span>
-            ))}
-          </div>
-        </div>
-        <div className="vocabularies-header-actions">
-          <button 
-            className="vocabularies-reset-btn"
-            onClick={handleReset}
-            aria-label={t('resetFilters', language)}
-            title={t('resetFilters', language)}
-          >
-            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none">
-              <path d="M21.5 2v6h-6M2.5 22v-6h6M2 11.5a10 10 0 0 1 18.8-4.3M22 12.5a10 10 0 0 1-18.8 4.2" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-              <circle cx="12" cy="12" r="2" fill="currentColor"/>
-            </svg>
-          </button>
-          <button 
-            className="vocabularies-filter-btn"
-            onClick={() => setShowFilters(!showFilters)}
-            aria-label={t('toggleFilters', language)}
-            title={showFilters ? t('hideFilters', language) : t('showFilters', language)}
-          >
-            🔍
-          </button>
-        </div>
-      </div>
-
-      {/* Filters */}
-      {showFilters && <VocabularyFilters filters={filters} onFilterChange={handleFilterChange} />}
+      {/* Header and Filters */}
+      <VocabularyFilters 
+        filters={filters} 
+        onFilterChange={handleFilterChange}
+        tags={vocabularyTags}
+        selectedTags={selectedTags}
+        onTagSelect={handleTagClick}
+        onReset={handleReset}
+      />
 
       {/* Loading State */}
       {loading && (
