@@ -127,8 +127,11 @@ export async function fetchVocabularies(filters: VocabularyFilters = {}): Promis
   if (filters.week !== undefined) params.append('week', filters.week.toString())
   if (filters.lang) params.append('lang', filters.lang)
   if (filters.difficultyLevel) params.append('difficultyLevel', filters.difficultyLevel)
+  if (filters.tags) params.append('tags', filters.tags)
   params.append('page', (filters.page ?? 0).toString())
   params.append('size', (filters.size ?? 20).toString())
+  if (filters.sort) params.append('sort', filters.sort)
+  if (filters.direction) params.append('direction', filters.direction)
   
   const response = await fetch(`${API_BASE_URL}/vocabulary-rus?${params.toString()}`)
   

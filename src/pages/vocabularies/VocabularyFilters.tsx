@@ -206,6 +206,42 @@ export default function VocabularyFilters({
               <div className="select-arrow"><Icons.ChevronDown /></div>
             </div>
           </div>
+
+          {/* Sort Filter */}
+          <div className="filter-group">
+            <label htmlFor="sort-filter">{t('sortBy', language)}</label>
+            <div className="select-wrapper">
+              <select
+                id="sort-filter"
+                value={filters.sort ?? 'displayOrder'}
+                onChange={(e) => handleChange('sort', e.target.value)}
+                className="filter-select"
+              >
+                <option value="displayOrder">{t('displayOrder', language)}</option>
+                <option value="name">{t('name', language)}</option>
+                <option value="updatedAt">{t('updatedAt', language)}</option>
+                <option value="difficultyLevel">{t('difficultyLevel', language)}</option>
+              </select>
+              <div className="select-arrow"><Icons.ChevronDown /></div>
+            </div>
+          </div>
+
+          {/* Direction Filter */}
+          <div className="filter-group">
+            <label htmlFor="direction-filter">{t('sortDirection', language)}</label>
+            <div className="select-wrapper">
+              <select
+                id="direction-filter"
+                value={filters.direction ?? 'asc'}
+                onChange={(e) => handleChange('direction', e.target.value)}
+                className="filter-select"
+              >
+                <option value="asc">{t('ascending', language)}</option>
+                <option value="desc">{t('descending', language)}</option>
+              </select>
+              <div className="select-arrow"><Icons.ChevronDown /></div>
+            </div>
+          </div>
         </div>
       </div>
     </div>

@@ -22,7 +22,9 @@ export default function VocabulariesPage() {
   // Use useMemo for initial filters to prevent recreation on every render
   const initialFilters = useMemo(() => ({
     page: 0,
-    size: 20
+    size: 20,
+    sort: 'displayOrder' as const,
+    direction: 'asc' as const
   }), [])
   
   const [filters, setFilters] = useState<VocabFilters>(initialFilters)
@@ -111,7 +113,7 @@ export default function VocabulariesPage() {
   }
 
   const handleReset = () => {
-    setFilters({ page: 0, size: 20 })
+    setFilters({ page: 0, size: 20, sort: 'displayOrder', direction: 'asc' })
     setSelectedTags([])
   }
 

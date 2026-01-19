@@ -192,6 +192,36 @@ const translations: Translations = {
     ZH: '下一页',
   },
   
+  // Sorting
+  sortBy: {
+    EN: 'Sort By',
+    ZH: '排序方式',
+  },
+  sortDirection: {
+    EN: 'Direction',
+    ZH: '排序方向',
+  },
+  ascending: {
+    EN: 'Ascending',
+    ZH: '升序',
+  },
+  descending: {
+    EN: 'Descending',
+    ZH: '降序',
+  },
+  name: {
+    EN: 'Name',
+    ZH: '名称',
+  },
+  displayOrder: {
+    EN: 'Display Order',
+    ZH: '显示顺序',
+  },
+  updatedAt: {
+    EN: 'Updated At',
+    ZH: '更新时间',
+  },
+  
   // Menu Groups
   learningContent: {
     EN: 'Learning Content',

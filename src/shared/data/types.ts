@@ -84,4 +84,6 @@ export interface VocabularyFilters {
   tags?: string
   page?: number
   size?: number
+  sort?: 'name' | 'displayOrder' | 'updatedAt' | 'difficultyLevel'
+  direction?: 'asc' | 'desc'
 }
