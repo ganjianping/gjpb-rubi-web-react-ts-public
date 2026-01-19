@@ -1,5 +1,5 @@
 .vocabulary-card {
-  background: var(--background-secondary);
+  background: var(--bg-secondary);
   border-radius: 16px;
   padding: 1.5rem;
   cursor: pointer;
@@ -37,6 +37,11 @@
   transform: translateY(-4px);
   box-shadow: 0 12px 32px rgba(0, 0, 0, 0.1);
   border-color: var(--primary-color);
+  background: white;
+}
+
+.vocabulary-card:hover .vocab-card-phonetic {
+  color: #4b5563;
 }
 
 .vocabulary-card:hover::before {
