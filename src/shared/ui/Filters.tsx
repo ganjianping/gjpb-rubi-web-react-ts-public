@@ -1,4 +1,4 @@
-import { useState, ReactNode } from 'react'
+import { useState, useMemo, useCallback, ReactNode } from 'react'
 import { useAppSettings } from '@/shared/contexts/AppSettingsContext'
 import { t } from '@/shared/i18n'
 import './Filters.css'
@@ -28,13 +28,13 @@ export interface FiltersProps<T = any> {
 const Icons = {
   Filter: () => (
     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <path d="M22 3H2l8 9.46V19l4 2v-8.54L22 3z" stroke="var(--accent-primary)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+      <path d="M22 3H2l8 9.46V19l4 2v-8.54L22 3z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
     </svg>
   ),
   Reset: () => (
     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" stroke="var(--accent-primary)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-      <path d="M3 3v5h5" stroke="var(--accent-primary)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+      <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+      <path d="M3 3v5h5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
     </svg>
   ),
   ChevronDown: () => (
@@ -65,7 +65,7 @@ export default function Filters<T = any>({
   const { language } = useAppSettings()
   const [isExpanded, setIsExpanded] = useState(false)
 
-  const handleChange = (key: string, value: string | number) => {
+  const handleChange = useCallback((key: string, value: string | number) => {
     const newFilters = { ...filters }
     
     if (value === '' || value === 'all') {
@@ -80,11 +80,20 @@ export default function Filters<T = any>({
       filtersObj.page = 0
     }
     onFilterChange(newFilters)
-  }
+  }, [filters, onFilterChange])
 
-  const handleReset = () => {
+  const toggleExpanded = useCallback(() => {
+    setIsExpanded(prev => !prev)
+  }, [])
+
+  const handleReset = useCallback(() => {
+    setIsExpanded(false)
     onReset()
-  }
+  }, [onReset])
+
+  const hasFilterContent = useMemo(() => {
+    return (filterFields && filterFields.length > 0) || customContent
+  }, [filterFields, customContent])
 
   return (
     <div className="filters-container">
@@ -100,17 +109,23 @@ export default function Filters<T = any>({
             )}
           </h2>
           {tags && tags.length > 0 && (
-            <div className="tags-scroll-area">
-              {tags.map((tag) => (
-                <button
-                  key={tag}
-                  className={`tag-chip ${selectedTags.includes(tag) ? 'active' : ''}`}
-                  onClick={() => onTagSelect?.(tag)}
-                >
-                  <Icons.Tag />
-                  <span>{tag}</span>
-                </button>
-              ))}
+            <div className="tags-scroll-area" role="group" aria-label="Filter tags">
+              {tags.map((tag) => {
+                const isActive = selectedTags.includes(tag)
+                return (
+                  <button
+                    key={tag}
+                    className={`tag-chip ${isActive ? 'active' : ''}`}
+                    onClick={() => onTagSelect?.(tag)}
+                    aria-pressed={isActive}
+                    aria-label={`Filter by ${tag}`}
+                    type="button"
+                  >
+                    <Icons.Tag />
+                    <span>{tag}</span>
+                  </button>
+                )
+              })}
             </div>
           )}
         </div>
@@ -119,35 +134,42 @@ export default function Filters<T = any>({
           <button 
             onClick={handleReset}
             title={t('resetFilters', language)}
+            aria-label={t('resetFilters', language)}
             className="action-btn"
+            type="button"
           >
             <Icons.Reset />
           </button>
-          {(filterFields && filterFields.length > 0) || customContent ? (
+          {hasFilterContent && (
             <button 
-              onClick={() => setIsExpanded(!isExpanded)}
+              onClick={toggleExpanded}
               title={isExpanded ? t('hideFilters', language) : t('showFilters', language)}
+              aria-label={isExpanded ? t('hideFilters', language) : t('showFilters', language)}
+              aria-expanded={isExpanded}
+              aria-controls="filters-panel"
               className={`action-btn ${isExpanded ? 'active' : ''}`}
+              type="button"
             >
-              {isExpanded ? (
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <path d="M22 3H2l8 9.46V19l4 2v-8.54L22 3z" stroke="var(--text-inverse)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-                </svg>
-              ) : (
-                <Icons.Filter />
-              )}
+              <Icons.Filter />
             </button>
-          ) : null}
+          )}
         </div>
       </div>
 
       {/* Expandable Filters Section */}
-      {((filterFields && filterFields.length > 0) || customContent) && (
-        <div className={`filters-panel ${isExpanded ? 'expanded' : ''}`}>
-          {customContent ? (
-            customContent
-          ) : (
-            <div className="filters-grid">
+      {hasFilterContent && (
+        <div 
+          id="filters-panel"
+          className={`filters-panel ${isExpanded ? 'expanded' : ''}`}
+          role="region"
+          aria-label="Advanced filters"
+        >
+          <div className="filters-panel-inner">
+            <div className="filters-content">
+              {customContent ? (
+                customContent
+              ) : (
+                <div className="filters-grid">
               {filterFields?.map((field) => (
                 <div key={field.id} className="filter-group">
                   <label htmlFor={`${field.id}-filter`}>{field.label}</label>
@@ -187,7 +209,9 @@ export default function Filters<T = any>({
                 </div>
               ))}
             </div>
-          )}
+              )}
+            </div>
+          </div>
         </div>
       )}
     </div>
