@@ -191,6 +191,10 @@ const translations: Translations = {
     EN: 'Next',
     ZH: '下一页',
   },
+  itemsPerPage: {
+    EN: 'Items per page',
+    ZH: '每页条数',
+  },
   
   // Sorting
   sortBy: {

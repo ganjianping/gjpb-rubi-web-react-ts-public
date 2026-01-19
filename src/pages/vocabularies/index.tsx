@@ -122,6 +122,11 @@ export default function VocabulariesPage() {
     window.scrollTo({ top: 0, behavior: 'smooth' })
   }
 
+  const handlePageSizeChange = (size: number) => {
+    setFilters({ ...filters, size, page: 0 })
+    window.scrollTo({ top: 0, behavior: 'smooth' })
+  }
+
   const handleCardClick = (vocabulary: Vocabulary) => {
     setSelectedVocabulary(vocabulary)
   }
@@ -140,6 +145,7 @@ export default function VocabulariesPage() {
         selectedTags={selectedTags}
         onTagSelect={handleTagClick}
         onReset={handleReset}
+        totalElements={totalElements}
       />
 
       {/* Loading State */}
@@ -156,13 +162,6 @@ export default function VocabulariesPage() {
           <button onClick={loadVocabularies} className="retry-button">
             {t('retry', language)}
           </button>
-        </div>
-      )}
-
-      {/* Results Info */}
-      {!loading && !error && vocabularies.length > 0 && (
-        <div className="vocabularies-info">
-          {t('showing', language)} {vocabularies.length} {t('of', language)} {totalElements} {t('vocabularies', language)}
         </div>
       )}
 
@@ -187,12 +186,15 @@ export default function VocabulariesPage() {
       )}
 
       {/* Pagination */}
-      {!loading && !error && totalPages > 1 && (
+      {!loading && !error && vocabularies.length > 0 && (
         <div className="vocabularies-pagination">
           <Pagination
-            currentPage={filters.page ?? 0}
+            currentPage={(filters.page ?? 0) + 1}
             totalPages={totalPages}
-            onPageChange={handlePageChange}
+            onPageChange={(page) => handlePageChange(page - 1)}
+            pageSize={filters.size ?? 20}
+            onPageSizeChange={handlePageSizeChange}
+            totalElements={totalElements}
           />
         </div>
       )}

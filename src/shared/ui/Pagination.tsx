@@ -1,20 +1,28 @@
 import { useAppSettings } from '@/shared/contexts/AppSettingsContext'
 import { t } from '@/shared/i18n'
+import './Pagination.css'
 
 interface PaginationProps {
   currentPage: number
   totalPages: number
   onPageChange: (page: number) => void
   maxVisiblePages?: number
+  pageSize?: number
+  onPageSizeChange?: (size: number) => void
+  totalElements?: number
 }
 
 function Pagination({ 
   currentPage, 
   totalPages, 
   onPageChange,
-  maxVisiblePages = 5 
+  maxVisiblePages = 5,
+  pageSize = 20,
+  onPageSizeChange,
+  totalElements
 }: PaginationProps) {
   const { language } = useAppSettings()
+  const pageSizeOptions = [10, 20, 50, 100]
   const getPageNumbers = () => {
     const pages: (number | string)[] = []
     
@@ -54,82 +62,67 @@ function Pagination({
   const pageNumbers = getPageNumbers()
 
   return (
-    <div style={{ 
-      display: 'flex', 
-      gap: '0.5rem', 
-      alignItems: 'center',
-      flexWrap: 'wrap'
-    }}>
-      <button
-        onClick={() => onPageChange(currentPage - 1)}
-        disabled={currentPage === 1}
-        style={{
-          padding: '0.5rem 1rem',
-          borderRadius: '6px',
-          border: '1px solid var(--border-primary)',
-          backgroundColor: 'var(--button-bg)',
-          color: 'var(--text-primary)',
-          cursor: currentPage === 1 ? 'not-allowed' : 'pointer',
-          opacity: currentPage === 1 ? 0.5 : 1,
-          transition: 'all 0.2s ease'
-        }}
-      >
-        {t('previous', language)}
-      </button>
+    <div className="pagination-container">
+      {/* Page Size Selector and Info */}
+      <div className="pagination-toolbar">
+        {onPageSizeChange && (
+          <div className="pagination-size-selector">
+            <label htmlFor="page-size">
+              {t('itemsPerPage', language)}:
+            </label>
+            <select
+              id="page-size"
+              value={pageSize}
+              onChange={(e) => onPageSizeChange(Number(e.target.value))}
+              className="pagination-size-select"
+            >
+              {pageSizeOptions.map(size => (
+                <option key={size} value={size}>{size}</option>
+              ))}
+            </select>
+          </div>
+        )}
+        {totalElements !== undefined && (
+          <div className="pagination-info">
+            {t('showing', language)} <span style={{ color: 'var(--text-primary)' }}>{Math.min((currentPage - 1) * pageSize + 1, totalElements)}</span>-{Math.min(currentPage * pageSize, totalElements)} {t('of', language)} <span style={{ color: 'var(--text-primary)' }}>{totalElements}</span>
+          </div>
+        )}
+      </div>
+      
+      {/* Page Navigation */}
+      <div className="pagination-controls">
+        <button
+          onClick={() => onPageChange(currentPage - 1)}
+          disabled={currentPage === 1}
+          className="pagination-button pagination-nav-button"
+        >
+          {t('previous', language)}
+        </button>
 
-      {pageNumbers.map((page, index) => (
-        typeof page === 'number' ? (
-          <button
-            key={index}
-            onClick={() => onPageChange(page)}
-            style={{
-              padding: '0.5rem 1rem',
-              borderRadius: '6px',
-              border: currentPage === page 
-                ? '1px solid var(--accent-primary)' 
-                : '1px solid var(--border-primary)',
-              cursor: 'pointer',
-              backgroundColor: currentPage === page 
-                ? 'var(--accent-primary)' 
-                : 'var(--button-bg)',
-              color: currentPage === page 
-                ? 'var(--text-inverse)' 
-                : 'var(--text-primary)',
-              fontWeight: currentPage === page ? 'bold' : 'normal',
-              transition: 'all 0.2s ease'
-            }}
-          >
-            {page}
-          </button>
-        ) : (
-          <span 
-            key={index} 
-            style={{ 
-              padding: '0 0.5rem',
-              color: 'var(--text-muted)'
-            }}
-          >
-            {page}
-          </span>
-        )
-      ))}
+        {pageNumbers.map((page, index) => (
+          typeof page === 'number' ? (
+            <button
+              key={index}
+              onClick={() => onPageChange(page)}
+              className={`pagination-button ${currentPage === page ? 'active' : ''}`}
+            >
+              {page}
+            </button>
+          ) : (
+            <span key={index} className="pagination-ellipsis">
+              {page}
+            </span>
+          )
+        ))}
 
-      <button
-        onClick={() => onPageChange(currentPage + 1)}
-        disabled={currentPage === totalPages}
-        style={{
-          padding: '0.5rem 1rem',
-          borderRadius: '6px',
-          border: '1px solid var(--border-primary)',
-          backgroundColor: 'var(--button-bg)',
-          color: 'var(--text-primary)',
-          cursor: currentPage === totalPages ? 'not-allowed' : 'pointer',
-          opacity: currentPage === totalPages ? 0.5 : 1,
-          transition: 'all 0.2s ease'
-        }}
-      >
-        {t('next', language)}
-      </button>
+        <button
+          onClick={() => onPageChange(currentPage + 1)}
+          disabled={currentPage === totalPages}
+          className="pagination-button pagination-nav-button"
+        >
+          {t('next', language)}
+        </button>
+      </div>
     </div>
   )
 }

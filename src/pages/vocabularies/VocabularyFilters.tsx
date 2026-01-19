@@ -11,6 +11,7 @@ interface VocabularyFiltersProps {
   selectedTags: string[]
   onTagSelect: (tag: string) => void
   onReset: () => void
+  totalElements?: number
 }
 
 const Icons = {
@@ -44,7 +45,8 @@ export default function VocabularyFilters({
   tags, 
   selectedTags, 
   onTagSelect, 
-  onReset 
+  onReset,
+  totalElements
 }: VocabularyFiltersProps) {
   const { language, getSettingValue } = useAppSettings()
   const [isExpanded, setIsExpanded] = useState(false)
@@ -76,7 +78,22 @@ export default function VocabularyFilters({
       {/* Header Section: Title, Tags, Actions */}
       <div className="vocabulary-header">
         <div className="header-left">
-          <h2 className="page-title">{t('vocabularies', language)}</h2>
+          <h2 className="page-title">
+            {t('vocabularies', language)}
+            {totalElements !== undefined && (
+              <span style={{
+                marginLeft: '0.75rem',
+                padding: '0.25rem 0.75rem',
+                borderRadius: '12px',
+                backgroundColor: 'var(--accent-primary)',
+                color: 'var(--text-inverse)',
+                fontSize: '0.875rem',
+                fontWeight: '600'
+              }}>
+                {totalElements}
+              </span>
+            )}
+          </h2>
           <div className="tags-scroll-area">
             {tags.map((tag) => (
               <button
