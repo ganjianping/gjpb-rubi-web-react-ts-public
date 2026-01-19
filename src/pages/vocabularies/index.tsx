@@ -5,12 +5,12 @@ import { fetchVocabularies, fetchAppSettings } from '@/shared/data/publicApi'
 import type { VocabularyFilters as VocabFilters, Vocabulary, AppSetting } from '@/shared/data/types'
 import VocabularyCardCompact from './VocabularyCardCompact'
 import VocabularyDetail from './VocabularyDetail'
-import VocabularyFilters from './VocabularyFilters'
+import Filters from '@/shared/ui/Filters'
 import Pagination from '@/shared/ui/Pagination'
 import './index.css'
 
 export default function VocabulariesPage() {
-  const { language } = useAppSettings()
+  const { language, getSettingValue } = useAppSettings()
   const [vocabularies, setVocabularies] = useState<Vocabulary[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
@@ -40,6 +40,53 @@ export default function VocabulariesPage() {
     )
     return tagSetting ? tagSetting.value.split(',').map((tag) => tag.trim()) : []
   }, [appSettings, language])
+  
+  // Get difficulty levels from app settings
+  const difficultyLevels = useMemo(() => {
+    return getSettingValue('difficulty_level')?.split(',').map(level => level.trim()) || []
+  }, [getSettingValue])
+  
+  // Prepare filter fields configuration
+  const filterFields = useMemo(() => [
+    {
+      id: 'term',
+      label: t('term', language),
+      type: 'select' as const,
+      options: [1, 2, 3, 4].map(term => ({ value: term, label: `${term}` }))
+    },
+    {
+      id: 'week',
+      label: t('week', language),
+      type: 'select' as const,
+      options: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14].map(week => ({ value: week, label: `${week}` }))
+    },
+    {
+      id: 'difficultyLevel',
+      label: t('difficultyLevel', language),
+      type: 'select' as const,
+      options: difficultyLevels.map(level => ({ value: level, label: level }))
+    },
+    {
+      id: 'sort',
+      label: t('sortBy', language),
+      type: 'select' as const,
+      options: [
+        { value: 'displayOrder', label: t('displayOrder', language) },
+        { value: 'name', label: t('name', language) },
+        { value: 'updatedAt', label: t('updatedAt', language) },
+        { value: 'difficultyLevel', label: t('difficultyLevel', language) }
+      ]
+    },
+    {
+      id: 'direction',
+      label: t('sortDirection', language),
+      type: 'select' as const,
+      options: [
+        { value: 'asc', label: t('ascending', language) },
+        { value: 'desc', label: t('descending', language) }
+      ]
+    }
+  ], [language, difficultyLevels])
   
   // Fetch app settings on component mount
   useEffect(() => {
@@ -138,9 +185,11 @@ export default function VocabulariesPage() {
   return (
     <div className="vocabularies-page">
       {/* Header and Filters */}
-      <VocabularyFilters 
-        filters={filters} 
+      <Filters
+        title={t('vocabularies', language)}
+        filters={filters}
         onFilterChange={handleFilterChange}
+        filterFields={filterFields}
         tags={vocabularyTags}
         selectedTags={selectedTags}
         onTagSelect={handleTagClick}
