@@ -3,8 +3,7 @@ import { useAppSettings } from '@/shared/contexts/AppSettingsContext'
 import { t } from '@/shared/i18n'
 import { fetchVocabularies, fetchAppSettings } from '@/shared/data/publicApi'
 import type { VocabularyFilters as VocabFilters, Vocabulary, AppSetting } from '@/shared/data/types'
-import VocabularyCardCompact from './VocabularyCardCompact'
-import VocabularyDetail from './VocabularyDetail'
+import VocabularyCard from './VocabularyCard'
 import Filters from '@/shared/ui/Filters'
 import Pagination from '@/shared/ui/Pagination'
 import './index.css'
@@ -16,7 +15,6 @@ export default function VocabulariesPage() {
   const [error, setError] = useState<string | null>(null)
   const [totalPages, setTotalPages] = useState(0)
   const [totalElements, setTotalElements] = useState(0)
-  const [selectedVocabulary, setSelectedVocabulary] = useState<Vocabulary | null>(null)
   const [appSettings, setAppSettings] = useState<AppSetting[]>([])
   
   // Use useMemo for initial filters to prevent recreation on every render
@@ -174,14 +172,6 @@ export default function VocabulariesPage() {
     window.scrollTo({ top: 0, behavior: 'smooth' })
   }
 
-  const handleCardClick = (vocabulary: Vocabulary) => {
-    setSelectedVocabulary(vocabulary)
-  }
-
-  const handleCloseDetail = () => {
-    setSelectedVocabulary(null)
-  }
-
   return (
     <div className="vocabularies-page">
       {/* Header and Filters */}
@@ -218,10 +208,9 @@ export default function VocabulariesPage() {
       {!loading && !error && vocabularies.length > 0 && (
         <div className="vocabularies-grid">
           {vocabularies.map((vocab) => (
-            <VocabularyCardCompact 
+            <VocabularyCard 
               key={vocab.id} 
               vocabulary={vocab}
-              onClick={() => handleCardClick(vocab)}
             />
           ))}
         </div>
@@ -246,14 +235,6 @@ export default function VocabulariesPage() {
             totalElements={totalElements}
           />
         </div>
-      )}
-
-      {/* Detail Modal */}
-      {selectedVocabulary && (
-        <VocabularyDetail 
-          vocabulary={selectedVocabulary}
-          onClose={handleCloseDetail}
-        />
       )}
     </div>
   )
