@@ -47,6 +47,10 @@ const translations: Translations = {
     EN: 'Search...',
     ZH: '搜索...',
   },
+  all: {
+    EN: 'All',
+    ZH: '全部',
+  },
   
   // Theme
   theme: {
