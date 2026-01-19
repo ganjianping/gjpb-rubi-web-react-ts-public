@@ -16,6 +16,10 @@ export default function VocabulariesPage() {
   const [totalPages, setTotalPages] = useState(0)
   const [totalElements, setTotalElements] = useState(0)
   const [appSettings, setAppSettings] = useState<AppSetting[]>([])
+  const [isAutoPlaying, setIsAutoPlaying] = useState(false)
+  const [currentPlayIndex, setCurrentPlayIndex] = useState(0)
+  const autoPlayTimerRef = useRef<number | null>(null)
+  const randomOrderRef = useRef<number[]>([])
   
   // Use useMemo for initial filters to prevent recreation on every render
   const initialFilters = useMemo(() => ({
@@ -162,6 +166,79 @@ export default function VocabulariesPage() {
     setSelectedTags([])
   }
 
+  // Shuffle array using Fisher-Yates algorithm
+  const shuffleArray = (array: number[]) => {
+    const shuffled = [...array]
+    for (let i = shuffled.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]]
+    }
+    return shuffled
+  }
+
+  // Auto-play handler
+  const handleAutoPlay = () => {
+    if (isAutoPlaying) {
+      // Stop auto-play
+      setIsAutoPlaying(false)
+      if (autoPlayTimerRef.current) {
+        clearTimeout(autoPlayTimerRef.current)
+        autoPlayTimerRef.current = null
+      }
+    } else {
+      // Start auto-play
+      if (vocabularies.length === 0) return
+      
+      // Create random order
+      randomOrderRef.current = shuffleArray(vocabularies.map((_, idx) => idx))
+      setCurrentPlayIndex(0)
+      setIsAutoPlaying(true)
+    }
+  }
+
+  // Auto-play effect
+  useEffect(() => {
+    if (!isAutoPlaying || vocabularies.length === 0) return
+
+    const playVocabulary = () => {
+      const randomIdx = randomOrderRef.current[currentPlayIndex]
+      const vocab = vocabularies[randomIdx]
+      
+      if (vocab?.phoneticAudioUrl) {
+        const audio = new Audio(vocab.phoneticAudioUrl)
+        audio.play().catch(err => console.error('Error playing audio:', err))
+      }
+
+      // Schedule next vocabulary
+      if (currentPlayIndex < randomOrderRef.current.length - 1) {
+        autoPlayTimerRef.current = window.setTimeout(() => {
+          setCurrentPlayIndex(prev => prev + 1)
+        }, 10000)
+      } else {
+        // Finished playing all vocabularies
+        setIsAutoPlaying(false)
+        setCurrentPlayIndex(0)
+      }
+    }
+
+    playVocabulary()
+
+    return () => {
+      if (autoPlayTimerRef.current) {
+        clearTimeout(autoPlayTimerRef.current)
+      }
+    }
+  }, [isAutoPlaying, currentPlayIndex, vocabularies])
+
+  // Cleanup on unmount
+  useEffect(() => {
+    return () => {
+      if (autoPlayTimerRef.current) {
+        clearTimeout(autoPlayTimerRef.current)
+      }
+    }
+  }, [])
+
   const handlePageChange = (page: number) => {
     setFilters({ ...filters, page })
     window.scrollTo({ top: 0, behavior: 'smooth' })
@@ -185,6 +262,27 @@ export default function VocabulariesPage() {
         onTagSelect={handleTagClick}
         onReset={handleReset}
         totalElements={totalElements}
+        customActions={
+          <button 
+            onClick={handleAutoPlay}
+            title={isAutoPlaying ? 'Stop auto-play' : 'Play all vocabularies'}
+            aria-label={isAutoPlaying ? 'Stop auto-play' : 'Play all vocabularies'}
+            className={`action-btn ${isAutoPlaying ? 'active playing' : ''}`}
+            type="button"
+            disabled={vocabularies.length === 0}
+          >
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              {isAutoPlaying ? (
+                <rect x="6" y="4" width="4" height="16" fill="currentColor" rx="1" />
+              ) : (
+                <path d="M8 5v14l11-7z" fill="currentColor" />
+              )}
+              {isAutoPlaying ? (
+                <rect x="14" y="4" width="4" height="16" fill="currentColor" rx="1" />
+              ) : null}
+            </svg>
+          </button>
+        }
       />
 
       {/* Loading State */}

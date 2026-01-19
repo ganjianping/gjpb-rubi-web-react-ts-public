@@ -23,6 +23,7 @@ export interface FiltersProps<T = any> {
   onReset: () => void
   totalElements?: number
   customContent?: ReactNode
+  customActions?: ReactNode
 }
 
 const Icons = {
@@ -60,7 +61,8 @@ export default function Filters<T = any>({
   onTagSelect, 
   onReset,
   totalElements,
-  customContent
+  customContent,
+  customActions
 }: FiltersProps<T>) {
   const { language } = useAppSettings()
   const [isExpanded, setIsExpanded] = useState(false)
@@ -131,6 +133,7 @@ export default function Filters<T = any>({
         </div>
         
         <div className="header-actions">
+          {customActions}
           <button 
             onClick={handleReset}
             title={t('resetFilters', language)}
