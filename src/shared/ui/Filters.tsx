@@ -104,11 +104,6 @@ export default function Filters<T = any>({
         <div className="header-left">
           <h2 className="page-title">
             {title}
-            {totalElements !== undefined && (
-              <span className="title-count-badge">
-                {totalElements}
-              </span>
-            )}
           </h2>
           {tags && tags.length > 0 && (
             <div className="tags-scroll-area" role="group" aria-label="Filter tags">

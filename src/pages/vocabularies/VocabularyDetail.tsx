@@ -23,6 +23,23 @@ export default function VocabularyDetail({ vocabulary, onClose }: VocabularyDeta
   const [showVerbDetails, setShowVerbDetails] = useState(true)
   const [showAdjectiveDetails, setShowAdjectiveDetails] = useState(true)
   const [showAdverbDetails, setShowAdverbDetails] = useState(true)
+  const [allExpanded, setAllExpanded] = useState(true)
+
+  // Toggle all sections
+  const toggleAll = () => {
+    const newState = !allExpanded
+    setShowPartOfSpeech(newState)
+    setShowPlural(newState)
+    setShowVerbTenses(newState)
+    setShowComparative(newState)
+    setShowSynonyms(newState)
+    setShowDefinition(newState)
+    setShowNounDetails(newState)
+    setShowVerbDetails(newState)
+    setShowAdjectiveDetails(newState)
+    setShowAdverbDetails(newState)
+    setAllExpanded(newState)
+  }
 
   const playAudio = () => {
     if (vocabulary.phoneticAudioUrl) {
@@ -61,17 +78,25 @@ export default function VocabularyDetail({ vocabulary, onClose }: VocabularyDeta
     <div className="vocabulary-detail-overlay" onClick={handleBackdropClick}>
       <div className="vocabulary-detail-modal">
         <button className="detail-close-btn" onClick={onClose}>✕</button>
+        <button className="detail-toggle-all-btn" onClick={toggleAll} title={allExpanded ? 'Collapse all' : 'Expand all'}>
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            {allExpanded ? (
+              <>
+                <path d="M4 14l8-8 8 8" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                <path d="M4 20l8-8 8 8" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+              </>
+            ) : (
+              <>
+                <path d="M4 10l8 8 8-8" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                <path d="M4 4l8 8 8-8" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+              </>
+            )}
+          </svg>
+        </button>
         
         <div className="detail-content">
           {/* Header with Image */}
           <div className="detail-header-wrapper">
-            {/* Image */}
-            {vocabulary.imageUrl && (
-              <div className="detail-image-container">
-                <img src={vocabulary.imageUrl} alt={vocabulary.name} />
-              </div>
-            )}
-            
             <div className="detail-header-text">
               {/* First Row: Name */}
               <h1 className="detail-word">{vocabulary.name}</h1>
@@ -91,6 +116,13 @@ export default function VocabularyDetail({ vocabulary, onClose }: VocabularyDeta
                 </div>
               )}
             </div>
+
+            {/* Image */}
+            {vocabulary.imageUrl && (
+              <div className="detail-image-container">
+                <img src={vocabulary.imageUrl} alt={vocabulary.name} />
+              </div>
+            )}
           </div>
           
           {/* Parts of Speech */}

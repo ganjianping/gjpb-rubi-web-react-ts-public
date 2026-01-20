@@ -72,18 +72,45 @@
   transform: rotate(90deg);
 }
 
+.detail-toggle-all-btn {
+  position: sticky;
+  top: 1.5rem;
+  right: 5rem;
+  float: right;
+  margin-left: 0.5rem;
+  background: var(--bg-tertiary);
+  border: 1px solid transparent;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  color: var(--text-secondary);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+  z-index: 20;
+}
+
+.detail-toggle-all-btn:hover {
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+  border-color: var(--border-color);
+  transform: scale(1.1);
+}
+
 /* Header Wrapper with Image */
 .detail-header-wrapper {
   display: flex;
-  gap: 1.5rem;
+  gap: 0.5rem;
   margin-bottom: 1.5rem;
-  padding-bottom: 1.5rem;
+  padding-bottom: 0.1rem;
   border-bottom: 1px solid var(--border-color);
 }
 
 .detail-image-container {
-  width: 150px;
-  height: 150px;
+  width: 120px;
+  height: 120px;
   border-radius: 12px;
   overflow: hidden;
   flex-shrink: 0;
@@ -362,20 +389,11 @@
   margin-top: 0.5rem;
 }
 
-.detail-image-container {
-  border-radius: 16px;
-  overflow: hidden;
-  margin-bottom: 2.5rem;
-  background: var(--bg-tertiary);
-  display: flex;
-  justify-content: center;
-}
-
 .detail-image-container img {
   width: 100%;
   max-width: 600px;
   max-height: 400px;
-  object-fit: contain;
+  object-fit: cover;
 }
 
 /* Parts of Speech Badges */
