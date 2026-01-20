@@ -18,7 +18,6 @@ export default function VocabularyDetail({ vocabulary, onClose }: VocabularyDeta
   const [showVerbTenses, setShowVerbTenses] = useState(true)
   const [showComparative, setShowComparative] = useState(true)
   const [showSynonyms, setShowSynonyms] = useState(true)
-  const [showTranslation, setShowTranslation] = useState(true)
   const [showDefinition, setShowDefinition] = useState(true)
   const [showNounDetails, setShowNounDetails] = useState(true)
   const [showVerbDetails, setShowVerbDetails] = useState(true)
@@ -197,8 +196,18 @@ export default function VocabularyDetail({ vocabulary, onClose }: VocabularyDeta
               {showNounDetails && (
                 <div>
                   {vocabulary.nounForm && <p><strong>{t('form', language)}:</strong> {vocabulary.nounForm}</p>}
-                  {vocabulary.nounMeaning && <p><strong>{t('meaning', language)}:</strong> {vocabulary.nounMeaning}</p>}
-                  {vocabulary.nounExample && <p><strong>{t('example', language)}:</strong> {vocabulary.nounExample}</p>}
+                  {vocabulary.nounMeaning && (
+                    <div>
+                      <strong>{t('meaning', language)}:</strong>
+                      <div className="detail-html" dangerouslySetInnerHTML={renderHTML(vocabulary.nounMeaning)} />
+                    </div>
+                  )}
+                  {vocabulary.nounExample && (
+                    <div>
+                      <strong>{t('example', language)}:</strong>
+                      <div className="detail-html" dangerouslySetInnerHTML={renderHTML(vocabulary.nounExample)} />
+                    </div>
+                  )}
                 </div>
               )}
             </div>
@@ -217,13 +226,13 @@ export default function VocabularyDetail({ vocabulary, onClose }: VocabularyDeta
                   {vocabulary.verbMeaning && (
                     <div>
                       <strong>{t('meaning', language)}:</strong>
-                      <div dangerouslySetInnerHTML={renderHTML(vocabulary.verbMeaning)} />
+                      <div className="detail-html" dangerouslySetInnerHTML={renderHTML(vocabulary.verbMeaning)} />
                     </div>
                   )}
                   {vocabulary.verbExample && (
                     <div>
                       <strong>{t('example', language)}:</strong>
-                      <div dangerouslySetInnerHTML={renderHTML(vocabulary.verbExample)} />
+                      <div className="detail-html" dangerouslySetInnerHTML={renderHTML(vocabulary.verbExample)} />
                     </div>
                   )}
                 </div>
@@ -244,13 +253,13 @@ export default function VocabularyDetail({ vocabulary, onClose }: VocabularyDeta
                   {vocabulary.adjectiveMeaning && (
                     <div>
                       <strong>{t('meaning', language)}:</strong>
-                      <div dangerouslySetInnerHTML={renderHTML(vocabulary.adjectiveMeaning)} />
+                      <div className="detail-html" dangerouslySetInnerHTML={renderHTML(vocabulary.adjectiveMeaning)} />
                     </div>
                   )}
                   {vocabulary.adjectiveExample && (
                     <div>
                       <strong>{t('example', language)}:</strong>
-                      <div dangerouslySetInnerHTML={renderHTML(vocabulary.adjectiveExample)} />
+                      <div className="detail-html" dangerouslySetInnerHTML={renderHTML(vocabulary.adjectiveExample)} />
                     </div>
                   )}
                 </div>
@@ -271,13 +280,13 @@ export default function VocabularyDetail({ vocabulary, onClose }: VocabularyDeta
                   {vocabulary.adverbMeaning && (
                     <div>
                       <strong>{t('meaning', language)}:</strong>
-                      <div dangerouslySetInnerHTML={renderHTML(vocabulary.adverbMeaning)} />
+                      <div className="detail-html" dangerouslySetInnerHTML={renderHTML(vocabulary.adverbMeaning)} />
                     </div>
                   )}
                   {vocabulary.adverbExample && (
                     <div>
                       <strong>{t('example', language)}:</strong>
-                      <div dangerouslySetInnerHTML={renderHTML(vocabulary.adverbExample)} />
+                      <div className="detail-html" dangerouslySetInnerHTML={renderHTML(vocabulary.adverbExample)} />
                     </div>
                   )}
                 </div>

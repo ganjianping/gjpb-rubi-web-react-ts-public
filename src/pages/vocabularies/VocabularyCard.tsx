@@ -10,7 +10,6 @@ interface VocabularyCardProps {
 
 export default function VocabularyCard({ vocabulary, isExpandedView = true }: VocabularyCardProps) {
   const [showDetailModal, setShowDetailModal] = useState(false)
-  const [isHovered, setIsHovered] = useState(false)
 
   const playAudio = (e: React.MouseEvent) => {
     e.stopPropagation()
@@ -29,8 +28,6 @@ export default function VocabularyCard({ vocabulary, isExpandedView = true }: Vo
       <button 
         className={`vocabulary-card ${isExpandedView ? 'expanded' : 'compact'}`}
         onClick={handleCardClick}
-        onMouseEnter={() => setIsHovered(true)}
-        onMouseLeave={() => setIsHovered(false)}
         type="button"
         aria-label={`View details for ${vocabulary.name}`}
       >
