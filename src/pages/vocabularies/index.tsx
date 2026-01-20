@@ -19,6 +19,8 @@ export default function VocabulariesPage() {
   const [isAutoPlaying, setIsAutoPlaying] = useState(false)
   const [currentPlayIndex, setCurrentPlayIndex] = useState(0)
   const [isExpandedView, setIsExpandedView] = useState(true)
+  const [showIntervalModal, setShowIntervalModal] = useState(false)
+  const [playInterval, setPlayInterval] = useState(5000) // Default 5 seconds
   const autoPlayTimerRef = useRef<number | null>(null)
   const randomOrderRef = useRef<number[]>([])
   
@@ -191,14 +193,21 @@ export default function VocabulariesPage() {
         autoPlayTimerRef.current = null
       }
     } else {
-      // Start auto-play
+      // Show interval selection modal
       if (vocabularies.length === 0) return
-      
-      // Create random order
-      randomOrderRef.current = shuffleArray(vocabularies.map((_, idx) => idx))
-      setCurrentPlayIndex(0)
-      setIsAutoPlaying(true)
+      setShowIntervalModal(true)
     }
+  }
+
+  // Start auto-play with selected interval
+  const startAutoPlay = (intervalMs: number) => {
+    setPlayInterval(intervalMs)
+    setShowIntervalModal(false)
+    
+    // Create random order
+    randomOrderRef.current = shuffleArray(vocabularies.map((_, idx) => idx))
+    setCurrentPlayIndex(0)
+    setIsAutoPlaying(true)
   }
 
   // Auto-play effect
@@ -218,7 +227,7 @@ export default function VocabulariesPage() {
       if (currentPlayIndex < randomOrderRef.current.length - 1) {
         autoPlayTimerRef.current = window.setTimeout(() => {
           setCurrentPlayIndex(prev => prev + 1)
-        }, 10000)
+        }, playInterval)
       } else {
         // Finished playing all vocabularies
         setIsAutoPlaying(false)
@@ -233,7 +242,7 @@ export default function VocabulariesPage() {
         clearTimeout(autoPlayTimerRef.current)
       }
     }
-  }, [isAutoPlaying, currentPlayIndex, vocabularies])
+  }, [isAutoPlaying, currentPlayIndex, vocabularies, playInterval])
 
   // Cleanup on unmount
   useEffect(() => {
@@ -256,6 +265,36 @@ export default function VocabulariesPage() {
 
   return (
     <div className="vocabularies-page">
+      {/* Interval Selection Modal */}
+      {showIntervalModal && (
+        <div className="interval-modal-overlay" onClick={() => setShowIntervalModal(false)}>
+          <div className="interval-modal" onClick={(e) => e.stopPropagation()}>
+            <h3>Select Play Interval</h3>
+            <p>Choose how long to wait before playing the next vocabulary:</p>
+            <div className="interval-options">
+              <button onClick={() => startAutoPlay(3000)} className="interval-btn">
+                3 seconds
+              </button>
+              <button onClick={() => startAutoPlay(5000)} className="interval-btn">
+                5 seconds
+              </button>
+              <button onClick={() => startAutoPlay(8000)} className="interval-btn">
+                8 seconds
+              </button>
+              <button onClick={() => startAutoPlay(10000)} className="interval-btn">
+                10 seconds
+              </button>
+              <button onClick={() => startAutoPlay(15000)} className="interval-btn">
+                15 seconds
+              </button>
+            </div>
+            <button onClick={() => setShowIntervalModal(false)} className="interval-cancel-btn">
+              Cancel
+            </button>
+          </div>
+        </div>
+      )}
+
       {/* Header and Filters */}
       <Filters
         title={t('vocabularies', language)}
