@@ -114,7 +114,7 @@ export default function VocabulariesPage() {
     try {
       setLoading(true)
       setError(null)
-      const response = await fetchVocabularies(filters)
+      const response = await fetchVocabularies({ ...filters, lang: language })
       
       // Only update state if component is still mounted
       if (!isMountedRef.current) return

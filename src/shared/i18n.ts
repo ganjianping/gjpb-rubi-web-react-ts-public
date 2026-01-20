@@ -247,7 +247,7 @@ const translations: Translations = {
   // Learning Content Items
   vocabularies: {
     EN: 'Vocabularies',
-    ZH: '词汇',
+    ZH: '单词',
   },
   expressions: {
     EN: 'Expressions',
@@ -403,7 +403,7 @@ const translations: Translations = {
   },
   noVocabularies: {
     EN: 'No vocabularies found. Try adjusting your filters.',
-    ZH: '未找到词汇。尝试调整筛选条件。',
+    ZH: '未找到单词。尝试调整筛选条件。',
   },
   showing: {
     EN: 'Showing',
