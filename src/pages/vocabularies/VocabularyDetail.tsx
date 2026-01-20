@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import { useAppSettings } from '@/shared/contexts/AppSettingsContext'
 import { t } from '@/shared/i18n'
 import type { Vocabulary } from '@/shared/data/types'
@@ -10,6 +11,19 @@ interface VocabularyDetailProps {
 
 export default function VocabularyDetail({ vocabulary, onClose }: VocabularyDetailProps) {
   const { language } = useAppSettings()
+  
+  // Toggle states for collapsible sections
+  const [showPartOfSpeech, setShowPartOfSpeech] = useState(true)
+  const [showPlural, setShowPlural] = useState(true)
+  const [showVerbTenses, setShowVerbTenses] = useState(true)
+  const [showComparative, setShowComparative] = useState(true)
+  const [showSynonyms, setShowSynonyms] = useState(true)
+  const [showTranslation, setShowTranslation] = useState(true)
+  const [showDefinition, setShowDefinition] = useState(true)
+  const [showNounDetails, setShowNounDetails] = useState(true)
+  const [showVerbDetails, setShowVerbDetails] = useState(true)
+  const [showAdjectiveDetails, setShowAdjectiveDetails] = useState(true)
+  const [showAdverbDetails, setShowAdverbDetails] = useState(true)
 
   const playAudio = () => {
     if (vocabulary.phoneticAudioUrl) {
@@ -23,6 +37,19 @@ export default function VocabularyDetail({ vocabulary, onClose }: VocabularyDeta
   const renderHTML = (html: string) => {
     return { __html: html }
   }
+  
+  // Toggle button component
+  const ToggleButton = ({ isOpen, onClick }: { isOpen: boolean, onClick: () => void }) => (
+    <button className="toggle-btn" onClick={onClick} type="button" aria-label={isOpen ? 'Hide' : 'Show'}>
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        {isOpen ? (
+          <path d="M19 9l-7 7-7-7" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+        ) : (
+          <path d="M9 5l7 7-7 7" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+        )}
+      </svg>
+    </button>
+  )
 
   // Close on backdrop click
   const handleBackdropClick = (e: React.MouseEvent) => {
@@ -37,174 +64,229 @@ export default function VocabularyDetail({ vocabulary, onClose }: VocabularyDeta
         <button className="detail-close-btn" onClick={onClose}>✕</button>
         
         <div className="detail-content">
-          {/* Header */}
-          <div className="detail-header">
-            <div>
+          {/* Header with Image */}
+          <div className="detail-header-wrapper">
+            {/* Image */}
+            {vocabulary.imageUrl && (
+              <div className="detail-image-container">
+                <img src={vocabulary.imageUrl} alt={vocabulary.name} />
+              </div>
+            )}
+            
+            <div className="detail-header-text">
+              {/* First Row: Name */}
               <h1 className="detail-word">{vocabulary.name}</h1>
+              
+              {/* Second Row: Phonetic and Audio */}
               {vocabulary.phonetic && (
-                <div className="detail-phonetic">
-                  <span>/{vocabulary.phonetic}/</span>
+                <div className="detail-phonetic-row">
+                  <span className="detail-phonetic">/{vocabulary.phonetic}/</span>
                   {vocabulary.phoneticAudioUrl && (
                     <button className="detail-audio-btn" onClick={playAudio} title="Play pronunciation">
                       <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z" fill="currentColor"/>
+                        <path d="M11 5L6 9H2v6h4l5 4V5z" fill="currentColor"/>
+                        <path d="M15.54 8.46a5 5 0 010 7.07M18.07 5.93a9 9 0 010 12.73" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
                       </svg>
                     </button>
                   )}
                 </div>
               )}
             </div>
-            
-            <div className="detail-meta">
-              <span className="detail-difficulty" data-level={vocabulary.difficultyLevel.toLowerCase()}>
-                {vocabulary.difficultyLevel}
-              </span>
-              <span className="detail-term-week">
-                {t('term', language)} {vocabulary.term} • {t('week', language)} {vocabulary.week}
-              </span>
-            </div>
           </div>
-
-          {/* Image */}
-          {vocabulary.imageUrl && (
-            <div className="detail-image-container">
-              <img src={vocabulary.imageUrl} alt={vocabulary.name} />
+          
+          {/* Parts of Speech */}
+          <div className="detail-section-toggle">
+            <div className="section-header">
+              <h3>{t('partsOfSpeech', language)}</h3>
+              <ToggleButton isOpen={showPartOfSpeech} onClick={() => setShowPartOfSpeech(!showPartOfSpeech)} />
+            </div>
+            {showPartOfSpeech && (
+              <div className="detail-pos-badges">
+                {partsOfSpeech.map((pos, index) => (
+                  <span key={index} className="detail-pos-badge">{pos}</span>
+                ))}
+              </div>
+            )}
+          </div>
+          
+          {/* Plural Form */}
+          {vocabulary.nounPluralForm && (
+            <div className="detail-section-toggle">
+              <div className="section-header">
+                <h3>{t('plural', language)}</h3>
+                <ToggleButton isOpen={showPlural} onClick={() => setShowPlural(!showPlural)} />
+              </div>
+              {showPlural && <p>{vocabulary.nounPluralForm}</p>}
             </div>
           )}
-
-          {/* Translation */}
-          {vocabulary.translation && (
-            <div className="detail-section">
-              <h3>{t('translation', language)}</h3>
-              <p className="detail-translation">{vocabulary.translation}</p>
+          
+          {/* Verb Tenses */}
+          {vocabulary.verbSimplePastTense && (
+            <div className="detail-section-toggle">
+              <div className="section-header">
+                <h3>Verb Tenses</h3>
+                <ToggleButton isOpen={showVerbTenses} onClick={() => setShowVerbTenses(!showVerbTenses)} />
+              </div>
+              {showVerbTenses && (
+                <div>
+                  {vocabulary.verbSimplePastTense && (
+                    <p><strong>{t('simplePast', language)}:</strong> {vocabulary.verbSimplePastTense}</p>
+                  )}
+                  {vocabulary.verbPastPerfectTense && (
+                    <p><strong>{t('pastPerfect', language)}:</strong> {vocabulary.verbPastPerfectTense}</p>
+                  )}
+                  {vocabulary.verbPresentParticiple && (
+                    <p><strong>{t('presentParticiple', language)}:</strong> {vocabulary.verbPresentParticiple}</p>
+                  )}
+                </div>
+              )}
+            </div>
+          )}
+          
+          {/* Comparative/Superlative Forms */}
+          {vocabulary.adjectiveComparativeForm && (
+            <div className="detail-section-toggle">
+              <div className="section-header">
+                <h3>Comparative & Superlative</h3>
+                <ToggleButton isOpen={showComparative} onClick={() => setShowComparative(!showComparative)} />
+              </div>
+              {showComparative && (
+                <div>
+                  {vocabulary.adjectiveComparativeForm && (
+                    <p><strong>{t('comparative', language)}:</strong> {vocabulary.adjectiveComparativeForm}</p>
+                  )}
+                  {vocabulary.adjectiveSuperlativeForm && (
+                    <p><strong>{t('superlative', language)}:</strong> {vocabulary.adjectiveSuperlativeForm}</p>
+                  )}
+                </div>
+              )}
+            </div>
+          )}
+          
+          {/* Synonyms */}
+          {vocabulary.synonyms && (
+            <div className="detail-section-toggle">
+              <div className="section-header">
+                <h3>{t('synonyms', language)}</h3>
+                <ToggleButton isOpen={showSynonyms} onClick={() => setShowSynonyms(!showSynonyms)} />
+              </div>
+              {showSynonyms && <p>{vocabulary.synonyms}</p>}
             </div>
           )}
 
           {/* Definition */}
           {vocabulary.definition && (
-            <div className="detail-section">
-              <h3>{t('definition', language)}</h3>
-              <div className="detail-html" dangerouslySetInnerHTML={renderHTML(vocabulary.definition)} />
+            <div className="detail-section-toggle">
+              <div className="section-header">
+                <h3>{t('definition', language)}</h3>
+                <ToggleButton isOpen={showDefinition} onClick={() => setShowDefinition(!showDefinition)} />
+              </div>
+              {showDefinition && (
+                <div className="detail-html" dangerouslySetInnerHTML={renderHTML(vocabulary.definition)} />
+              )}
             </div>
           )}
 
-          {/* Example */}
-          {vocabulary.example && (
-            <div className="detail-section">
-              <h3>{t('example', language)}</h3>
-              <div className="detail-example" dangerouslySetInnerHTML={renderHTML(vocabulary.example)} />
-            </div>
-          )}
-
-          {/* Synonyms */}
-          {vocabulary.synonyms && (
-            <div className="detail-section">
-              <h3>{t('synonyms', language)}</h3>
-              <p>{vocabulary.synonyms}</p>
-            </div>
-          )}
-
-          {/* Parts of Speech */}
-          <div className="detail-section">
-            <h3>{t('partsOfSpeech', language)}</h3>
-            <div className="detail-pos-badges">
-              {partsOfSpeech.map((pos, index) => (
-                <span key={index} className="detail-pos-badge">{pos}</span>
-              ))}
-            </div>
-          </div>
-
-          {/* Detailed Forms */}
-          <div className="detail-forms">
-            {/* Noun */}
-            {partsOfSpeech.includes('Noun') && vocabulary.nounForm && (
-              <div className="detail-form-section">
+          {/* Noun Details */}
+          {vocabulary.nounForm && (
+            <div className="detail-section-toggle">
+              <div className="section-header">
                 <h3>📝 {t('noun', language)}</h3>
-                {vocabulary.nounForm && <p><strong>{t('form', language)}:</strong> {vocabulary.nounForm}</p>}
-                {vocabulary.nounPluralForm && <p><strong>{t('plural', language)}:</strong> {vocabulary.nounPluralForm}</p>}
-                {vocabulary.nounMeaning && <p><strong>{t('meaning', language)}:</strong> {vocabulary.nounMeaning}</p>}
-                {vocabulary.nounExample && <p><strong>{t('example', language)}:</strong> {vocabulary.nounExample}</p>}
+                <ToggleButton isOpen={showNounDetails} onClick={() => setShowNounDetails(!showNounDetails)} />
               </div>
-            )}
+              {showNounDetails && (
+                <div>
+                  {vocabulary.nounForm && <p><strong>{t('form', language)}:</strong> {vocabulary.nounForm}</p>}
+                  {vocabulary.nounMeaning && <p><strong>{t('meaning', language)}:</strong> {vocabulary.nounMeaning}</p>}
+                  {vocabulary.nounExample && <p><strong>{t('example', language)}:</strong> {vocabulary.nounExample}</p>}
+                </div>
+              )}
+            </div>
+          )}
 
-            {/* Verb */}
-            {partsOfSpeech.includes('Verb') && vocabulary.verbForm && (
-              <div className="detail-form-section">
+          {/* Verb Details */}
+          {vocabulary.verbForm && (
+            <div className="detail-section-toggle">
+              <div className="section-header">
                 <h3>⚡ {t('verb', language)}</h3>
-                {vocabulary.verbForm && <p><strong>{t('form', language)}:</strong> {vocabulary.verbForm}</p>}
-                {vocabulary.verbSimplePastTense && (
-                  <p><strong>{t('simplePast', language)}:</strong> {vocabulary.verbSimplePastTense}</p>
-                )}
-                {vocabulary.verbPastPerfectTense && (
-                  <p><strong>{t('pastPerfect', language)}:</strong> {vocabulary.verbPastPerfectTense}</p>
-                )}
-                {vocabulary.verbPresentParticiple && (
-                  <p><strong>{t('presentParticiple', language)}:</strong> {vocabulary.verbPresentParticiple}</p>
-                )}
-                {vocabulary.verbMeaning && (
-                  <div>
-                    <strong>{t('meaning', language)}:</strong>
-                    <div dangerouslySetInnerHTML={renderHTML(vocabulary.verbMeaning)} />
-                  </div>
-                )}
-                {vocabulary.verbExample && (
-                  <div>
-                    <strong>{t('example', language)}:</strong>
-                    <div dangerouslySetInnerHTML={renderHTML(vocabulary.verbExample)} />
-                  </div>
-                )}
+                <ToggleButton isOpen={showVerbDetails} onClick={() => setShowVerbDetails(!showVerbDetails)} />
               </div>
-            )}
+              {showVerbDetails && (
+                <div>
+                  {vocabulary.verbForm && <p><strong>{t('form', language)}:</strong> {vocabulary.verbForm}</p>}
+                  {vocabulary.verbMeaning && (
+                    <div>
+                      <strong>{t('meaning', language)}:</strong>
+                      <div dangerouslySetInnerHTML={renderHTML(vocabulary.verbMeaning)} />
+                    </div>
+                  )}
+                  {vocabulary.verbExample && (
+                    <div>
+                      <strong>{t('example', language)}:</strong>
+                      <div dangerouslySetInnerHTML={renderHTML(vocabulary.verbExample)} />
+                    </div>
+                  )}
+                </div>
+              )}
+            </div>
+          )}
 
-            {/* Adjective */}
-            {partsOfSpeech.includes('Adjective') && vocabulary.adjectiveForm && (
-              <div className="detail-form-section">
+          {/* Adjective Details */}
+          {vocabulary.adjectiveForm && (
+            <div className="detail-section-toggle">
+              <div className="section-header">
                 <h3>🎨 {t('adjective', language)}</h3>
-                {vocabulary.adjectiveForm && <p><strong>{t('form', language)}:</strong> {vocabulary.adjectiveForm}</p>}
-                {vocabulary.adjectiveComparativeForm && (
-                  <p><strong>{t('comparative', language)}:</strong> {vocabulary.adjectiveComparativeForm}</p>
-                )}
-                {vocabulary.adjectiveSuperlativeForm && (
-                  <p><strong>{t('superlative', language)}:</strong> {vocabulary.adjectiveSuperlativeForm}</p>
-                )}
-                {vocabulary.adjectiveMeaning && (
-                  <div>
-                    <strong>{t('meaning', language)}:</strong>
-                    <div dangerouslySetInnerHTML={renderHTML(vocabulary.adjectiveMeaning)} />
-                  </div>
-                )}
-                {vocabulary.adjectiveExample && (
-                  <div>
-                    <strong>{t('example', language)}:</strong>
-                    <div dangerouslySetInnerHTML={renderHTML(vocabulary.adjectiveExample)} />
-                  </div>
-                )}
+                <ToggleButton isOpen={showAdjectiveDetails} onClick={() => setShowAdjectiveDetails(!showAdjectiveDetails)} />
               </div>
-            )}
+              {showAdjectiveDetails && (
+                <div>
+                  {vocabulary.adjectiveForm && <p><strong>{t('form', language)}:</strong> {vocabulary.adjectiveForm}</p>}
+                  {vocabulary.adjectiveMeaning && (
+                    <div>
+                      <strong>{t('meaning', language)}:</strong>
+                      <div dangerouslySetInnerHTML={renderHTML(vocabulary.adjectiveMeaning)} />
+                    </div>
+                  )}
+                  {vocabulary.adjectiveExample && (
+                    <div>
+                      <strong>{t('example', language)}:</strong>
+                      <div dangerouslySetInnerHTML={renderHTML(vocabulary.adjectiveExample)} />
+                    </div>
+                  )}
+                </div>
+              )}
+            </div>
+          )}
 
-            {/* Adverb */}
-            {partsOfSpeech.includes('Adverb') && vocabulary.adverbForm && (
-              <div className="detail-form-section">
+          {/* Adverb Details */}
+          {vocabulary.adverbForm && (
+            <div className="detail-section-toggle">
+              <div className="section-header">
                 <h3>🌟 {t('adverb', language)}</h3>
-                {vocabulary.adverbForm && <p><strong>{t('form', language)}:</strong> {vocabulary.adverbForm}</p>}
-                {vocabulary.adverbMeaning && (
-                  <div>
-                    <strong>{t('meaning', language)}:</strong>
-                    <div dangerouslySetInnerHTML={renderHTML(vocabulary.adverbMeaning)} />
-                  </div>
-                )}
-                {vocabulary.adverbExample && (
-                  <div>
-                    <strong>{t('example', language)}:</strong>
-                    <div dangerouslySetInnerHTML={renderHTML(vocabulary.adverbExample)} />
-                  </div>
-                )}
+                <ToggleButton isOpen={showAdverbDetails} onClick={() => setShowAdverbDetails(!showAdverbDetails)} />
               </div>
-            )}
-          </div>
+              {showAdverbDetails && (
+                <div>
+                  {vocabulary.adverbForm && <p><strong>{t('form', language)}:</strong> {vocabulary.adverbForm}</p>}
+                  {vocabulary.adverbMeaning && (
+                    <div>
+                      <strong>{t('meaning', language)}:</strong>
+                      <div dangerouslySetInnerHTML={renderHTML(vocabulary.adverbMeaning)} />
+                    </div>
+                  )}
+                  {vocabulary.adverbExample && (
+                    <div>
+                      <strong>{t('example', language)}:</strong>
+                      <div dangerouslySetInnerHTML={renderHTML(vocabulary.adverbExample)} />
+                    </div>
+                  )}
+                </div>
+              )}
+            </div>
+          )}
 
-          {/* Footer */}
-          <div className="detail-footer">
+          {/* Meta Information */}
+          <div className="detail-meta-info">
             {vocabulary.tags && (
               <div className="detail-tags">
                 {vocabulary.tags.split(',').map((tag, index) => (
@@ -212,6 +294,25 @@ export default function VocabularyDetail({ vocabulary, onClose }: VocabularyDeta
                 ))}
               </div>
             )}
+            <span className="detail-difficulty" data-level={vocabulary.difficultyLevel?.toLowerCase()}>
+              {vocabulary.difficultyLevel}
+            </span>
+            <span className="detail-meta-item">
+              {t('term', language)} {vocabulary.term}
+            </span>
+            <span className="detail-meta-item">
+              {t('week', language)} {vocabulary.week}
+            </span>
+            {vocabulary.displayOrder && (
+              <span className="detail-meta-item">
+                Order: {vocabulary.displayOrder}
+              </span>
+            )}
+          </div>
+
+          {/* Footer */}
+          <div className="detail-footer">
+            
             {vocabulary.dictionaryUrl && (
               <a 
                 href={vocabulary.dictionaryUrl} 
@@ -223,6 +324,8 @@ export default function VocabularyDetail({ vocabulary, onClose }: VocabularyDeta
               </a>
             )}
           </div>
+
+          
         </div>
       </div>
     </div>

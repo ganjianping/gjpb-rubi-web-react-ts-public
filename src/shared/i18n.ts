@@ -232,7 +232,7 @@ const translations: Translations = {
   
   // Menu Groups
   learningContent: {
-    EN: 'Learning Content',
+    EN: 'Learning',
     ZH: '学习内容',
   },
   media: {
