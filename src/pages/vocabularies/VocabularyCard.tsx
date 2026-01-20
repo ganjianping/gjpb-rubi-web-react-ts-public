@@ -5,9 +5,10 @@ import './VocabularyCard.css'
 
 interface VocabularyCardProps {
   readonly vocabulary: Vocabulary
+  readonly isExpandedView?: boolean
 }
 
-export default function VocabularyCard({ vocabulary }: VocabularyCardProps) {
+export default function VocabularyCard({ vocabulary, isExpandedView = true }: VocabularyCardProps) {
   const [showDetailModal, setShowDetailModal] = useState(false)
   const [isHovered, setIsHovered] = useState(false)
 
@@ -26,24 +27,22 @@ export default function VocabularyCard({ vocabulary }: VocabularyCardProps) {
   return (
     <>
       <button 
-        className="vocabulary-card"
+        className={`vocabulary-card ${isExpandedView ? 'expanded' : 'compact'}`}
         onClick={handleCardClick}
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
         type="button"
         aria-label={`View details for ${vocabulary.name}`}
       >
-        {/* Always visible: Name */}
+        {/* First row: Name */}
         <h3 className="vocab-card-word">{vocabulary.name}</h3>
         
-        {/* Show on hover: Phonetic and Audio */}
-        {isHovered && (
-          <div className="vocab-card-hover-content">
-            {vocabulary.phonetic && (
-              <div className="vocab-card-phonetic">
-                <span className="phonetic-text">/{vocabulary.phonetic}/</span>
-              </div>
-            )}
+        {/* Second row: Phonetic and Audio */}
+        {isExpandedView && vocabulary.phonetic && (
+          <div className="vocab-card-phonetic-row">
+            <div className="vocab-card-phonetic">
+              <span className="phonetic-text">/{vocabulary.phonetic}/</span>
+            </div>
             {vocabulary.phoneticAudioUrl && (
               <button 
                 className="vocab-card-audio"
@@ -51,11 +50,18 @@ export default function VocabularyCard({ vocabulary }: VocabularyCardProps) {
                 aria-label="Play pronunciation"
               >
                 <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <path d="M11 5L6 9H2v6h4l5 4V5z" fill="currentColor" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-                  <path d="M15.54 8.46a5 5 0 0 1 0 7.07M19.07 4.93a10 10 0 0 1 0 14.14" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                  <path d="M11 5L6 9H2v6h4l5 4V5z" fill="currentColor"/>
+                  <path d="M15.54 8.46a5 5 0 010 7.07M18.07 5.93a9 9 0 010 12.73" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
                 </svg>
               </button>
             )}
+          </div>
+        )}
+        
+        {/* Third row: Synonyms */}
+        {isExpandedView && vocabulary.synonyms && (
+          <div className="vocab-card-synonyms">
+            <span className="vocab-card-value">{vocabulary.synonyms}</span>
           </div>
         )}
       </button>
