@@ -123,7 +123,9 @@ export default function SentenceDetail({ sentence, onClose, onPrevious, onNext, 
               {/* Second Row: Phonetic and Audio */}
               {sentence.phonetic && (
                 <div className="detail-phonetic-row">
-                  <span className="detail-phonetic">/{sentence.phonetic}/</span>
+                  <span className="detail-phonetic">
+                    /<span dangerouslySetInnerHTML={renderHTML(sentence.phonetic)} />/
+                  </span>
                 </div>
               )}
             </div>
