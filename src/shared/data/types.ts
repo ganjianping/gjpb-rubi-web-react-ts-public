@@ -88,3 +88,43 @@ export interface VocabularyFilters {
   sort?: 'name' | 'displayOrder' | 'updatedAt' | 'difficultyLevel'
   direction?: 'asc' | 'desc'
 }
+
+// Expression Types
+export interface Expression {
+  id: string
+  name: string
+  phonetic: string
+  translation: string
+  explanation: string
+  example: string
+  term: number
+  week: number
+  tags: string
+  difficultyLevel: string
+  lang: 'EN' | 'ZH'
+  displayOrder: number
+  phoneticAudioUrl?: string
+  updatedAt: string
+}
+
+export interface ExpressionPageData {
+  content: Expression[]
+  page: number
+  size: number
+  totalElements: number
+  totalPages: number
+}
+
+export type ExpressionResponse = ApiResponse<ExpressionPageData>
+
+export interface ExpressionFilters {
+  term?: number
+  week?: number
+  lang?: 'EN' | 'ZH'
+  difficultyLevel?: string
+  tags?: string
+  page?: number
+  size?: number
+  sort?: 'name' | 'displayOrder' | 'updatedAt' | 'difficultyLevel'
+  direction?: 'asc' | 'desc'
+}

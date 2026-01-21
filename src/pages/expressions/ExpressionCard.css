@@ -1,0 +1,211 @@
+.expression-card {
+  background: var(--bg-secondary);
+  border-radius: 12px;
+  padding: 1rem;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  border: 1px solid var(--border-color);
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 0.5rem;
+  position: relative;
+  min-height: 100px;
+  font-family: inherit;
+  font-size: inherit;
+  text-align: center;
+  width: 100%;
+  overflow: hidden;
+}
+
+.expression-card.compact {
+  justify-content: center;
+  min-height: 80px;
+}
+
+.expression-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 3px;
+  background: var(--primary-color);
+  transform: scaleX(0);
+  transition: transform 0.3s ease;
+  transform-origin: left;
+}
+
+.expression-card:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  border-color: var(--primary-color);
+  background: white;
+}
+
+:root[data-theme="dark"] .expression-card:hover {
+  background: var(--bg-secondary);
+}
+
+.expression-card:hover .expression-card-phonetic {
+  color: #1f2937;
+}
+
+.expression-card:hover::before {
+  transform: scaleX(1);
+}
+
+.expression-card-word {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin: 0;
+  word-break: break-word;
+  line-height: 1.3;
+  transition: color 0.3s ease;
+}
+
+.expression-card-hover-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+  animation: slideUpFade 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* New expanded view styles */
+.expression-card-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  width: 100%;
+  animation: slideUpFade 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.expression-card-phonetic-row {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  justify-content: center;
+}
+
+.expression-card-translation {
+  display: flex;
+  flex-direction: row;
+  gap: 0.5rem;
+  align-items: baseline;
+  justify-content: center;
+  flex-wrap: wrap;
+  width: 100%;
+}
+
+.expression-card-label {
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-tertiary);
+  font-weight: 600;
+}
+
+.expression-card-value {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  font-weight: 400;
+}
+
+@keyframes slideUpFade {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.expression-card-phonetic {
+  color: var(--text-secondary);
+  font-family: 'Times New Roman', serif;
+  font-style: italic;
+  font-size: 1rem;
+  letter-spacing: 0.3px;
+  font-weight: 400;
+}
+
+:root[data-theme="dark"] .expression-card-phonetic {
+  color: white;
+}
+
+.expression-card.expanded .expression-card-phonetic {
+  font-size: 1rem;
+}
+
+.expression-card.compact .expression-card-word {
+  font-size: 1.35rem;
+}
+
+.expression-card.expanded .expression-card-word {
+  font-size: 1.5rem;
+  margin-bottom: 0.25rem;
+}
+
+.expression-card-audio {
+  color: var(--primary-color);
+  background: transparent;
+  border: none;
+  border-radius: 50%;
+  width: 28px;
+  height: 28px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+  position: relative;
+  flex-shrink: 0;
+  padding: 4px;
+}
+
+.expression-card-audio svg {
+  width: 20px;
+  height: 20px;
+  transition: transform 0.2s ease;
+}
+
+.expression-card-audio:hover {
+  background: var(--bg-tertiary);
+  transform: scale(1.1);
+}
+
+.expression-card-audio:active {
+  transform: scale(0.95);
+}
+
+.expression-card-audio:hover svg {
+  transform: scale(1.15);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .expression-card {
+    padding: 0.875rem;
+    min-height: 90px;
+  }
+  
+  .expression-card-word {
+    font-size: 1.35rem;
+  }
+  
+  .expression-card-audio {
+    width: 32px;
+    height: 32px;
+  }
+  
+  .expression-card-audio svg {
+    width: 22px;
+    height: 22px;
+  }
+}
