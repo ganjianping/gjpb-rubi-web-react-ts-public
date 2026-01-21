@@ -19,6 +19,7 @@ export default function VocabularyDetail({ vocabulary, onClose }: VocabularyDeta
   const [showComparative, setShowComparative] = useState(true)
   const [showSynonyms, setShowSynonyms] = useState(true)
   const [showDefinition, setShowDefinition] = useState(true)
+  const [showExample, setShowExample] = useState(true)
   const [showNounDetails, setShowNounDetails] = useState(true)
   const [showVerbDetails, setShowVerbDetails] = useState(true)
   const [showAdjectiveDetails, setShowAdjectiveDetails] = useState(true)
@@ -26,7 +27,7 @@ export default function VocabularyDetail({ vocabulary, onClose }: VocabularyDeta
 
   // Check if all sections are currently expanded
   const allExpanded = showPartOfSpeech && showPlural && showVerbTenses && showComparative && 
-                      showSynonyms && showDefinition && showNounDetails && showVerbDetails && 
+                      showSynonyms && showDefinition && showExample && showNounDetails && showVerbDetails && 
                       showAdjectiveDetails && showAdverbDetails
 
   const handleToggleAll = () => {
@@ -37,6 +38,7 @@ export default function VocabularyDetail({ vocabulary, onClose }: VocabularyDeta
     setShowComparative(newState)
     setShowSynonyms(newState)
     setShowDefinition(newState)
+    setShowExample(newState)
     setShowNounDetails(newState)
     setShowVerbDetails(newState)
     setShowAdjectiveDetails(newState)
@@ -80,6 +82,7 @@ export default function VocabularyDetail({ vocabulary, onClose }: VocabularyDeta
     <div className="vocabulary-detail-overlay" onClick={handleBackdropClick}>
       <div className="vocabulary-detail-modal">
         <div className="detail-actions">
+          <button className="detail-action-btn detail-close-btn" onClick={onClose} aria-label="Close">✕</button>
           <button 
             className="detail-action-btn" 
             onClick={handleToggleAll} 
@@ -94,7 +97,6 @@ export default function VocabularyDetail({ vocabulary, onClose }: VocabularyDeta
               )}
             </svg>
           </button>
-          <button className="detail-action-btn detail-close-btn" onClick={onClose} aria-label="Close">✕</button>
         </div>
         
         <div className="detail-content">
@@ -217,6 +219,19 @@ export default function VocabularyDetail({ vocabulary, onClose }: VocabularyDeta
               </div>
               {showDefinition && (
                 <div className="detail-html" dangerouslySetInnerHTML={renderHTML(vocabulary.definition)} />
+              )}
+            </div>
+          )}
+
+          {/* Example */}
+          {vocabulary.example && (
+            <div className="detail-section-toggle">
+              <div className="section-header">
+                <h3>{t('example', language)}</h3>
+                <ToggleButton isOpen={showExample} onClick={() => setShowExample(!showExample)} />
+              </div>
+              {showExample && (
+                <div className="detail-html" dangerouslySetInnerHTML={renderHTML(vocabulary.example)} />
               )}
             </div>
           )}
