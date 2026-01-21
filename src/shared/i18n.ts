@@ -461,6 +461,22 @@ const translations: Translations = {
     EN: 'Adverb',
     ZH: '副词',
   },
+  pronoun: {
+    EN: 'Pronoun',
+    ZH: '代词',
+  },
+  preposition: {
+    EN: 'Preposition',
+    ZH: '介词',
+  },
+  conjunction: {
+    EN: 'Conjunction',
+    ZH: '连词',
+  },
+  interjection: {
+    EN: 'Interjection',
+    ZH: '感叹词',
+  },
   form: {
     EN: 'Form',
     ZH: '形式',

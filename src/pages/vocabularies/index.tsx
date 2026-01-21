@@ -66,6 +66,21 @@ export default function VocabulariesPage() {
       options: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14].map(week => ({ value: week, label: `${week}` }))
     },
     {
+      id: 'partOfSpeech',
+      label: t('partOfSpeech', language),
+      type: 'select' as const,
+      options: [
+        { value: 'noun', label: t('noun', language) },
+        { value: 'verb', label: t('verb', language) },
+        { value: 'adjective', label: t('adjective', language) },
+        { value: 'adverb', label: t('adverb', language) },
+        { value: 'pronoun', label: t('pronoun', language) },
+        { value: 'preposition', label: t('preposition', language) },
+        { value: 'conjunction', label: t('conjunction', language) },
+        { value: 'interjection', label: t('interjection', language) }
+      ]
+    },
+    {
       id: 'difficultyLevel',
       label: t('difficultyLevel', language),
       type: 'select' as const,

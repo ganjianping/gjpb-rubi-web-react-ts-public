@@ -126,6 +126,7 @@ export async function fetchVocabularies(filters: VocabularyFilters = {}): Promis
   if (filters.term !== undefined) params.append('term', filters.term.toString())
   if (filters.week !== undefined) params.append('week', filters.week.toString())
   if (filters.lang) params.append('lang', filters.lang)
+  if (filters.partOfSpeech) params.append('partOfSpeech', filters.partOfSpeech)
   if (filters.difficultyLevel) params.append('difficultyLevel', filters.difficultyLevel)
   if (filters.tags) params.append('tags', filters.tags)
   params.append('page', (filters.page ?? 0).toString())

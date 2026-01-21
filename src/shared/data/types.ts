@@ -80,6 +80,7 @@ export interface VocabularyFilters {
   term?: number
   week?: number
   lang?: 'EN' | 'ZH'
+  partOfSpeech?: string
   difficultyLevel?: string
   tags?: string
   page?: number
