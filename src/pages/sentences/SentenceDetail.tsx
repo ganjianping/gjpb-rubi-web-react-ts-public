@@ -118,7 +118,7 @@ export default function SentenceDetail({ sentence, onClose, onPrevious, onNext, 
           <div className="detail-header-wrapper">
             <div className="detail-header-text">
               {/* First Row: Name */}
-              <h1 className="detail-word">{sentence.name}</h1>
+              <div className="detail-word" dangerouslySetInnerHTML={renderHTML(sentence.name)} />
               
               {/* Second Row: Phonetic and Audio */}
               {sentence.phonetic && (
