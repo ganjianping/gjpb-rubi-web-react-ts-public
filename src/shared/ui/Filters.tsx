@@ -104,6 +104,7 @@ export default function Filters<T = any>({
         <div className="header-left">
           <h2 className="page-title">
             {title}
+            {typeof totalElements === 'number' && <span style={{ marginLeft: '8px', opacity: 0.7, fontSize: '0.8em' }}>({totalElements})</span>}
           </h2>
           {tags && tags.length > 0 && (
             <div className="tags-scroll-area" role="group" aria-label="Filter tags">

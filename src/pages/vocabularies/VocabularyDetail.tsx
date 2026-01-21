@@ -23,10 +23,13 @@ export default function VocabularyDetail({ vocabulary, onClose }: VocabularyDeta
   const [showVerbDetails, setShowVerbDetails] = useState(true)
   const [showAdjectiveDetails, setShowAdjectiveDetails] = useState(true)
   const [showAdverbDetails, setShowAdverbDetails] = useState(true)
-  const [allExpanded, setAllExpanded] = useState(true)
 
-  // Toggle all sections
-  const toggleAll = () => {
+  // Check if all sections are currently expanded
+  const allExpanded = showPartOfSpeech && showPlural && showVerbTenses && showComparative && 
+                      showSynonyms && showDefinition && showNounDetails && showVerbDetails && 
+                      showAdjectiveDetails && showAdverbDetails
+
+  const handleToggleAll = () => {
     const newState = !allExpanded
     setShowPartOfSpeech(newState)
     setShowPlural(newState)
@@ -38,7 +41,6 @@ export default function VocabularyDetail({ vocabulary, onClose }: VocabularyDeta
     setShowVerbDetails(newState)
     setShowAdjectiveDetails(newState)
     setShowAdverbDetails(newState)
-    setAllExpanded(newState)
   }
 
   const playAudio = () => {
@@ -77,22 +79,23 @@ export default function VocabularyDetail({ vocabulary, onClose }: VocabularyDeta
   return (
     <div className="vocabulary-detail-overlay" onClick={handleBackdropClick}>
       <div className="vocabulary-detail-modal">
-        <button className="detail-close-btn" onClick={onClose}>✕</button>
-        <button className="detail-toggle-all-btn" onClick={toggleAll} title={allExpanded ? 'Collapse all' : 'Expand all'}>
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-            {allExpanded ? (
-              <>
-                <path d="M4 14l8-8 8 8" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                <path d="M4 20l8-8 8 8" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-              </>
-            ) : (
-              <>
-                <path d="M4 10l8 8 8-8" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                <path d="M4 4l8 8 8-8" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-              </>
-            )}
-          </svg>
-        </button>
+        <div className="detail-actions">
+          <button 
+            className="detail-action-btn" 
+            onClick={handleToggleAll} 
+            title={allExpanded ? t('collapseAll', language) : t('expandAll', language)}
+            type="button"
+          >
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              {allExpanded ? (
+                <path d="M8 5L12 9L16 5M8 19L12 15L16 19" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+              ) : (
+                <path d="M8 9L12 5L16 9M8 15L12 19L16 15" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+              )}
+            </svg>
+          </button>
+          <button className="detail-action-btn detail-close-btn" onClick={onClose} aria-label="Close">✕</button>
+        </div>
         
         <div className="detail-content">
           {/* Header with Image */}

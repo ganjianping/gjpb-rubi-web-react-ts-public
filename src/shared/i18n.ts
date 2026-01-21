@@ -39,6 +39,14 @@ const translations: Translations = {
     EN: 'An error occurred',
     ZH: '发生错误',
   },
+  expandAll: {
+    EN: 'Expand All',
+    ZH: '全部展开',
+  },
+  collapseAll: {
+    EN: 'Collapse All',
+    ZH: '全部折叠',
+  },
   search: {
     EN: 'Search',
     ZH: '搜索',
