@@ -136,7 +136,9 @@ export default function SentenceDetail({ sentence, onClose, onPrevious, onNext, 
                 <h3>{t('translation', language)}</h3>
                 <ToggleButton isOpen={toggleStates.translation} onClick={() => toggleSection('translation')} />
               </div>
-              {toggleStates.translation && <p>{sentence.translation}</p>}
+              {toggleStates.translation && (
+                <div className="detail-html" dangerouslySetInnerHTML={renderHTML(sentence.translation)} />
+              )}
             </div>
           )}
 
