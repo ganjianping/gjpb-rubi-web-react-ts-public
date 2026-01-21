@@ -245,10 +245,9 @@ export default function VocabularyDetail({ vocabulary, onClose }: VocabularyDeta
               </div>
               {showNounDetails && (
                 <div>
-                  {vocabulary.nounForm && <p><strong>{t('form', language)}:</strong> {vocabulary.nounForm}</p>}
+                  {vocabulary.nounForm && <p><strong>{vocabulary.nounForm}:</strong> </p>}
                   {vocabulary.nounMeaning && (
                     <div>
-                      <strong>{t('meaning', language)}:</strong>
                       <div className="detail-html" dangerouslySetInnerHTML={renderHTML(vocabulary.nounMeaning)} />
                     </div>
                   )}
@@ -272,10 +271,9 @@ export default function VocabularyDetail({ vocabulary, onClose }: VocabularyDeta
               </div>
               {showVerbDetails && (
                 <div>
-                  {vocabulary.verbForm && <p><strong>{t('form', language)}:</strong> {vocabulary.verbForm}</p>}
+                  {vocabulary.verbForm && <p><strong>{vocabulary.verbForm}:</strong> </p>}
                   {vocabulary.verbMeaning && (
                     <div>
-                      <strong>{t('meaning', language)}:</strong>
                       <div className="detail-html" dangerouslySetInnerHTML={renderHTML(vocabulary.verbMeaning)} />
                     </div>
                   )}
@@ -299,10 +297,9 @@ export default function VocabularyDetail({ vocabulary, onClose }: VocabularyDeta
               </div>
               {showAdjectiveDetails && (
                 <div>
-                  {vocabulary.adjectiveForm && <p><strong>{t('form', language)}:</strong> {vocabulary.adjectiveForm}</p>}
+                  {vocabulary.adjectiveForm && <p><strong>{vocabulary.adjectiveForm}:</strong> </p>}
                   {vocabulary.adjectiveMeaning && (
                     <div>
-                      <strong>{t('meaning', language)}:</strong>
                       <div className="detail-html" dangerouslySetInnerHTML={renderHTML(vocabulary.adjectiveMeaning)} />
                     </div>
                   )}
@@ -326,10 +323,9 @@ export default function VocabularyDetail({ vocabulary, onClose }: VocabularyDeta
               </div>
               {showAdverbDetails && (
                 <div>
-                  {vocabulary.adverbForm && <p><strong>{t('form', language)}:</strong> {vocabulary.adverbForm}</p>}
+                  {vocabulary.adverbForm && <p><strong>{vocabulary.adverbForm}:</strong> </p>}
                   {vocabulary.adverbMeaning && (
                     <div>
-                      <strong>{t('meaning', language)}:</strong>
                       <div className="detail-html" dangerouslySetInnerHTML={renderHTML(vocabulary.adverbMeaning)} />
                     </div>
                   )}
