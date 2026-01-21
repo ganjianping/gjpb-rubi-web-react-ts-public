@@ -1,4 +1,6 @@
 import { useState } from 'react'
+import { useAppSettings } from '@/shared/contexts/AppSettingsContext'
+import { t } from '@/shared/i18n'
 import type { Vocabulary } from '@/shared/data/types'
 import VocabularyDetail from './VocabularyDetail'
 import './VocabularyCard.css'
@@ -6,10 +8,14 @@ import './VocabularyCard.css'
 interface VocabularyCardProps {
   readonly vocabulary: Vocabulary
   readonly isExpandedView?: boolean
+  readonly allVocabularies?: Vocabulary[]
+  readonly currentIndex?: number
 }
 
-export default function VocabularyCard({ vocabulary, isExpandedView = true }: VocabularyCardProps) {
+export default function VocabularyCard({ vocabulary, isExpandedView = true, allVocabularies = [], currentIndex = 0 }: VocabularyCardProps) {
+  const { language } = useAppSettings()
   const [showDetailModal, setShowDetailModal] = useState(false)
+  const [activeVocabIndex, setActiveVocabIndex] = useState(currentIndex)
 
   const playAudio = (e: React.MouseEvent) => {
     e.stopPropagation()
@@ -20,8 +26,23 @@ export default function VocabularyCard({ vocabulary, isExpandedView = true }: Vo
   }
 
   const handleCardClick = () => {
+    setActiveVocabIndex(currentIndex)
     setShowDetailModal(true)
   }
+
+  const handlePrevious = () => {
+    if (activeVocabIndex > 0) {
+      setActiveVocabIndex(activeVocabIndex - 1)
+    }
+  }
+
+  const handleNext = () => {
+    if (activeVocabIndex < allVocabularies.length - 1) {
+      setActiveVocabIndex(activeVocabIndex + 1)
+    }
+  }
+
+  const currentVocabulary = allVocabularies.length > 0 ? allVocabularies[activeVocabIndex] : vocabulary
 
   return (
     <>
@@ -29,7 +50,7 @@ export default function VocabularyCard({ vocabulary, isExpandedView = true }: Vo
         className={`vocabulary-card ${isExpandedView ? 'expanded' : 'compact'}`}
         onClick={handleCardClick}
         type="button"
-        aria-label={`View details for ${vocabulary.name}`}
+        aria-label={`${t('viewDetails', language)} ${vocabulary.name}`}
       >
         {/* First row: Name */}
         <h3 className="vocab-card-word">{vocabulary.name}</h3>
@@ -44,7 +65,7 @@ export default function VocabularyCard({ vocabulary, isExpandedView = true }: Vo
               <button 
                 className="vocab-card-audio"
                 onClick={playAudio}
-                aria-label="Play pronunciation"
+                aria-label={t('playPronunciation', language)}
               >
                 <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                   <path d="M11 5L6 9H2v6h4l5 4V5z" fill="currentColor"/>
@@ -66,8 +87,12 @@ export default function VocabularyCard({ vocabulary, isExpandedView = true }: Vo
       {/* Detail Modal */}
       {showDetailModal && (
         <VocabularyDetail 
-          vocabulary={vocabulary} 
-          onClose={() => setShowDetailModal(false)} 
+          vocabulary={currentVocabulary} 
+          onClose={() => setShowDetailModal(false)}
+          onPrevious={handlePrevious}
+          onNext={handleNext}
+          hasPrevious={activeVocabIndex > 0}
+          hasNext={activeVocabIndex < allVocabularies.length - 1}
         />
       )}
     </>

@@ -284,27 +284,27 @@ export default function VocabulariesPage() {
       {showIntervalModal && (
         <div className="interval-modal-overlay" onClick={() => setShowIntervalModal(false)}>
           <div className="interval-modal" onClick={(e) => e.stopPropagation()}>
-            <h3>Select Play Interval</h3>
-            <p>Choose how long to wait before playing the next vocabulary:</p>
+            <h3>{t('selectPlayInterval', language)}</h3>
+            <p>{t('choosePlayIntervalDescription', language)}</p>
             <div className="interval-options">
               <button onClick={() => startAutoPlay(3000)} className="interval-btn">
-                3 seconds
+                3 {t('seconds', language)}
               </button>
               <button onClick={() => startAutoPlay(5000)} className="interval-btn">
-                5 seconds
+                5 {t('seconds', language)}
               </button>
               <button onClick={() => startAutoPlay(8000)} className="interval-btn">
-                8 seconds
+                8 {t('seconds', language)}
               </button>
               <button onClick={() => startAutoPlay(10000)} className="interval-btn">
-                10 seconds
+                10 {t('seconds', language)}
               </button>
               <button onClick={() => startAutoPlay(15000)} className="interval-btn">
-                15 seconds
+                15 {t('seconds', language)}
               </button>
             </div>
             <button onClick={() => setShowIntervalModal(false)} className="interval-cancel-btn">
-              Cancel
+              {t('cancel', language)}
             </button>
           </div>
         </div>
@@ -325,8 +325,8 @@ export default function VocabulariesPage() {
           <>
             <button 
               onClick={handleToggleView}
-              title={isExpandedView ? 'Show compact view' : 'Show detailed view'}
-              aria-label={isExpandedView ? 'Show compact view' : 'Show detailed view'}
+              title={isExpandedView ? t('showCompactView', language) : t('showDetailedView', language)}
+              aria-label={isExpandedView ? t('showCompactView', language) : t('showDetailedView', language)}
               className={`action-btn ${isExpandedView ? 'active' : ''}`}
               type="button"
             >
@@ -350,8 +350,8 @@ export default function VocabulariesPage() {
             </button>
             <button 
               onClick={handleAutoPlay}
-              title={isAutoPlaying ? 'Stop auto-play' : 'Play all vocabularies'}
-              aria-label={isAutoPlaying ? 'Stop auto-play' : 'Play all vocabularies'}
+              title={isAutoPlaying ? t('stopAutoPlay', language) : t('playAllVocabularies', language)}
+              aria-label={isAutoPlaying ? t('stopAutoPlay', language) : t('playAllVocabularies', language)}
               className={`action-btn ${isAutoPlaying ? 'active playing' : ''}`}
               type="button"
               disabled={vocabularies.length === 0}
@@ -391,11 +391,13 @@ export default function VocabulariesPage() {
       {/* Vocabularies Grid */}
       {!loading && !error && vocabularies.length > 0 && (
         <div className="vocabularies-grid">
-          {vocabularies.map((vocab) => (
+          {vocabularies.map((vocab, index) => (
             <VocabularyCard 
               key={vocab.id} 
               vocabulary={vocab}
               isExpandedView={isExpandedView}
+              allVocabularies={vocabularies}
+              currentIndex={index}
             />
           ))}
         </div>

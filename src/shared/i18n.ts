@@ -445,6 +445,10 @@ const translations: Translations = {
     EN: 'Parts of Speech',
     ZH: '词性',
   },
+  partOfSpeech: {
+    EN: 'Part of Speech',
+    ZH: '词性',
+  },
   noun: {
     EN: 'Noun',
     ZH: '名词',
@@ -516,6 +520,62 @@ const translations: Translations = {
   close: {
     EN: 'Close',
     ZH: '关闭',
+  },
+  verbTenses: {
+    EN: 'Verb Tenses',
+    ZH: '动词时态',
+  },
+  comparativeAndSuperlative: {
+    EN: 'Comparative & Superlative',
+    ZH: '比较级和最高级',
+  },
+  selectPlayInterval: {
+    EN: 'Select Play Interval',
+    ZH: '选择播放间隔',
+  },
+  choosePlayIntervalDescription: {
+    EN: 'Choose how long to wait before playing the next vocabulary:',
+    ZH: '选择播放下一个词汇前的等待时间：',
+  },
+  seconds: {
+    EN: 'seconds',
+    ZH: '秒',
+  },
+  cancel: {
+    EN: 'Cancel',
+    ZH: '取消',
+  },
+  showCompactView: {
+    EN: 'Show compact view',
+    ZH: '显示紧凑视图',
+  },
+  showDetailedView: {
+    EN: 'Show detailed view',
+    ZH: '显示详细视图',
+  },
+  stopAutoPlay: {
+    EN: 'Stop auto-play',
+    ZH: '停止自动播放',
+  },
+  playAllVocabularies: {
+    EN: 'Play all vocabularies',
+    ZH: '播放所有词汇',
+  },
+  playPronunciation: {
+    EN: 'Play pronunciation',
+    ZH: '播放发音',
+  },
+  viewDetails: {
+    EN: 'View details',
+    ZH: '查看详情',
+  },
+  hide: {
+    EN: 'Hide',
+    ZH: '隐藏',
+  },
+  show: {
+    EN: 'Show',
+    ZH: '显示',
   },
 }
 

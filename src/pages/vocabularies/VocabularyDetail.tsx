@@ -7,9 +7,13 @@ import './VocabularyDetail.css'
 interface VocabularyDetailProps {
   vocabulary: Vocabulary
   onClose: () => void
+  onPrevious?: () => void
+  onNext?: () => void
+  hasPrevious?: boolean
+  hasNext?: boolean
 }
 
-export default function VocabularyDetail({ vocabulary, onClose }: VocabularyDetailProps) {
+export default function VocabularyDetail({ vocabulary, onClose, onPrevious, onNext, hasPrevious = false, hasNext = false }: VocabularyDetailProps) {
   const { language } = useAppSettings()
   
   // Toggle states for collapsible sections
@@ -60,7 +64,7 @@ export default function VocabularyDetail({ vocabulary, onClose }: VocabularyDeta
   
   // Toggle button component
   const ToggleButton = ({ isOpen, onClick }: { isOpen: boolean, onClick: () => void }) => (
-    <button className="toggle-btn" onClick={onClick} type="button" aria-label={isOpen ? 'Hide' : 'Show'}>
+    <button className="toggle-btn" onClick={onClick} type="button" aria-label={isOpen ? t('hide', language) : t('show', language)}>
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
         {isOpen ? (
           <path d="M19 9l-7 7-7-7" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
@@ -111,7 +115,7 @@ export default function VocabularyDetail({ vocabulary, onClose }: VocabularyDeta
                 <div className="detail-phonetic-row">
                   <span className="detail-phonetic">/{vocabulary.phonetic}/</span>
                   {vocabulary.phoneticAudioUrl && (
-                    <button className="detail-audio-btn" onClick={playAudio} title="Play pronunciation">
+                    <button className="detail-audio-btn" onClick={playAudio} title={t('playPronunciation', language)}>
                       <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <path d="M11 5L6 9H2v6h4l5 4V5z" fill="currentColor"/>
                         <path d="M15.54 8.46a5 5 0 010 7.07M18.07 5.93a9 9 0 010 12.73" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
@@ -160,7 +164,7 @@ export default function VocabularyDetail({ vocabulary, onClose }: VocabularyDeta
           {vocabulary.verbSimplePastTense && (
             <div className="detail-section-toggle">
               <div className="section-header">
-                <h3>Verb Tenses</h3>
+                <h3>{t('verbTenses', language)}</h3>
                 <ToggleButton isOpen={showVerbTenses} onClick={() => setShowVerbTenses(!showVerbTenses)} />
               </div>
               {showVerbTenses && (
@@ -183,7 +187,7 @@ export default function VocabularyDetail({ vocabulary, onClose }: VocabularyDeta
           {vocabulary.adjectiveComparativeForm && (
             <div className="detail-section-toggle">
               <div className="section-header">
-                <h3>Comparative & Superlative</h3>
+                <h3>{t('comparativeAndSuperlative', language)}</h3>
                 <ToggleButton isOpen={showComparative} onClick={() => setShowComparative(!showComparative)} />
               </div>
               {showComparative && (
@@ -367,16 +371,47 @@ export default function VocabularyDetail({ vocabulary, onClose }: VocabularyDeta
 
           {/* Footer */}
           <div className="detail-footer">
+            <div className="detail-footer-content">
+              {vocabulary.dictionaryUrl && (
+                <a 
+                  href={vocabulary.dictionaryUrl} 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="detail-dictionary-link"
+                >
+                  📖 {t('viewInDictionary', language)}
+                </a>
+              )}
+            </div>
             
-            {vocabulary.dictionaryUrl && (
-              <a 
-                href={vocabulary.dictionaryUrl} 
-                target="_blank" 
-                rel="noopener noreferrer"
-                className="detail-dictionary-link"
-              >
-                📖 {t('viewInDictionary', language)}
-              </a>
+            {/* Navigation Buttons */}
+            {(hasPrevious || hasNext) && (
+              <div className="detail-navigation">
+                <button 
+                  className="detail-nav-btn"
+                  onClick={onPrevious}
+                  disabled={!hasPrevious}
+                  title={t('previous', language)}
+                  type="button"
+                >
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M15 18l-6-6 6-6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                  </svg>
+                  {t('previous', language)}
+                </button>
+                <button 
+                  className="detail-nav-btn"
+                  onClick={onNext}
+                  disabled={!hasNext}
+                  title={t('next', language)}
+                  type="button"
+                >
+                  {t('next', language)}
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M9 18l6-6-6-6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                  </svg>
+                </button>
+              </div>
             )}
           </div>
 
