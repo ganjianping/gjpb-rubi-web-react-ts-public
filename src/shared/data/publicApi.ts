@@ -124,11 +124,11 @@ export async function fetchVocabularies(filters: VocabularyFilters = {}): Promis
   try {
     const params = new URLSearchParams()
     
-    if (filters.term !== undefined) params.append('term', filters.term.toString())
-    if (filters.week !== undefined) params.append('week', filters.week.toString())
+    if (filters.term !== undefined && filters.term !== '') params.append('term', filters.term.toString())
+    if (filters.week !== undefined && filters.week !== '') params.append('week', filters.week.toString())
     if (filters.lang) params.append('lang', filters.lang)
-    if (filters.partOfSpeech) params.append('partOfSpeech', filters.partOfSpeech)
-    if (filters.difficultyLevel) params.append('difficultyLevel', filters.difficultyLevel)
+    if (filters.partOfSpeech && filters.partOfSpeech !== '') params.append('partOfSpeech', filters.partOfSpeech)
+    if (filters.difficultyLevel && filters.difficultyLevel !== '') params.append('difficultyLevel', filters.difficultyLevel)
     if (filters.tags) params.append('tags', filters.tags)
     params.append('page', (filters.page ?? 0).toString())
     params.append('size', (filters.size ?? 20).toString())
@@ -164,10 +164,10 @@ export async function fetchExpressions(filters: ExpressionFilters = {}): Promise
   try {
     const params = new URLSearchParams()
     
-    if (filters.term !== undefined) params.append('term', filters.term.toString())
-    if (filters.week !== undefined) params.append('week', filters.week.toString())
+    if (filters.term !== undefined && filters.term !== '') params.append('term', filters.term.toString())
+    if (filters.week !== undefined && filters.week !== '') params.append('week', filters.week.toString())
     if (filters.lang) params.append('lang', filters.lang)
-    if (filters.difficultyLevel) params.append('difficultyLevel', filters.difficultyLevel)
+    if (filters.difficultyLevel && filters.difficultyLevel !== '') params.append('difficultyLevel', filters.difficultyLevel)
     if (filters.tags) params.append('tags', filters.tags)
     params.append('page', (filters.page ?? 0).toString())
     params.append('size', (filters.size ?? 20).toString())

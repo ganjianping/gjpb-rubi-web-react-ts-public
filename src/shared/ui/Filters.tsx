@@ -177,7 +177,7 @@ export default function Filters<T = any>({
                       <>
                         <select
                           id={`${field.id}-filter`}
-                          value={(filters as any)[field.id] ?? 'all'}
+                          value={(filters as any)[field.id] === '' || (filters as any)[field.id] === undefined ? 'all' : (filters as any)[field.id]}
                           onChange={(e) => {
                             const value = e.target.value === 'all' ? '' : 
                               (typeof field.options?.[0]?.value === 'number' ? Number.parseInt(e.target.value, 10) : e.target.value)

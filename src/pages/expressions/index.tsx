@@ -23,7 +23,10 @@ export default function ExpressionsPage() {
     page: 0,
     size: 20,
     sort: 'displayOrder' as const,
-    direction: 'asc' as const
+    direction: 'asc' as const,
+    term: '',
+    week: '',
+    difficultyLevel: ''
   }), [])
   
   const [filters, setFilters] = useState<ExpressionFilters>(initialFilters)
@@ -159,7 +162,15 @@ export default function ExpressionsPage() {
   }
 
   const handleReset = () => {
-    setFilters({ page: 0, size: 20, sort: 'displayOrder', direction: 'asc' })
+    setFilters({
+      page: 0,
+      size: 20,
+      sort: 'displayOrder',
+      direction: 'asc',
+      term: '',
+      week: '',
+      difficultyLevel: ''
+    })
     setSelectedTags([])
   }
 

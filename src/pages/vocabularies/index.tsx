@@ -29,7 +29,11 @@ export default function VocabulariesPage() {
     page: 0,
     size: 20,
     sort: 'displayOrder' as const,
-    direction: 'asc' as const
+    direction: 'asc' as const,
+    term: '',
+    week: '',
+    partOfSpeech: '',
+    difficultyLevel: ''
   }), [])
   
   const [filters, setFilters] = useState<VocabFilters>(initialFilters)
@@ -180,7 +184,16 @@ export default function VocabulariesPage() {
   }
 
   const handleReset = () => {
-    setFilters({ page: 0, size: 20, sort: 'displayOrder', direction: 'asc' })
+    setFilters({
+      page: 0,
+      size: 20,
+      sort: 'displayOrder',
+      direction: 'asc',
+      term: '',
+      week: '',
+      partOfSpeech: '',
+      difficultyLevel: ''
+    })
     setSelectedTags([])
   }
 
