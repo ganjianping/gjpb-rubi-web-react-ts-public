@@ -121,24 +121,36 @@ export async function apiGet<T>(endpoint: string): Promise<T> {
  * @returns Promise<VocabularyResponse>
  */
 export async function fetchVocabularies(filters: VocabularyFilters = {}): Promise<VocabularyResponse> {
-  const params = new URLSearchParams()
-  
-  if (filters.term !== undefined) params.append('term', filters.term.toString())
-  if (filters.week !== undefined) params.append('week', filters.week.toString())
-  if (filters.lang) params.append('lang', filters.lang)
-  if (filters.partOfSpeech) params.append('partOfSpeech', filters.partOfSpeech)
-  if (filters.difficultyLevel) params.append('difficultyLevel', filters.difficultyLevel)
-  if (filters.tags) params.append('tags', filters.tags)
-  params.append('page', (filters.page ?? 0).toString())
-  params.append('size', (filters.size ?? 20).toString())
-  if (filters.sort) params.append('sort', filters.sort)
-  if (filters.direction) params.append('direction', filters.direction)
-  
-  const response = await fetch(`${API_BASE_URL}/vocabulary-rus?${params.toString()}`)
-  
-  if (!response.ok) {
-    throw new Error(`HTTP error! status: ${response.status}`)
+  try {
+    const params = new URLSearchParams()
+    
+    if (filters.term !== undefined) params.append('term', filters.term.toString())
+    if (filters.week !== undefined) params.append('week', filters.week.toString())
+    if (filters.lang) params.append('lang', filters.lang)
+    if (filters.partOfSpeech) params.append('partOfSpeech', filters.partOfSpeech)
+    if (filters.difficultyLevel) params.append('difficultyLevel', filters.difficultyLevel)
+    if (filters.tags) params.append('tags', filters.tags)
+    params.append('page', (filters.page ?? 0).toString())
+    params.append('size', (filters.size ?? 20).toString())
+    if (filters.sort) params.append('sort', filters.sort)
+    if (filters.direction) params.append('direction', filters.direction)
+    
+    const response = await fetch(`${API_BASE_URL}/vocabulary-rus?${params.toString()}`)
+    
+    if (!response.ok) {
+      const errorBody = await response.text().catch(() => 'Unable to read error response')
+      throw new Error(`Failed to fetch vocabularies: ${response.status} ${response.statusText} - ${errorBody}`)
+    }
+    
+    const data = await response.json()
+    
+    if (data.status?.code !== 200) {
+      throw new Error(data.status?.message || 'API returned error status')
+    }
+    
+    return data
+  } catch (error) {
+    console.error('Vocabulary fetch error:', error)
+    throw error
   }
-  
-  return await response.json()
 }

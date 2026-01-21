@@ -1,4 +1,5 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef, memo, useCallback } from 'react'
+import DOMPurify from 'dompurify'
 import { useAppSettings } from '@/shared/contexts/AppSettingsContext'
 import { t } from '@/shared/i18n'
 import type { Vocabulary } from '@/shared/data/types'
@@ -16,53 +17,74 @@ interface VocabularyDetailProps {
 export default function VocabularyDetail({ vocabulary, onClose, onPrevious, onNext, hasPrevious = false, hasNext = false }: VocabularyDetailProps) {
   const { language } = useAppSettings()
   
-  // Toggle states for collapsible sections
-  const [showPartOfSpeech, setShowPartOfSpeech] = useState(true)
-  const [showPlural, setShowPlural] = useState(true)
-  const [showVerbTenses, setShowVerbTenses] = useState(true)
-  const [showComparative, setShowComparative] = useState(true)
-  const [showSynonyms, setShowSynonyms] = useState(true)
-  const [showDefinition, setShowDefinition] = useState(true)
-  const [showExample, setShowExample] = useState(true)
-  const [showNounDetails, setShowNounDetails] = useState(true)
-  const [showVerbDetails, setShowVerbDetails] = useState(true)
-  const [showAdjectiveDetails, setShowAdjectiveDetails] = useState(true)
-  const [showAdverbDetails, setShowAdverbDetails] = useState(true)
+  // Toggle states for collapsible sections - consolidated into single state object
+  const [toggleStates, setToggleStates] = useState({
+    partOfSpeech: true,
+    plural: true,
+    verbTenses: true,
+    comparative: true,
+    synonyms: true,
+    definition: true,
+    example: true,
+    nounDetails: true,
+    verbDetails: true,
+    adjectiveDetails: true,
+    adverbDetails: true
+  })
+
+  // Refs for focus management and audio cleanup
+  const modalRef = useRef<HTMLDivElement>(null)
+  const previousActiveElement = useRef<HTMLElement | null>(null)
+  const audioRef = useRef<HTMLAudioElement | null>(null)
 
   // Check if all sections are currently expanded
-  const allExpanded = showPartOfSpeech && showPlural && showVerbTenses && showComparative && 
-                      showSynonyms && showDefinition && showExample && showNounDetails && showVerbDetails && 
-                      showAdjectiveDetails && showAdverbDetails
+  const allExpanded = Object.values(toggleStates).every(v => v)
 
-  const handleToggleAll = () => {
+  const handleToggleAll = useCallback(() => {
     const newState = !allExpanded
-    setShowPartOfSpeech(newState)
-    setShowPlural(newState)
-    setShowVerbTenses(newState)
-    setShowComparative(newState)
-    setShowSynonyms(newState)
-    setShowDefinition(newState)
-    setShowExample(newState)
-    setShowNounDetails(newState)
-    setShowVerbDetails(newState)
-    setShowAdjectiveDetails(newState)
-    setShowAdverbDetails(newState)
-  }
+    setToggleStates(prev => 
+      Object.keys(prev).reduce((acc, key) => ({ ...acc, [key]: newState }), {} as typeof toggleStates)
+    )
+  }, [allExpanded])
 
-  const playAudio = () => {
+  const toggleSection = useCallback((section: keyof typeof toggleStates) => {
+    setToggleStates(prev => ({ ...prev, [section]: !prev[section] }))
+  }, [])
+
+  const playAudio = useCallback(() => {
     if (vocabulary.phoneticAudioUrl) {
-      const audio = new Audio(vocabulary.phoneticAudioUrl)
-      audio.play()
+      // Clean up previous audio
+      if (audioRef.current) {
+        audioRef.current.pause()
+        audioRef.current = null
+      }
+      
+      audioRef.current = new Audio(vocabulary.phoneticAudioUrl)
+      audioRef.current.play().catch(err => {
+        console.error('Audio playback failed:', err)
+      })
     }
-  }
+  }, [vocabulary.phoneticAudioUrl])
 
   const partsOfSpeech = vocabulary.partOfSpeech.split(',').map(p => p.trim())
 
-  // Keyboard navigation
+  // Focus management for accessibility
+  useEffect(() => {
+    previousActiveElement.current = document.activeElement as HTMLElement
+    modalRef.current?.focus()
+    
+    return () => {
+      previousActiveElement.current?.focus()
+    }
+  }, [])
+
+  // Keyboard navigation with Escape key support
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
-      // Only handle arrow keys if navigation is available
-      if (event.key === 'ArrowLeft' && hasPrevious && onPrevious) {
+      if (event.key === 'Escape') {
+        event.preventDefault()
+        onClose()
+      } else if (event.key === 'ArrowLeft' && hasPrevious && onPrevious) {
         event.preventDefault()
         onPrevious()
       } else if (event.key === 'ArrowRight' && hasNext && onNext) {
@@ -71,42 +93,34 @@ export default function VocabularyDetail({ vocabulary, onClose, onPrevious, onNe
       }
     }
 
-    // Add event listener
     document.addEventListener('keydown', handleKeyDown)
+    return () => document.removeEventListener('keydown', handleKeyDown)
+  }, [hasPrevious, hasNext, onPrevious, onNext, onClose])
 
-    // Cleanup
+  // Audio cleanup on unmount
+  useEffect(() => {
     return () => {
-      document.removeEventListener('keydown', handleKeyDown)
+      if (audioRef.current) {
+        audioRef.current.pause()
+        audioRef.current = null
+      }
     }
-  }, [hasPrevious, hasNext, onPrevious, onNext])
+  }, [])
 
-  const renderHTML = (html: string) => {
-    return { __html: html }
-  }
+  const renderHTML = useCallback((html: string) => {
+    return { __html: DOMPurify.sanitize(html) }
+  }, [])
   
-  // Toggle button component
-  const ToggleButton = ({ isOpen, onClick }: { isOpen: boolean, onClick: () => void }) => (
-    <button className="toggle-btn" onClick={onClick} type="button" aria-label={isOpen ? t('hide', language) : t('show', language)}>
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-        {isOpen ? (
-          <path d="M19 9l-7 7-7-7" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-        ) : (
-          <path d="M9 5l7 7-7 7" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-        )}
-      </svg>
-    </button>
-  )
-
   // Close on backdrop click
-  const handleBackdropClick = (e: React.MouseEvent) => {
+  const handleBackdropClick = useCallback((e: React.MouseEvent) => {
     if (e.target === e.currentTarget) {
       onClose()
     }
-  }
+  }, [onClose])
 
   return (
     <div className="vocabulary-detail-overlay" onClick={handleBackdropClick}>
-      <div className="vocabulary-detail-modal">
+      <div className="vocabulary-detail-modal" ref={modalRef} tabIndex={-1}>
         <div className="detail-actions">
           <button className="detail-action-btn detail-close-btn" onClick={onClose} aria-label="Close">✕</button>
           <button 
@@ -160,9 +174,9 @@ export default function VocabularyDetail({ vocabulary, onClose, onPrevious, onNe
           <div className="detail-section-toggle">
             <div className="section-header">
               <h3>{t('partsOfSpeech', language)}</h3>
-              <ToggleButton isOpen={showPartOfSpeech} onClick={() => setShowPartOfSpeech(!showPartOfSpeech)} />
+              <ToggleButton isOpen={toggleStates.partOfSpeech} onClick={() => toggleSection('partOfSpeech')} />
             </div>
-            {showPartOfSpeech && (
+            {toggleStates.partOfSpeech && (
               <div className="detail-pos-badges">
                 {partsOfSpeech.map((pos, index) => (
                   <span key={index} className="detail-pos-badge">{pos}</span>
@@ -176,9 +190,9 @@ export default function VocabularyDetail({ vocabulary, onClose, onPrevious, onNe
             <div className="detail-section-toggle">
               <div className="section-header">
                 <h3>{t('plural', language)}</h3>
-                <ToggleButton isOpen={showPlural} onClick={() => setShowPlural(!showPlural)} />
+                <ToggleButton isOpen={toggleStates.plural} onClick={() => toggleSection('plural')} />
               </div>
-              {showPlural && <p>{vocabulary.nounPluralForm}</p>}
+              {toggleStates.plural && <p>{vocabulary.nounPluralForm}</p>}
             </div>
           )}
           
@@ -187,9 +201,9 @@ export default function VocabularyDetail({ vocabulary, onClose, onPrevious, onNe
             <div className="detail-section-toggle">
               <div className="section-header">
                 <h3>{t('verbTenses', language)}</h3>
-                <ToggleButton isOpen={showVerbTenses} onClick={() => setShowVerbTenses(!showVerbTenses)} />
+                <ToggleButton isOpen={toggleStates.verbTenses} onClick={() => toggleSection('verbTenses')} />
               </div>
-              {showVerbTenses && (
+              {toggleStates.verbTenses && (
                 <div>
                   {vocabulary.verbSimplePastTense && (
                     <p><strong>{t('simplePast', language)}:</strong> {vocabulary.verbSimplePastTense}</p>
@@ -210,9 +224,9 @@ export default function VocabularyDetail({ vocabulary, onClose, onPrevious, onNe
             <div className="detail-section-toggle">
               <div className="section-header">
                 <h3>{t('comparativeAndSuperlative', language)}</h3>
-                <ToggleButton isOpen={showComparative} onClick={() => setShowComparative(!showComparative)} />
+                <ToggleButton isOpen={toggleStates.comparative} onClick={() => toggleSection('comparative')} />
               </div>
-              {showComparative && (
+              {toggleStates.comparative && (
                 <div>
                   {vocabulary.adjectiveComparativeForm && (
                     <p><strong>{t('comparative', language)}:</strong> {vocabulary.adjectiveComparativeForm}</p>
@@ -230,9 +244,9 @@ export default function VocabularyDetail({ vocabulary, onClose, onPrevious, onNe
             <div className="detail-section-toggle">
               <div className="section-header">
                 <h3>{t('synonyms', language)}</h3>
-                <ToggleButton isOpen={showSynonyms} onClick={() => setShowSynonyms(!showSynonyms)} />
+                <ToggleButton isOpen={toggleStates.synonyms} onClick={() => toggleSection('synonyms')} />
               </div>
-              {showSynonyms && <p>{vocabulary.synonyms}</p>}
+              {toggleStates.synonyms && <p>{vocabulary.synonyms}</p>}
             </div>
           )}
 
@@ -241,9 +255,9 @@ export default function VocabularyDetail({ vocabulary, onClose, onPrevious, onNe
             <div className="detail-section-toggle">
               <div className="section-header">
                 <h3>{t('definition', language)}</h3>
-                <ToggleButton isOpen={showDefinition} onClick={() => setShowDefinition(!showDefinition)} />
+                <ToggleButton isOpen={toggleStates.definition} onClick={() => toggleSection('definition')} />
               </div>
-              {showDefinition && (
+              {toggleStates.definition && (
                 <div className="detail-html" dangerouslySetInnerHTML={renderHTML(vocabulary.definition)} />
               )}
             </div>
@@ -254,9 +268,9 @@ export default function VocabularyDetail({ vocabulary, onClose, onPrevious, onNe
             <div className="detail-section-toggle">
               <div className="section-header">
                 <h3>{t('example', language)}</h3>
-                <ToggleButton isOpen={showExample} onClick={() => setShowExample(!showExample)} />
+                <ToggleButton isOpen={toggleStates.example} onClick={() => toggleSection('example')} />
               </div>
-              {showExample && (
+              {toggleStates.example && (
                 <div className="detail-html" dangerouslySetInnerHTML={renderHTML(vocabulary.example)} />
               )}
             </div>
@@ -267,9 +281,9 @@ export default function VocabularyDetail({ vocabulary, onClose, onPrevious, onNe
             <div className="detail-section-toggle">
               <div className="section-header">
                 <h3>📝 {t('noun', language)}</h3>
-                <ToggleButton isOpen={showNounDetails} onClick={() => setShowNounDetails(!showNounDetails)} />
+                <ToggleButton isOpen={toggleStates.nounDetails} onClick={() => toggleSection('nounDetails')} />
               </div>
-              {showNounDetails && (
+              {toggleStates.nounDetails && (
                 <div>
                   {vocabulary.nounForm && <p><strong>{vocabulary.nounForm}:</strong> </p>}
                   {vocabulary.nounMeaning && (
@@ -293,9 +307,9 @@ export default function VocabularyDetail({ vocabulary, onClose, onPrevious, onNe
             <div className="detail-section-toggle">
               <div className="section-header">
                 <h3>⚡ {t('verb', language)}</h3>
-                <ToggleButton isOpen={showVerbDetails} onClick={() => setShowVerbDetails(!showVerbDetails)} />
+                <ToggleButton isOpen={toggleStates.verbDetails} onClick={() => toggleSection('verbDetails')} />
               </div>
-              {showVerbDetails && (
+              {toggleStates.verbDetails && (
                 <div>
                   {vocabulary.verbForm && <p><strong>{vocabulary.verbForm}:</strong> </p>}
                   {vocabulary.verbMeaning && (
@@ -319,9 +333,9 @@ export default function VocabularyDetail({ vocabulary, onClose, onPrevious, onNe
             <div className="detail-section-toggle">
               <div className="section-header">
                 <h3>🎨 {t('adjective', language)}</h3>
-                <ToggleButton isOpen={showAdjectiveDetails} onClick={() => setShowAdjectiveDetails(!showAdjectiveDetails)} />
+                <ToggleButton isOpen={toggleStates.adjectiveDetails} onClick={() => toggleSection('adjectiveDetails')} />
               </div>
-              {showAdjectiveDetails && (
+              {toggleStates.adjectiveDetails && (
                 <div>
                   {vocabulary.adjectiveForm && <p><strong>{vocabulary.adjectiveForm}:</strong> </p>}
                   {vocabulary.adjectiveMeaning && (
@@ -345,9 +359,9 @@ export default function VocabularyDetail({ vocabulary, onClose, onPrevious, onNe
             <div className="detail-section-toggle">
               <div className="section-header">
                 <h3>🌟 {t('adverb', language)}</h3>
-                <ToggleButton isOpen={showAdverbDetails} onClick={() => setShowAdverbDetails(!showAdverbDetails)} />
+                <ToggleButton isOpen={toggleStates.adverbDetails} onClick={() => toggleSection('adverbDetails')} />
               </div>
-              {showAdverbDetails && (
+              {toggleStates.adverbDetails && (
                 <div>
                   {vocabulary.adverbForm && <p><strong>{vocabulary.adverbForm}:</strong> </p>}
                   {vocabulary.adverbMeaning && (
@@ -441,3 +455,27 @@ export default function VocabularyDetail({ vocabulary, onClose, onPrevious, onNe
     </div>
   )
 }
+
+// Memoized ToggleButton component for performance optimization
+const ToggleButton = memo(({ isOpen, onClick }: { isOpen: boolean, onClick: () => void }) => {
+  const { language } = useAppSettings()
+  
+  return (
+    <button 
+      className="toggle-btn" 
+      onClick={onClick} 
+      type="button" 
+      aria-label={isOpen ? t('hide', language) : t('show', language)}
+    >
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        {isOpen ? (
+          <path d="M19 9l-7 7-7-7" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+        ) : (
+          <path d="M9 5l7 7-7 7" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+        )}
+      </svg>
+    </button>
+  )
+})
+
+ToggleButton.displayName = 'ToggleButton'

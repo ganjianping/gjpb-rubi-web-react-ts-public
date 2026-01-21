@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import { useAppSettings } from '@/shared/contexts/AppSettingsContext'
 import { t } from '@/shared/i18n'
 import type { Vocabulary } from '@/shared/data/types'
@@ -16,14 +16,33 @@ export default function VocabularyCard({ vocabulary, isExpandedView = true, allV
   const { language } = useAppSettings()
   const [showDetailModal, setShowDetailModal] = useState(false)
   const [activeVocabIndex, setActiveVocabIndex] = useState(currentIndex)
+  const audioRef = useRef<HTMLAudioElement | null>(null)
 
   const playAudio = (e: React.MouseEvent) => {
     e.stopPropagation()
     if (vocabulary.phoneticAudioUrl) {
-      const audio = new Audio(vocabulary.phoneticAudioUrl)
-      audio.play()
+      // Clean up previous audio
+      if (audioRef.current) {
+        audioRef.current.pause()
+        audioRef.current = null
+      }
+      
+      audioRef.current = new Audio(vocabulary.phoneticAudioUrl)
+      audioRef.current.play().catch(err => {
+        console.error('Audio playback failed:', err)
+      })
     }
   }
+
+  // Cleanup audio on unmount
+  useEffect(() => {
+    return () => {
+      if (audioRef.current) {
+        audioRef.current.pause()
+        audioRef.current = null
+      }
+    }
+  }, [])
 
   const handleCardClick = () => {
     setActiveVocabIndex(currentIndex)
