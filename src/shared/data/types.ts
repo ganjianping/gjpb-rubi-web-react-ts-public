@@ -77,8 +77,8 @@ export interface VocabularyPageData {
 export type VocabularyResponse = ApiResponse<VocabularyPageData>
 
 export interface VocabularyFilters {
-  term?: number
-  week?: number
+  term?: number | string
+  week?: number | string
   lang?: 'EN' | 'ZH'
   partOfSpeech?: string
   difficultyLevel?: string
@@ -126,5 +126,43 @@ export interface ExpressionFilters {
   page?: number
   size?: number
   sort?: 'name' | 'displayOrder' | 'updatedAt' | 'difficultyLevel'
+  direction?: 'asc' | 'desc'
+}
+
+// Sentence Types
+export interface Sentence {
+  id: string
+  name: string
+  phonetic: string
+  translation: string
+  explanation: string
+  term: number
+  week: number
+  tags: string
+  difficultyLevel: string
+  lang: 'EN' | 'ZH'
+  displayOrder: number
+  updatedAt: string
+}
+
+export interface SentencePageData {
+  content: Sentence[]
+  page: number
+  size: number
+  totalElements: number
+  totalPages: number
+}
+
+export type SentenceResponse = ApiResponse<SentencePageData>
+
+export interface SentenceFilters {
+  term?: number | string
+  week?: number
+  lang?: 'EN' | 'ZH'
+  difficultyLevel?: string
+  tags?: string
+  page?: number
+  size?: number
+  sort?: 'displayOrder' | 'name' | 'updatedAt' | 'difficultyLevel'
   direction?: 'asc' | 'desc'
 }

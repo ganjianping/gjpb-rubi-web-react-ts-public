@@ -1,4 +1,4 @@
-import type { AppSetting, AppSettingsResponse, VocabularyResponse, VocabularyFilters, ExpressionResponse, ExpressionFilters } from './types'
+import type { AppSetting, AppSettingsResponse, VocabularyResponse, VocabularyFilters, ExpressionResponse, ExpressionFilters, SentenceResponse, SentenceFilters } from './types'
 
 // Remove trailing slash from base URL to prevent double slashes
 const API_BASE_URL = (import.meta.env.VITE_PUBLIC_API_BASE_URL || '/v1/public').replace(/\/$/, '')
@@ -124,8 +124,8 @@ export async function fetchVocabularies(filters: VocabularyFilters = {}): Promis
   try {
     const params = new URLSearchParams()
     
-    if (filters.term !== undefined && filters.term !== '') params.append('term', filters.term.toString())
-    if (filters.week !== undefined && filters.week !== '') params.append('week', filters.week.toString())
+    if (filters.term) params.append('term', filters.term.toString())
+    if (filters.week) params.append('week', filters.week.toString())
     if (filters.lang) params.append('lang', filters.lang)
     if (filters.partOfSpeech && filters.partOfSpeech !== '') params.append('partOfSpeech', filters.partOfSpeech)
     if (filters.difficultyLevel && filters.difficultyLevel !== '') params.append('difficultyLevel', filters.difficultyLevel)
@@ -164,8 +164,8 @@ export async function fetchExpressions(filters: ExpressionFilters = {}): Promise
   try {
     const params = new URLSearchParams()
     
-    if (filters.term !== undefined && filters.term !== '') params.append('term', filters.term.toString())
-    if (filters.week !== undefined && filters.week !== '') params.append('week', filters.week.toString())
+    if (filters.term) params.append('term', filters.term.toString())
+    if (filters.week) params.append('week', filters.week.toString())
     if (filters.lang) params.append('lang', filters.lang)
     if (filters.difficultyLevel && filters.difficultyLevel !== '') params.append('difficultyLevel', filters.difficultyLevel)
     if (filters.tags) params.append('tags', filters.tags)
@@ -190,6 +190,45 @@ export async function fetchExpressions(filters: ExpressionFilters = {}): Promise
     return data
   } catch (error) {
     console.error('Expression fetch error:', error)
+    throw error
+  }
+}
+
+/**
+ * Fetch sentences with filters
+ * @param filters - Query parameters for filtering sentences
+ * @returns Promise<SentenceResponse>
+ */
+export async function fetchSentences(filters: SentenceFilters = {}): Promise<SentenceResponse> {
+  try {
+    const params = new URLSearchParams()
+    
+    if (filters.term) params.append('term', filters.term.toString())
+    if (filters.week) params.append('week', filters.week.toString())
+    if (filters.lang) params.append('lang', filters.lang)
+    if (filters.difficultyLevel && filters.difficultyLevel !== '') params.append('difficultyLevel', filters.difficultyLevel)
+    if (filters.tags) params.append('tags', filters.tags)
+    params.append('page', (filters.page ?? 0).toString())
+    params.append('size', (filters.size ?? 20).toString())
+    if (filters.sort) params.append('sort', filters.sort)
+    if (filters.direction) params.append('direction', filters.direction)
+    
+    const response = await fetch(`${API_BASE_URL}/sentence-rus?${params.toString()}`)
+    
+    if (!response.ok) {
+      const errorBody = await response.text().catch(() => 'Unable to read error response')
+      throw new Error(`Failed to fetch sentences: ${response.status} ${response.statusText} - ${errorBody}`)
+    }
+    
+    const data = await response.json()
+    
+    if (data.status?.code !== 200) {
+      throw new Error(data.status?.message || 'API returned error status')
+    }
+    
+    return data
+  } catch (error) {
+    console.error('Sentence fetch error:', error)
     throw error
   }
 }

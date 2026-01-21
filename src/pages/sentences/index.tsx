@@ -1,16 +1,16 @@
 import { useState, useEffect, useCallback, useMemo, useRef } from 'react'
 import { useAppSettings } from '@/shared/contexts/AppSettingsContext'
 import { t } from '@/shared/i18n'
-import { fetchExpressions, fetchAppSettings } from '@/shared/data/publicApi'
-import type { ExpressionFilters, Expression, AppSetting } from '@/shared/data/types'
-import ExpressionCard from './ExpressionCard'
+import { fetchSentences, fetchAppSettings } from '@/shared/data/publicApi'
+import type { SentenceFilters, Sentence, AppSetting } from '@/shared/data/types'
+import SentenceCard from './SentenceCard'
 import Filters from '@/shared/ui/Filters'
 import Pagination from '@/shared/ui/Pagination'
 import './index.css'
 
-export default function ExpressionsPage() {
+export default function SentencesPage() {
   const { language, getSettingValue } = useAppSettings()
-  const [expressions, setExpressions] = useState<Expression[]>([])
+  const [sentences, setSentences] = useState<Sentence[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const [totalPages, setTotalPages] = useState(0)
@@ -26,16 +26,16 @@ export default function ExpressionsPage() {
     direction: 'asc' as const
   }), [])
   
-  const [filters, setFilters] = useState<ExpressionFilters>(initialFilters)
+  const [filters, setFilters] = useState<SentenceFilters>(initialFilters)
   const [selectedTags, setSelectedTags] = useState<string[]>([])
   
   // Use ref to track if component is mounted
   const isMountedRef = useRef(true)
   
-  // Get expression tags from app settings
-  const expressionTags = useMemo(() => {
+  // Get sentence tags from app settings
+  const sentenceTags = useMemo(() => {
     const tagSetting = appSettings.find(
-      (setting) => setting.name === 'expression_ru_tags' && setting.lang === language
+      (setting) => setting.name === 'sentence_ru_tags' && setting.lang === language
     )
     return tagSetting ? tagSetting.value.split(',').map((tag) => tag.trim()) : []
   }, [appSettings, language])
@@ -103,18 +103,18 @@ export default function ExpressionsPage() {
     loadAppSettings()
   }, [])
   
-  // Use useCallback for loadExpressions to prevent recreation
-  const loadExpressions = useCallback(async () => {
+  // Use useCallback for loadSentences to prevent recreation
+  const loadSentences = useCallback(async () => {
     try {
       setLoading(true)
       setError(null)
-      const response = await fetchExpressions({ ...filters, lang: language })
+      const response = await fetchSentences({ ...filters, lang: language })
       
       // Only update state if component is still mounted
       if (!isMountedRef.current) return
       
       if (response.status.code === 200) {
-        setExpressions(response.data.content)
+        setSentences(response.data.content)
         setTotalPages(response.data.totalPages)
         setTotalElements(response.data.totalElements)
       } else {
@@ -123,7 +123,7 @@ export default function ExpressionsPage() {
     } catch (err) {
       if (!isMountedRef.current) return
       setError(err instanceof Error ? err.message : t('error', language))
-      console.error('Error loading expressions:', err)
+      console.error('Error loading sentences:', err)
     } finally {
       if (isMountedRef.current) {
         setLoading(false)
@@ -132,8 +132,8 @@ export default function ExpressionsPage() {
   }, [filters, language])
 
   useEffect(() => {
-    loadExpressions()
-  }, [loadExpressions])
+    loadSentences()
+  }, [loadSentences])
 
   // Cleanup on unmount
   useEffect(() => {
@@ -142,7 +142,7 @@ export default function ExpressionsPage() {
     }
   }, [])
 
-  const handleFilterChange = (newFilters: ExpressionFilters) => {
+  const handleFilterChange = (newFilters: SentenceFilters) => {
     setFilters(newFilters)
   }
 
@@ -183,14 +183,14 @@ export default function ExpressionsPage() {
   }
 
   return (
-    <div className="expressions-page">
+    <div className="sentences-page">
       {/* Header and Filters */}
       <Filters
-        title={t('expressions', language)}
+        title={t('sentences', language)}
         filters={filters}
         onFilterChange={handleFilterChange}
         filterFields={filterFields}
-        tags={expressionTags}
+        tags={sentenceTags}
         selectedTags={selectedTags}
         onTagSelect={handleTagClick}
         onReset={handleReset}
@@ -226,30 +226,30 @@ export default function ExpressionsPage() {
 
       {/* Loading State */}
       {loading && (
-        <div className="expressions-loading">
-          ⏳ {t('loadingExpressions', language)}
+        <div className="sentences-loading">
+          ⏳ {t('loadingSentences', language)}
         </div>
       )}
 
       {/* Error State */}
       {error && !loading && (
-        <div className="expressions-error">
+        <div className="sentences-error">
           ❌ {error}
-          <button onClick={loadExpressions} className="retry-button">
+          <button onClick={loadSentences} className="retry-button">
             {t('retry', language)}
           </button>
         </div>
       )}
 
-      {/* Expressions Grid */}
-      {!loading && !error && expressions.length > 0 && (
-        <div className="expressions-grid">
-          {expressions.map((expression, index) => (
-            <ExpressionCard 
-              key={expression.id} 
-              expression={expression}
+      {/* Sentences Grid */}
+      {!loading && !error && sentences.length > 0 && (
+        <div className="sentences-grid">
+          {sentences.map((sentence, index) => (
+            <SentenceCard 
+              key={sentence.id} 
+              sentence={sentence}
               isExpandedView={isExpandedView}
-              allExpressions={expressions}
+              allSentences={sentences}
               currentIndex={index}
             />
           ))}
@@ -257,15 +257,15 @@ export default function ExpressionsPage() {
       )}
 
       {/* Empty State */}
-      {!loading && !error && expressions.length === 0 && (
-        <div className="expressions-empty">
-          📭 {t('noExpressions', language)}
+      {!loading && !error && sentences.length === 0 && (
+        <div className="sentences-empty">
+          📭 {t('noSentences', language)}
         </div>
       )}
 
       {/* Pagination */}
-      {!loading && !error && expressions.length > 0 && (
-        <div className="expressions-pagination">
+      {!loading && !error && sentences.length > 0 && (
+        <div className="sentences-pagination">
           <Pagination
             currentPage={(filters.page ?? 0) + 1}
             totalPages={totalPages}
