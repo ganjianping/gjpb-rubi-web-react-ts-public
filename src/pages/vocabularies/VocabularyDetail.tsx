@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useAppSettings } from '@/shared/contexts/AppSettingsContext'
 import { t } from '@/shared/i18n'
 import type { Vocabulary } from '@/shared/data/types'
@@ -57,6 +57,28 @@ export default function VocabularyDetail({ vocabulary, onClose, onPrevious, onNe
   }
 
   const partsOfSpeech = vocabulary.partOfSpeech.split(',').map(p => p.trim())
+
+  // Keyboard navigation
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      // Only handle arrow keys if navigation is available
+      if (event.key === 'ArrowLeft' && hasPrevious && onPrevious) {
+        event.preventDefault()
+        onPrevious()
+      } else if (event.key === 'ArrowRight' && hasNext && onNext) {
+        event.preventDefault()
+        onNext()
+      }
+    }
+
+    // Add event listener
+    document.addEventListener('keydown', handleKeyDown)
+
+    // Cleanup
+    return () => {
+      document.removeEventListener('keydown', handleKeyDown)
+    }
+  }, [hasPrevious, hasNext, onPrevious, onNext])
 
   const renderHTML = (html: string) => {
     return { __html: html }
@@ -392,26 +414,24 @@ export default function VocabularyDetail({ vocabulary, onClose, onPrevious, onNe
         {(hasPrevious || hasNext) && (
           <div className="detail-navigation">
             <button 
-              className="detail-nav-btn"
+              className="detail-nav-btn detail-nav-icon-btn"
               onClick={onPrevious}
               disabled={!hasPrevious}
               title={t('previous', language)}
               type="button"
             >
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path d="M15 18l-6-6 6-6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
               </svg>
-              {t('previous', language)}
             </button>
             <button 
-              className="detail-nav-btn"
+              className="detail-nav-btn detail-nav-icon-btn"
               onClick={onNext}
               disabled={!hasNext}
               title={t('next', language)}
               type="button"
             >
-              {t('next', language)}
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path d="M9 18l6-6-6-6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
               </svg>
             </button>
