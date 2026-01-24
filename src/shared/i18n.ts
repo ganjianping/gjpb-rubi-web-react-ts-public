@@ -619,6 +619,22 @@ const translations: Translations = {
     EN: 'Back to Articles',
     ZH: '返回文章列表',
   },
+  videoNotFound: {
+    EN: 'Video not found',
+    ZH: '视频未找到',
+  },
+  noVideos: {
+    EN: 'No videos found',
+    ZH: '未找到视频',
+  },
+  play: {
+    EN: 'Play',
+    ZH: '播放',
+  },
+  videoNotSupported: {
+    EN: 'Your browser does not support the video tag.',
+    ZH: '您的浏览器不支持视频标签。',
+  },
 }
 
 /**

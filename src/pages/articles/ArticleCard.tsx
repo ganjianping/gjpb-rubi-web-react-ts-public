@@ -43,15 +43,6 @@ export default function ArticleCard({ article, isExpandedView = true }: ArticleC
           {isExpandedView && article.summary && (
             <p className="article-card-summary">{article.summary}</p>
           )}
-          
-          {/* Tags */}
-          {isExpandedView && article.tags && (
-            <div className="article-card-tags">
-              {article.tags.split(',').map((tag) => (
-                <span key={tag} className="article-card-tag">{tag.trim()}</span>
-              ))}
-            </div>
-          )}
         </div>
       </button>
   )

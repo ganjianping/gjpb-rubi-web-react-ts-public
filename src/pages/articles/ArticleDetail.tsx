@@ -106,12 +106,6 @@ export default function ArticleDetail() {
         {/* Article Header */}
         <header className="article-header">
           <h1 className="article-title">{article.title}</h1>
-          
-          {article.summary && (
-            <div className="article-summary">
-              <p>{article.summary}</p>
-            </div>
-          )}
         </header>
 
         {/* Article Content */}

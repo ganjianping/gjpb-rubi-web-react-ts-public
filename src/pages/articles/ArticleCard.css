@@ -21,7 +21,7 @@
 }
 
 .article-card.expanded {
-  min-height: 280px;
+  min-height: 230px;
 }
 
 .article-card::before {

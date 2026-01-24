@@ -207,3 +207,44 @@ export interface ArticleFilters {
   sort?: 'displayOrder' | 'title' | 'updatedAt'
   direction?: 'asc' | 'desc'
 }
+
+// Video Types
+export interface Video {
+  id: string
+  name: string
+  filename: string
+  fileUrl: string
+  sizeBytes: number
+  coverImageFilename: string | null
+  coverImageFileUrl: string | null
+  originalUrl: string | null
+  sourceName: string | null
+  description: string | null
+  term: number | null
+  week: number | null
+  tags: string
+  lang: 'EN' | 'ZH'
+  displayOrder: number
+  updatedAt: string
+}
+
+export interface VideoPageData {
+  content: Video[]
+  page: number
+  size: number
+  totalElements: number
+  totalPages: number
+}
+
+export type VideoResponse = ApiResponse<VideoPageData>
+
+export interface VideoFilters {
+  term?: number | string
+  week?: number | string
+  lang?: 'EN' | 'ZH'
+  tags?: string
+  page?: number
+  size?: number
+  sort?: 'displayOrder' | 'name' | 'updatedAt'
+  direction?: 'asc' | 'desc'
+}

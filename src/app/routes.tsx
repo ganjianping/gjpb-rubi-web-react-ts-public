@@ -8,7 +8,7 @@ import SentencesPage from '@/pages/SentencesPage'
 import ArticlesPage from '@/pages/ArticlesPage'
 import ArticleDetail from '@/pages/articles/ArticleDetail'
 import ImagesPage from '@/pages/ImagesPage'
-import VideosPage from '@/pages/VideosPage'
+import VideosPage from '@/pages/videos'
 import AudiosPage from '@/pages/AudiosPage'
 import MultipleChoiceQuestionsPage from '@/pages/MultipleChoiceQuestionsPage'
 import FreeTextQuestionsPage from '@/pages/FreeTextQuestionsPage'
@@ -48,12 +48,12 @@ export const router = createBrowserRouter([
       },
       // Media
       {
-        path: 'images',
-        element: <ImagesPage />,
-      },
-      {
         path: 'videos',
         element: <VideosPage />,
+      },
+      {
+        path: 'images',
+        element: <ImagesPage />,
       },
       {
         path: 'audios',
