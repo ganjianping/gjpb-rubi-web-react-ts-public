@@ -1,0 +1,316 @@
+.image-card {
+  background: var(--bg-secondary);
+  border-radius: 12px;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  border: 1px solid var(--border-color);
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  overflow: hidden;
+  cursor: pointer;
+}
+
+.image-card.compact {
+  min-height: 200px;
+}
+
+.image-card.expanded {
+  min-height: auto;
+}
+
+.image-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 3px;
+  background: var(--primary-color);
+  transform: scaleX(0);
+  transition: transform 0.3s ease;
+  transform-origin: left;
+}
+
+.image-card:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  border-color: var(--primary-color);
+  background: white;
+  transform: translateY(-2px);
+}
+
+:root[data-theme="dark"] .image-card:hover {
+  background: var(--bg-secondary);
+}
+
+.image-card:hover::before {
+  transform: scaleX(1);
+}
+
+/* Image Card Media Container */
+.image-card-media {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  overflow: hidden;
+  background: var(--bg-tertiary);
+  /* Ensure Title Overlay stays at bottom */
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+}
+
+.image-card-media img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.3s ease;
+}
+
+.image-card:hover .image-card-media img {
+  transform: scale(1.05);
+}
+
+/* Zoom Overlay */
+.image-zoom-overlay {
+  position: absolute;
+  top: 0.75rem;
+  right: 0.75rem;
+  background: rgba(255, 255, 255, 0.9);
+  border: none;
+  border-radius: 8px;
+  padding: 0.5rem;
+  cursor: pointer;
+  opacity: 0;
+  transition: all 0.3s ease;
+  z-index: 2;
+  color: var(--text-primary);
+}
+
+.image-card:hover .image-zoom-overlay {
+  opacity: 1;
+}
+
+.image-zoom-overlay:hover {
+  background: white;
+  transform: scale(1.1);
+}
+
+:root[data-theme="dark"] .image-zoom-overlay {
+  background: rgba(30, 30, 30, 0.9);
+}
+
+:root[data-theme="dark"] .image-zoom-overlay:hover {
+  background: rgba(40, 40, 40, 1);
+}
+
+/* Image Error Placeholder */
+.image-error-placeholder {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  color: var(--text-muted);
+  background: var(--bg-tertiary);
+}
+
+.image-error-placeholder span {
+  font-size: 0.875rem;
+}
+
+/* Image Overlay Title */
+.image-card-overlay-title {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  padding: 2rem 1rem 0.75rem;
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.9) 0%, rgba(0, 0, 0, 0.6) 50%, rgba(0, 0, 0, 0.2) 80%, transparent 100%);
+  color: white;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.image-card-overlay-title h3 {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 600;
+  line-height: 1.4;
+  color: #ffffff;
+  text-shadow: 
+    0 1px 3px rgba(0, 0, 0, 0.8),
+    0 2px 6px rgba(0, 0, 0, 0.6),
+    0 0 2px rgba(0, 0, 0, 0.9);
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Full View Modal */
+.image-fullview-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.9);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  animation: fadeIn 0.2s ease;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.image-fullview-container {
+  position: relative;
+  max-width: 90vw;
+  max-height: 90vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+}
+
+.image-fullview-container img {
+  max-width: 100%;
+  max-height: calc(90vh - 4rem);
+  object-fit: contain;
+  border-radius: 8px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+}
+
+.image-fullview-close {
+  position: absolute;
+  top: -3rem;
+  right: 0;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 8px;
+  padding: 0.5rem;
+  cursor: pointer;
+  color: white;
+  transition: all 0.2s;
+}
+
+.image-fullview-close:hover {
+  background: rgba(255, 255, 255, 0.2);
+  transform: scale(1.1);
+}
+
+/* Navigation Buttons */
+.image-fullview-nav {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background: rgba(0, 0, 0, 0.7);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 50%;
+  width: 48px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: white;
+  transition: all 0.2s;
+  z-index: 10;
+}
+
+.image-fullview-nav:hover {
+  background: rgba(0, 0, 0, 0.9);
+  transform: translateY(-50%) scale(1.1);
+  border-color: rgba(255, 255, 255, 0.4);
+}
+
+.image-fullview-prev {
+  left: -80px;
+}
+
+.image-fullview-next {
+  right: -80px;
+}
+
+.image-fullview-info {
+  background: rgba(0, 0, 0, 0.9);
+  padding: 1rem 1.5rem;
+  border-radius: 8px;
+  color: white;
+  text-align: center;
+  max-width: 100%;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.image-fullview-info h3 {
+  margin: 0 0 0.5rem 0;
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: #ffffff;
+  text-shadow: 
+    0 1px 3px rgba(0, 0, 0, 0.8),
+    0 2px 6px rgba(0, 0, 0, 0.6),
+    0 0 2px rgba(0, 0, 0, 0.9);
+}
+
+.image-fullview-info p {
+  margin: 0;
+  font-size: 0.875rem;
+  color: #ffffff;
+  text-shadow: 
+    0 1px 2px rgba(0, 0, 0, 0.8),
+    0 0 1px rgba(0, 0, 0, 0.9);
+}
+
+/* Compact View Adjustments */
+.image-card.compact .image-card-media {
+  aspect-ratio: 16 / 9;
+  max-height: 150px;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+  .image-card-overlay-title h3 {
+    font-size: 0.875rem;
+  }
+
+  .image-fullview-overlay {
+    padding: 1rem;
+  }
+
+  .image-fullview-container img {
+    max-height: calc(90vh - 3rem);
+  }
+}
+
+@media (max-width: 480px) {
+  .image-card.expanded {
+    min-height: auto;
+  }
+  
+  .image-zoom-overlay {
+    padding: 0.4rem;
+  }
+
+  .image-zoom-overlay svg {
+    width: 20px;
+    height: 20px;
+  }
+
+  .image-fullview-close {
+    top: -2.5rem;
+  }
+}

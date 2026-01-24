@@ -248,3 +248,91 @@ export interface VideoFilters {
   sort?: 'displayOrder' | 'name' | 'updatedAt'
   direction?: 'asc' | 'desc'
 }
+
+// Audio Types
+export interface Audio {
+  id: string
+  name: string
+  filename: string
+  fileUrl: string
+  sizeBytes: number
+  coverImageFilename: string | null
+  coverImageFileUrl: string | null
+  originalUrl: string | null
+  sourceName: string | null
+  description: string | null
+  subtitle: string | null
+  artist: string | null
+  term: number | null
+  week: number | null
+  tags: string
+  lang: 'EN' | 'ZH'
+  displayOrder: number
+  updatedAt: string
+}
+
+export interface AudioPageData {
+  content: Audio[]
+  page: number
+  size: number
+  totalElements: number
+  totalPages: number
+}
+
+export type AudioResponse = ApiResponse<AudioPageData>
+
+export interface AudioFilters {
+  term?: number | string
+  week?: number | string
+  lang?: 'EN' | 'ZH'
+  tags?: string
+  page?: number
+  size?: number
+  sort?: 'displayOrder' | 'name' | 'updatedAt'
+  direction?: 'asc' | 'desc'
+}
+
+// Image Types
+export interface Image {
+  id: string
+  name: string
+  originalUrl: string | null
+  sourceName: string | null
+  filename: string
+  fileUrl: string
+  thumbnailFilename: string
+  thumbnailFileUrl: string
+  extension: string
+  mimeType: string
+  sizeBytes: number
+  width: number
+  height: number
+  altText: string | null
+  term: number | null
+  week: number | null
+  tags: string
+  lang: 'EN' | 'ZH'
+  displayOrder: number
+  updatedAt: string
+}
+
+export interface ImagePageData {
+  content: Image[]
+  page: number
+  size: number
+  totalElements: number
+  totalPages: number
+}
+
+export type ImageResponse = ApiResponse<ImagePageData>
+
+export interface ImageFilters {
+  term?: number | string
+  week?: number | string
+  lang?: 'EN' | 'ZH'
+  tags?: string
+  page?: number
+  size?: number
+  sort?: 'displayOrder' | 'name' | 'updatedAt'
+  direction?: 'asc' | 'desc'
+}
