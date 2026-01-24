@@ -117,8 +117,8 @@ export default function ArticleDetail() {
         {/* Article Content */}
         <div className="article-content" dangerouslySetInnerHTML={renderHTML(article.content)} />
 
-        {/* Meta Info - Visible in print */}
-        <div className="article-meta-brief">
+        {/* Meta Info - Hidden in print */}
+        <div className="article-meta-brief no-print">
             <div className="meta-tags">
                 {article.tags && article.tags.split(',').map((tag) => (
                     <span key={tag} className="meta-tag">{tag.trim()}</span>
