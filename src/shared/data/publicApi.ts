@@ -1,4 +1,4 @@
-import type { AppSetting, AppSettingsResponse, VocabularyResponse, VocabularyFilters, ExpressionResponse, ExpressionFilters, SentenceResponse, SentenceFilters } from './types'
+import type { AppSetting, AppSettingsResponse, VocabularyResponse, VocabularyFilters, ExpressionResponse, ExpressionFilters, SentenceResponse, SentenceFilters, ArticleResponse, ArticleFilters, Article } from './types'
 
 // Remove trailing slash from base URL to prevent double slashes
 const API_BASE_URL = (import.meta.env.VITE_PUBLIC_API_BASE_URL || '/v1/public').replace(/\/$/, '')
@@ -229,6 +229,71 @@ export async function fetchSentences(filters: SentenceFilters = {}): Promise<Sen
     return data
   } catch (error) {
     console.error('Sentence fetch error:', error)
+    throw error
+  }
+}
+
+/**
+ * Fetch a single article by ID
+ * @param id - Article ID
+ * @returns Promise<Article>
+ */
+export async function fetchArticleById(id: string): Promise<Article> {
+  try {
+    const response = await fetch(`${API_BASE_URL}/article-rus/${id}`)
+    
+    if (!response.ok) {
+      const errorBody = await response.text().catch(() => 'Unable to read error response')
+      throw new Error(`Failed to fetch article: ${response.status} ${response.statusText} - ${errorBody}`)
+    }
+    
+    const data = await response.json()
+    
+    if (data.status?.code !== 200) {
+      throw new Error(data.status?.message || 'API returned error status')
+    }
+    
+    return data.data
+  } catch (error) {
+    console.error('Article fetch error:', error)
+    throw error
+  }
+}
+
+/**
+ * Fetch articles with filters
+ * @param filters - Query parameters for filtering articles
+ * @returns Promise<ArticleResponse>
+ */
+export async function fetchArticles(filters: ArticleFilters = {}): Promise<ArticleResponse> {
+  try {
+    const params = new URLSearchParams()
+    
+    if (filters.term) params.append('term', filters.term.toString())
+    if (filters.week) params.append('week', filters.week.toString())
+    if (filters.lang) params.append('lang', filters.lang)
+    if (filters.tags) params.append('tags', filters.tags)
+    params.append('page', (filters.page ?? 0).toString())
+    params.append('size', (filters.size ?? 20).toString())
+    if (filters.sort) params.append('sort', filters.sort)
+    if (filters.direction) params.append('direction', filters.direction)
+    
+    const response = await fetch(`${API_BASE_URL}/article-rus?${params.toString()}`)
+    
+    if (!response.ok) {
+      const errorBody = await response.text().catch(() => 'Unable to read error response')
+      throw new Error(`Failed to fetch articles: ${response.status} ${response.statusText} - ${errorBody}`)
+    }
+    
+    const data = await response.json()
+    
+    if (data.status?.code !== 200) {
+      throw new Error(data.status?.message || 'API returned error status')
+    }
+    
+    return data
+  } catch (error) {
+    console.error('Article fetch error:', error)
     throw error
   }
 }

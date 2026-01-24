@@ -6,6 +6,7 @@ import VocabulariesPage from '@/pages/vocabularies'
 import ExpressionsPage from '@/pages/ExpressionsPage'
 import SentencesPage from '@/pages/SentencesPage'
 import ArticlesPage from '@/pages/ArticlesPage'
+import ArticleDetail from '@/pages/articles/ArticleDetail'
 import ImagesPage from '@/pages/ImagesPage'
 import VideosPage from '@/pages/VideosPage'
 import AudiosPage from '@/pages/AudiosPage'
@@ -40,6 +41,10 @@ export const router = createBrowserRouter([
       {
         path: 'articles',
         element: <ArticlesPage />,
+      },
+      {
+        path: 'articles/:id',
+        element: <ArticleDetail />,
       },
       // Media
       {

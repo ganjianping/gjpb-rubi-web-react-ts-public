@@ -167,3 +167,43 @@ export interface SentenceFilters {
   sort?: 'displayOrder' | 'name' | 'updatedAt' | 'difficultyLevel'
   direction?: 'asc' | 'desc'
 }
+
+// Article Types
+export interface Article {
+  id: string
+  title: string
+  summary: string
+  content: string
+  originalUrl: string | null
+  sourceName: string | null
+  coverImageFilename: string
+  coverImageFileUrl: string
+  coverImageOriginalUrl: string
+  term: number | null
+  week: number | null
+  tags: string
+  lang: 'EN' | 'ZH'
+  displayOrder: number
+  updatedAt: string
+}
+
+export interface ArticlePageData {
+  content: Article[]
+  page: number
+  size: number
+  totalElements: number
+  totalPages: number
+}
+
+export type ArticleResponse = ApiResponse<ArticlePageData>
+
+export interface ArticleFilters {
+  term?: number | string
+  week?: number | string
+  lang?: 'EN' | 'ZH'
+  tags?: string
+  page?: number
+  size?: number
+  sort?: 'displayOrder' | 'title' | 'updatedAt'
+  direction?: 'asc' | 'desc'
+}

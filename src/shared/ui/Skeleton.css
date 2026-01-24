@@ -92,3 +92,46 @@
     min-height: 80px;
   }
 }
+
+/* Skeleton Detail Page */
+.skeleton-detail {
+  min-height: 100vh;
+  background: var(--bg-primary);
+  padding: 2rem 1.5rem;
+}
+
+.skeleton-detail-actions {
+  max-width: 900px;
+  margin: 0 auto 2rem;
+  display: flex;
+  gap: 1rem;
+  justify-content: space-between;
+}
+
+.skeleton-detail-container {
+  max-width: 900px;
+  margin: 0 auto;
+  background: var(--bg-elevated);
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.skeleton-detail-content {
+  padding: 3rem;
+}
+
+@media (max-width: 768px) {
+  .skeleton-detail {
+    padding: 1rem 0.5rem;
+  }
+
+  .skeleton-detail-actions {
+    flex-direction: column;
+  }
+
+  .skeleton-detail-content {
+    padding: 1.5rem;
+  }
+}
+

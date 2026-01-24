@@ -599,6 +599,26 @@ const translations: Translations = {
     EN: 'Show',
     ZH: '显示',
   },
+  back: {
+    EN: 'Back',
+    ZH: '返回',
+  },
+  print: {
+    EN: 'Print',
+    ZH: '打印',
+  },
+  metadata: {
+    EN: 'Metadata',
+    ZH: '元数据',
+  },
+  articleNotFound: {
+    EN: 'Article not found',
+    ZH: '文章未找到',
+  },
+  backToArticles: {
+    EN: 'Back to Articles',
+    ZH: '返回文章列表',
+  },
 }
 
 /**
