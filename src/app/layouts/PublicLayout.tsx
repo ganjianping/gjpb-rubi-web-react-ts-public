@@ -1,4 +1,4 @@
-import { Link, Outlet } from 'react-router-dom'
+import { Link, Outlet, useLocation } from 'react-router-dom'
 import Footer from '@/shared/components/Footer'
 import Toolbar from '@/shared/components/Toolbar'
 import { useAppSettings } from '@/shared/contexts/AppSettingsContext'
@@ -7,6 +7,10 @@ import rubiLogo from '@/assets/rubi-logo.jpg'
 
 function PublicLayout() {
   const { language } = useAppSettings()
+  const location = useLocation()
+  
+  // Hide header on article detail pages
+  const isArticleDetail = location.pathname.startsWith('/articles/') && location.pathname !== '/articles'
 
   return (
     <div style={{ 
@@ -17,13 +21,14 @@ function PublicLayout() {
       color: 'var(--text-primary)',
       transition: 'background-color 0.3s ease, color 0.3s ease'
     }}>
-      <header style={{ 
-        padding: '1rem', 
-        borderBottom: '1px solid var(--header-border)',
-        backgroundColor: 'var(--bg-elevated)',
-        boxShadow: 'var(--shadow-sm)',
-        transition: 'all 0.3s ease'
-      }}>
+      {!isArticleDetail && (
+        <header style={{ 
+          padding: '1rem', 
+          borderBottom: '1px solid var(--header-border)',
+          backgroundColor: 'var(--bg-elevated)',
+          boxShadow: 'var(--shadow-sm)',
+          transition: 'all 0.3s ease'
+        }}>
         <div style={{ 
           display: 'flex', 
           justifyContent: 'space-between', 
@@ -70,6 +75,7 @@ function PublicLayout() {
           <Toolbar />
         </div>
       </header>
+      )}
       
       <main style={{ 
         flex: 1, 

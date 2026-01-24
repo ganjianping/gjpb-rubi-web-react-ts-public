@@ -14,7 +14,10 @@ export default function ArticleCard({ article, isExpandedView = true }: ArticleC
   const navigate = useNavigate()
 
   const handleCardClick = () => {
-    navigate(`/articles/${article.id}`)
+    // Pass article data via state to avoid API call if content exists
+    navigate(`/articles/${article.id}`, { 
+      state: { article } 
+    })
   }
 
   return (
