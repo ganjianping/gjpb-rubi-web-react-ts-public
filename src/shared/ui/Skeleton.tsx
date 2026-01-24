@@ -51,10 +51,16 @@ interface SkeletonGridProps {
 }
 
 export function SkeletonGrid({ count = 20, type = 'vocabulary' }: SkeletonGridProps) {
+  const getGridClassName = () => {
+    if (type === 'vocabulary') return 'vocabularies-grid'
+    if (type === 'expression') return 'expressions-grid'
+    return 'sentences-grid'
+  }
+
   return (
-    <div className={`${type === 'vocabulary' ? 'vocabularies' : type === 'expression' ? 'expressions' : 'sentences'}-grid`}>
+    <div className={getGridClassName()}>
       {Array.from({ length: count }).map((_, index) => (
-        <SkeletonCard key={index} type={type} />
+        <SkeletonCard key={`skeleton-${index}`} type={type} />
       ))}
     </div>
   )

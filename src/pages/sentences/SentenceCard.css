@@ -89,16 +89,6 @@
   gap: 0.5rem;
 }
 
-.sentence-card-translation {
-  display: flex;
-  flex-direction: row;
-  gap: 0.5rem;
-  align-items: baseline;
-  justify-content: center;
-  flex-wrap: wrap;
-  width: 100%;
-}
-
 .sentence-card-label {
   font-size: 0.7rem;
   text-transform: uppercase;

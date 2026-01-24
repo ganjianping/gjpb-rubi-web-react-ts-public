@@ -4,13 +4,6 @@
   padding: 1rem;
 }
 
-.sentences-grid {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 1rem;
-  margin-top: 1rem;
-}
-
 .sentences-reset-btn {
   display: flex;
   align-items: center;
