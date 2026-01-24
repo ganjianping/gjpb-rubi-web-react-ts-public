@@ -29,14 +29,20 @@ export default function AudioCard({ audio, onPlay, isPlaying = false }: AudioCar
           {isPlaying ? (
              // Playing icon (pause)
              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-               <rect x="6" y="4" width="4" height="16" fill="currentColor"/>
-               <rect x="14" y="4" width="4" height="16" fill="currentColor"/>
+               <rect x="7" y="5" width="4" height="14" rx="2" fill="currentColor"/>
+               <rect x="13" y="5" width="4" height="14" rx="2" fill="currentColor"/>
              </svg>
           ) : (
             // Play icon
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <circle cx="12" cy="12" r="10" fill="rgba(255, 255, 255, 0.9)" />
-              <path d="M10 8L16 12L10 16V8Z" fill="var(--primary-color)" />
+              <path 
+                d="M8 6L18 12L8 18V6Z" 
+                fill="currentColor" 
+                stroke="currentColor" 
+                strokeWidth="2" 
+                strokeLinejoin="round" 
+                strokeLinecap="round"
+              />
             </svg>
           )}
         </button>
