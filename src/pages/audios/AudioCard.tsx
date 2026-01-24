@@ -27,7 +27,7 @@ export default function AudioCard({ audio, onPlay, isPlaying = false }: AudioCar
           aria-label={`${t('play', language)} ${audio.name}`}
         >
           {isPlaying ? (
-             // Playing icon (bars or pause)
+             // Playing icon (pause)
              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                <rect x="6" y="4" width="4" height="16" fill="currentColor"/>
                <rect x="14" y="4" width="4" height="16" fill="currentColor"/>
@@ -35,7 +35,8 @@ export default function AudioCard({ audio, onPlay, isPlaying = false }: AudioCar
           ) : (
             // Play icon
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M8 5V19L19 12L8 5Z" fill="currentColor" />
+              <circle cx="12" cy="12" r="10" fill="rgba(255, 255, 255, 0.9)" />
+              <path d="M10 8L16 12L10 16V8Z" fill="var(--primary-color)" />
             </svg>
           )}
         </button>

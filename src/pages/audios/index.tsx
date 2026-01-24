@@ -7,8 +7,30 @@ import AudioCard from './AudioCard'
 import AudioPlayerPanel from './AudioPlayerPanel'
 import Filters from '@/shared/ui/Filters'
 import Pagination from '@/shared/ui/Pagination'
-import { SkeletonGrid } from '@/shared/ui/Skeleton'
 import './index.css'
+
+function AudioSkeleton() {
+  return (
+    <div className="audio-card">
+      <div className="audio-card-row">
+        <div className="audio-play-button skeleton" />
+        <div className="audio-card-info">
+          <div className="audio-card-title skeleton" />
+        </div>
+      </div>
+    </div>
+  )
+}
+
+function AudioSkeletonGrid({ count = 20 }: { count?: number }) {
+  return (
+    <div className="audios-grid">
+      {Array.from({ length: count }).map((_, index) => (
+        <AudioSkeleton key={`audio-skeleton-${index}`} />
+      ))}
+    </div>
+  )
+}
 
 export default function AudiosPage() {
   const { language } = useAppSettings()
@@ -188,7 +210,7 @@ export default function AudiosPage() {
 
       {/* Loading State */}
       {loading && (
-        <SkeletonGrid count={filters.size || 20} />
+        <AudioSkeletonGrid count={filters.size || 20} />
       )}
 
       {/* Error State */}
