@@ -46,6 +46,33 @@
   transform: scale(1.05);
 }
 
+.icon-play {
+  width: 0;
+  height: 0;
+  border-style: solid;
+  border-width: 8px 0 8px 14px;
+  border-color: transparent transparent transparent white;
+  margin-left: 3px;
+  border-radius: 2px;
+}
+
+.icon-pause {
+  display: flex;
+  gap: 4px;
+  height: 16px;
+  align-items: center;
+}
+
+.icon-pause::before,
+.icon-pause::after {
+  content: '';
+  display: block;
+  width: 4px;
+  height: 16px;
+  background-color: white;
+  border-radius: 2px;
+}
+
 .audio-play-button svg {
   width: 20px;
   height: 20px;
