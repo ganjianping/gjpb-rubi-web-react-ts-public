@@ -40,6 +40,22 @@ export default function SentenceCard({ sentence, isExpandedView = true, allSente
   const [activeSentenceIndex, setActiveSentenceIndex] = useState(currentIndex)
   const audioRef = useRef<HTMLAudioElement | null>(null)
 
+  const playAudio = (e: React.MouseEvent) => {
+    e.stopPropagation()
+    if (sentence.phoneticAudioUrl) {
+      // Clean up previous audio
+      if (audioRef.current) {
+        audioRef.current.pause()
+        audioRef.current = null
+      }
+      
+      audioRef.current = new Audio(sentence.phoneticAudioUrl)
+      audioRef.current.play().catch(err => {
+        console.error('Audio playback failed:', err)
+      })
+    }
+  }
+
   // Cleanup audio on unmount
   useEffect(() => {
     return () => {
@@ -81,8 +97,21 @@ export default function SentenceCard({ sentence, isExpandedView = true, allSente
         <div className="sentence-card-content">
           {/* Sentence name - full text with HTML support */}
           <div className="sentence-card-text">
-            <div className="sentence-card-sentence" dangerouslySetInnerHTML={renderHTML(sentence.name)} />
+            {sentence.phoneticAudioUrl && (
+                <button 
+                  className="sentence-card-audio"
+                  onClick={playAudio}
+                  aria-label={t('playPronunciation', language)}
+                >
+                  <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M11 5L6 9H2v6h4l5 4V5z" fill="currentColor"/>
+                    <path d="M15.54 8.46a5 5 0 010 7.07M18.07 5.93a9 9 0 010 12.73" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
+                  </svg>
+                </button>
+              )}
+            <div className="sentence-card-sentence" dangerouslySetInnerHTML={renderHTML(sentence.name)} />            
           </div>
+          
         </div>
       </button>
 

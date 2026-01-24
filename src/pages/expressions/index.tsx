@@ -16,7 +16,13 @@ export default function ExpressionsPage() {
   const [totalPages, setTotalPages] = useState(0)
   const [totalElements, setTotalElements] = useState(0)
   const [appSettings, setAppSettings] = useState<AppSetting[]>([])
+  const [isAutoPlaying, setIsAutoPlaying] = useState(false)
+  const [currentPlayIndex, setCurrentPlayIndex] = useState(0)
   const [isExpandedView, setIsExpandedView] = useState(true)
+  const [showIntervalModal, setShowIntervalModal] = useState(false)
+  const [playInterval, setPlayInterval] = useState(5000) // Default 5 seconds
+  const autoPlayTimerRef = useRef<number | null>(null)
+  const randomOrderRef = useRef<number[]>([])
   
   // Use useMemo for initial filters to prevent recreation on every render
   const initialFilters = useMemo(() => ({
@@ -172,6 +178,86 @@ export default function ExpressionsPage() {
     setIsExpandedView(prev => !prev)
   }
 
+  // Shuffle array using Fisher-Yates algorithm
+  const shuffleArray = (array: number[]) => {
+    const shuffled = [...array]
+    for (let i = shuffled.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]]
+    }
+    return shuffled
+  }
+
+  // Auto-play handler
+  const handleAutoPlay = () => {
+    if (isAutoPlaying) {
+      // Stop auto-play
+      setIsAutoPlaying(false)
+      if (autoPlayTimerRef.current) {
+        clearTimeout(autoPlayTimerRef.current)
+        autoPlayTimerRef.current = null
+      }
+    } else {
+      // Show interval selection modal
+      if (expressions.length === 0) return
+      setShowIntervalModal(true)
+    }
+  }
+
+  // Start auto-play with selected interval
+  const startAutoPlay = (intervalMs: number) => {
+    setPlayInterval(intervalMs)
+    setShowIntervalModal(false)
+    
+    // Create random order
+    randomOrderRef.current = shuffleArray(expressions.map((_, idx) => idx))
+    setCurrentPlayIndex(0)
+    setIsAutoPlaying(true)
+  }
+
+  // Auto-play effect
+  useEffect(() => {
+    if (!isAutoPlaying || expressions.length === 0) return
+
+    const playExpression = () => {
+      const randomIdx = randomOrderRef.current[currentPlayIndex]
+      const expression = expressions[randomIdx]
+      
+      if (expression?.phoneticAudioUrl) {
+        const audio = new Audio(expression.phoneticAudioUrl)
+        audio.play().catch(err => console.error('Error playing audio:', err))
+      }
+
+      // Schedule next expression
+      if (currentPlayIndex < randomOrderRef.current.length - 1) {
+        autoPlayTimerRef.current = window.setTimeout(() => {
+          setCurrentPlayIndex(prev => prev + 1)
+        }, playInterval)
+      } else {
+        // Finished playing all expressions
+        setIsAutoPlaying(false)
+        setCurrentPlayIndex(0)
+      }
+    }
+
+    playExpression()
+
+    return () => {
+      if (autoPlayTimerRef.current) {
+        clearTimeout(autoPlayTimerRef.current)
+      }
+    }
+  }, [isAutoPlaying, currentPlayIndex, expressions, playInterval])
+
+  // Cleanup auto-play timer on unmount
+  useEffect(() => {
+    return () => {
+      if (autoPlayTimerRef.current) {
+        clearTimeout(autoPlayTimerRef.current)
+      }
+    }
+  }, [])
+
   const handlePageChange = (page: number) => {
     setFilters({ ...filters, page })
     window.scrollTo({ top: 0, behavior: 'smooth' })
@@ -184,6 +270,36 @@ export default function ExpressionsPage() {
 
   return (
     <div className="expressions-page">
+      {/* Interval Selection Modal */}
+      {showIntervalModal && (
+        <div className="interval-modal-overlay" onClick={() => setShowIntervalModal(false)}>
+          <div className="interval-modal" onClick={(e) => e.stopPropagation()}>
+            <h3>{t('selectPlayInterval', language)}</h3>
+            <p>{t('choosePlayIntervalDescription', language)}</p>
+            <div className="interval-options">
+              <button onClick={() => startAutoPlay(3000)} className="interval-btn">
+                3 {t('seconds', language)}
+              </button>
+              <button onClick={() => startAutoPlay(5000)} className="interval-btn">
+                5 {t('seconds', language)}
+              </button>
+              <button onClick={() => startAutoPlay(8000)} className="interval-btn">
+                8 {t('seconds', language)}
+              </button>
+              <button onClick={() => startAutoPlay(10000)} className="interval-btn">
+                10 {t('seconds', language)}
+              </button>
+              <button onClick={() => startAutoPlay(15000)} className="interval-btn">
+                15 {t('seconds', language)}
+              </button>
+            </div>
+            <button onClick={() => setShowIntervalModal(false)} className="interval-cancel-btn">
+              {t('cancel', language)}
+            </button>
+          </div>
+        </div>
+      )}
+
       {/* Header and Filters */}
       <Filters
         title={t('expressions', language)}
@@ -196,6 +312,7 @@ export default function ExpressionsPage() {
         onReset={handleReset}
         totalElements={totalElements}
         customActions={
+          <>
             <button 
               onClick={handleToggleView}
               title={isExpandedView ? t('showCompactView', language) : t('showDetailedView', language)}
@@ -221,6 +338,26 @@ export default function ExpressionsPage() {
                 )}
               </svg>
             </button>
+            <button 
+              onClick={handleAutoPlay}
+              title={isAutoPlaying ? t('stopAutoPlay', language) : t('playAllExpressions', language)}
+              aria-label={isAutoPlaying ? t('stopAutoPlay', language) : t('playAllExpressions', language)}
+              className={`action-btn ${isAutoPlaying ? 'active playing' : ''}`}
+              type="button"
+              disabled={expressions.length === 0}
+            >
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                {isAutoPlaying ? (
+                  <rect x="6" y="4" width="4" height="16" fill="currentColor" rx="1" />
+                ) : (
+                  <path d="M8 5v14l11-7z" fill="currentColor" />
+                )}
+                {isAutoPlaying ? (
+                  <rect x="14" y="4" width="4" height="16" fill="currentColor" rx="1" />
+                ) : null}
+              </svg>
+            </button>
+          </>
         }
       />
 

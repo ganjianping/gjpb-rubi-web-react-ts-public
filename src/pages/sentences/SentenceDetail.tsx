@@ -42,6 +42,22 @@ export default function SentenceDetail({ sentence, onClose, onPrevious, onNext, 
     setToggleStates(prev => ({ ...prev, [section]: !prev[section] }))
   }, [])
 
+  const playAudio = (e: React.MouseEvent) => {
+    e.stopPropagation()
+    if (sentence.phoneticAudioUrl) {
+      // Clean up previous audio
+      if (audioRef.current) {
+        audioRef.current.pause()
+        audioRef.current = null
+      }
+      
+      audioRef.current = new Audio(sentence.phoneticAudioUrl)
+      audioRef.current.play().catch(err => {
+        console.error('Audio playback failed:', err)
+      })
+    }
+  }
+
   // Focus management for accessibility
   useEffect(() => {
     previousActiveElement.current = document.activeElement as HTMLElement
@@ -126,6 +142,18 @@ export default function SentenceDetail({ sentence, onClose, onPrevious, onNext, 
                   <span className="detail-phonetic">
                     /<span dangerouslySetInnerHTML={renderHTML(sentence.phonetic)} />/
                   </span>
+                  {sentence.phoneticAudioUrl && (
+                    <button 
+                      className="detail-audio-btn"
+                      onClick={playAudio}
+                      aria-label={t('playPronunciation', language)}
+                    >
+                      <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M11 5L6 9H2v6h4l5 4V5z" fill="currentColor"/>
+                        <path d="M15.54 8.46a5 5 0 010 7.07M18.07 5.93a9 9 0 010 12.73" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
+                      </svg>
+                    </button>
+                  )}
                 </div>
               )}
             </div>

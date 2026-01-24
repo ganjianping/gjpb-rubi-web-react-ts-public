@@ -115,8 +115,9 @@
 
 .sentence-card-text {
   display: flex;
-  flex-direction: column;
-  gap: 0.25rem;
+  flex-direction: row;
+  align-items: flex-start;
+  gap: 0.5rem;
 }
 
 .sentence-card-sentence {
@@ -187,6 +188,42 @@
 
 .sentence-card.compact .sentence-card-sentence {
   font-size: 0.95rem;
+}
+
+.sentence-card-audio {
+  color: var(--primary-color);
+  background: transparent;
+  border: none;
+  border-radius: 50%;
+  width: 28px;
+  height: 28px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+  position: relative;
+  flex-shrink: 0;
+  padding: 4px;
+}
+
+.sentence-card-audio svg {
+  width: 20px;
+  height: 20px;
+  transition: transform 0.2s ease;
+}
+
+.sentence-card-audio:hover {
+  background: var(--bg-tertiary);
+  transform: scale(1.1);
+}
+
+.sentence-card-audio:active {
+  transform: scale(0.95);
+}
+
+.sentence-card-audio:hover svg {
+  transform: scale(1.15);
 }
 
 /* Responsive */

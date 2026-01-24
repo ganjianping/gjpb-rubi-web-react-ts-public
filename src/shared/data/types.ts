@@ -142,6 +142,7 @@ export interface Sentence {
   difficultyLevel: string
   lang: 'EN' | 'ZH'
   displayOrder: number
+  phoneticAudioUrl?: string
   updatedAt: string
 }
 
