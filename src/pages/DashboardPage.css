@@ -106,8 +106,16 @@
   transition: transform 0.3s ease;
 }
 
-.shortcut-card:hover .shortcut-icon {
+.shortcut-icon-svg {
+  width: 2.5rem;
+  height: 2.5rem;
+  color: var(--primary-color);
+  transition: transform 0.3s ease, color 0.3s ease;
+}
+
+.shortcut-card:hover .shortcut-icon-svg {
   transform: scale(1.1) rotate(5deg);
+  color: var(--accent-color);
 }
 
 .shortcut-content {

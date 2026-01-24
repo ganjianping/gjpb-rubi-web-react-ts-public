@@ -1,4 +1,4 @@
-import { Outlet } from 'react-router-dom'
+import { Link, Outlet } from 'react-router-dom'
 import Footer from '@/shared/components/Footer'
 import Toolbar from '@/shared/components/Toolbar'
 import { useAppSettings } from '@/shared/contexts/AppSettingsContext'
@@ -36,23 +36,36 @@ function PublicLayout() {
             alignItems: 'center', 
             gap: '1rem' 
           }}>
-            <img 
-              src={rubiLogo} 
-              alt="Rubi Logo" 
+            <Link 
+              to="/" 
               style={{ 
-                height: '40px',
-                borderRadius: '8px',
-                boxShadow: 'var(--shadow-sm)'
-              }} 
-            />
-            <span style={{ 
-              fontSize: '1.5rem', 
-              fontWeight: 'bold', 
-              color: 'var(--text-primary)',
-              transition: 'color 0.3s ease'
-            }}>
-              {t('studyHub', language)}
-            </span>
+                display: 'flex', 
+                alignItems: 'center', 
+                gap: '1rem',
+                textDecoration: 'none',
+                color: 'inherit'
+              }}
+            >
+              <img 
+                src={rubiLogo} 
+                alt="Rubi Logo" 
+                style={{ 
+                  height: '40px',
+                  borderRadius: '8px',
+                  boxShadow: 'var(--shadow-sm)',
+                  cursor: 'pointer'
+                }} 
+              />
+              <span style={{ 
+                fontSize: '1.5rem', 
+                fontWeight: 'bold', 
+                color: 'var(--text-primary)',
+                transition: 'color 0.3s ease',
+                cursor: 'pointer'
+              }}>
+                {t('studyHub', language)}
+              </span>
+            </Link>
           </div>
           <Toolbar />
         </div>
