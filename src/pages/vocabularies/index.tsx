@@ -6,6 +6,7 @@ import type { VocabularyFilters as VocabFilters, Vocabulary, AppSetting } from '
 import VocabularyCard from './VocabularyCard'
 import Filters from '@/shared/ui/Filters'
 import Pagination from '@/shared/ui/Pagination'
+import { SkeletonGrid } from '@/shared/ui/Skeleton'
 import './index.css'
 
 export default function VocabulariesPage() {
@@ -373,9 +374,7 @@ export default function VocabulariesPage() {
 
       {/* Loading State */}
       {loading && (
-        <div className="vocabularies-loading">
-          ⏳ {t('loadingVocabularies', language)}
-        </div>
+        <SkeletonGrid count={filters.size || 20} type="vocabulary" />
       )}
 
       {/* Error State */}

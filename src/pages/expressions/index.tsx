@@ -6,6 +6,7 @@ import type { ExpressionFilters, Expression, AppSetting } from '@/shared/data/ty
 import ExpressionCard from './ExpressionCard'
 import Filters from '@/shared/ui/Filters'
 import Pagination from '@/shared/ui/Pagination'
+import { SkeletonGrid } from '@/shared/ui/Skeleton'
 import './index.css'
 
 export default function ExpressionsPage() {
@@ -363,9 +364,7 @@ export default function ExpressionsPage() {
 
       {/* Loading State */}
       {loading && (
-        <div className="expressions-loading">
-          ⏳ {t('loadingExpressions', language)}
-        </div>
+        <SkeletonGrid count={filters.size || 20} type="expression" />
       )}
 
       {/* Error State */}

@@ -1,0 +1,94 @@
+/* Base Skeleton Animation */
+@keyframes shimmer {
+  0% {
+    background-position: -1000px 0;
+  }
+  100% {
+    background-position: 1000px 0;
+  }
+}
+
+.skeleton {
+  background: linear-gradient(
+    90deg,
+    var(--bg-secondary) 0%,
+    var(--bg-tertiary) 20%,
+    var(--bg-secondary) 40%,
+    var(--bg-secondary) 100%
+  );
+  background-size: 2000px 100%;
+  animation: shimmer 2s infinite linear;
+  display: inline-block;
+}
+
+:root[data-theme="dark"] .skeleton {
+  background: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0.05) 0%,
+    rgba(255, 255, 255, 0.1) 20%,
+    rgba(255, 255, 255, 0.05) 40%,
+    rgba(255, 255, 255, 0.05) 100%
+  );
+  background-size: 2000px 100%;
+}
+
+/* Skeleton Card */
+.skeleton-card {
+  background: var(--bg-secondary);
+  border-radius: 12px;
+  padding: 1.5rem;
+  border: 1px solid var(--border-color);
+  height: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  min-height: 120px;
+  position: relative;
+  overflow: hidden;
+}
+
+.skeleton-card.vocabulary {
+  min-height: 140px;
+}
+
+.skeleton-card.expression {
+  min-height: 120px;
+}
+
+.skeleton-card.sentence {
+  min-height: 100px;
+}
+
+.skeleton-audio {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.25rem;
+}
+
+.skeleton-content {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  flex: 1;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .skeleton-card {
+    padding: 1rem;
+    min-height: 100px;
+  }
+
+  .skeleton-card.vocabulary {
+    min-height: 120px;
+  }
+
+  .skeleton-card.expression {
+    min-height: 100px;
+  }
+
+  .skeleton-card.sentence {
+    min-height: 80px;
+  }
+}

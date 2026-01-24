@@ -6,6 +6,7 @@ import type { SentenceFilters, Sentence, AppSetting } from '@/shared/data/types'
 import SentenceCard from './SentenceCard'
 import Filters from '@/shared/ui/Filters'
 import Pagination from '@/shared/ui/Pagination'
+import { SkeletonGrid } from '@/shared/ui/Skeleton'
 import './index.css'
 
 export default function SentencesPage() {
@@ -192,9 +193,7 @@ export default function SentencesPage() {
 
       {/* Loading State */}
       {loading && (
-        <div className="sentences-loading">
-          ⏳ {t('loadingSentences', language)}
-        </div>
+        <SkeletonGrid count={filters.size || 20} type="sentence" />
       )}
 
       {/* Error State */}
