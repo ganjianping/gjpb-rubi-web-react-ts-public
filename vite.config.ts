@@ -11,6 +11,12 @@ export default defineConfig({
       '@': path.resolve(__dirname, './src'),
     },
   },
+  css: {
+    devSourcemap: true,
+  },
+  build: {
+    cssMinify: false,
+  },
   server: {
     port: 3003,
     cors: true,

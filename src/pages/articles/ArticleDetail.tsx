@@ -91,7 +91,6 @@ export default function ArticleDetail() {
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path d="M19 12H5M5 12L12 19M5 12L12 5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
           </svg>
-          <span>{t('back', language)}</span>
         </button>
         
         <button onClick={handlePrint} className="action-btn print-btn" title={t('print', language)}>
@@ -99,7 +98,6 @@ export default function ArticleDetail() {
             <path d="M6 9V2h12v7M6 18H4a2 2 0 01-2-2v-5a2 2 0 012-2h16a2 2 0 012 2v5a2 2 0 01-2 2h-2" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
             <path d="M6 14h12v8H6v-8z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
           </svg>
-          <span>{t('print', language)}</span>
         </button>
       </div>
 
@@ -114,27 +112,23 @@ export default function ArticleDetail() {
               <p>{article.summary}</p>
             </div>
           )}
-
-          {/* Meta Info - Visible in print */}
-          <div className="article-meta-brief">
-            {article.tags && (
-              <div className="meta-tags">
-                {article.tags.split(',').map((tag) => (
-                  <span key={tag} className="meta-tag">{tag.trim()}</span>
-                ))}
-              </div>
-            )}
-            <div className="meta-info-inline">
-              {article.sourceName && <span className="meta-source">{article.sourceName}</span>}
-              {article.term && <span className="meta-item">{t('term', language)} {article.term}</span>}
-              {article.week && <span className="meta-item">{t('week', language)} {article.week}</span>}
-              <span className="meta-date">{article.updatedAt}</span>
-            </div>
-          </div>
         </header>
 
         {/* Article Content */}
         <div className="article-content" dangerouslySetInnerHTML={renderHTML(article.content)} />
+
+        {/* Meta Info - Visible in print */}
+        <div className="article-meta-brief">
+            <div className="meta-tags">
+                {article.tags && article.tags.split(',').map((tag) => (
+                    <span key={tag} className="meta-tag">{tag.trim()}</span>
+                ))}
+                {article.sourceName && <span className="meta-item">{article.sourceName}</span>}
+                {article.term && <span className="meta-item">{t('term', language)} {article.term}</span>}
+                {article.week && <span className="meta-item">{t('week', language)} {article.week}</span>}
+                <span className="meta-item">{new Date(article.updatedAt).toLocaleDateString()}</span>
+            </div>
+        </div>
       </article>
     </div>
   )
