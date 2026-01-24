@@ -297,55 +297,77 @@ const translations: Translations = {
     EN: 'Fill Blanks',
     ZH: '填空题',
   },
+  fillBlank: {
+    EN: 'Fill in the Blanks',
+    ZH: '填空题',
+  },
   trueFalse: {
     EN: 'True/False',
     ZH: '判断题',
   },
   
+  // Dashboard
+  dashboard: {
+    EN: 'Dashboard',
+    ZH: '仪表板',
+  },
+  dashboardWelcome: {
+    EN: 'Welcome to your learning hub. Choose a category to get started.',
+    ZH: '欢迎来到您的学习中心。选择一个类别开始学习。',
+  },
+  mediaResources: {
+    EN: 'Media Resources',
+    ZH: '媒体资源',
+  },
+  practiceQuestions: {
+    EN: 'Practice Questions',
+    ZH: '练习题',
+  },
+  
   // Page Descriptions
   vocabulariesDesc: {
-    EN: 'Welcome to the Vocabularies section. Here you can explore and learn new words.',
-    ZH: '欢迎来到词汇学习区。在这里您可以探索和学习新词汇。',
+    EN: 'Learn new words and expand your vocabulary',
+    ZH: '学习新单词，扩展词汇量',
   },
   expressionsDesc: {
-    EN: 'Welcome to the Expressions section. Learn common phrases and expressions.',
-    ZH: '欢迎来到表达学习区。学习常用短语和表达方式。',
+    EN: 'Master common phrases and expressions',
+    ZH: '掌握常用短语和表达',
   },
   sentencesDesc: {
-    EN: 'Welcome to the Sentences section. Practice with complete sentences.',
-    ZH: '欢迎来到句子学习区。练习完整的句子。',
+    EN: 'Practice with example sentences',
+    ZH: '通过例句练习',
   },
   articlesDesc: {
-    EN: 'Welcome to the Articles section. Read and learn from full articles.',
-    ZH: '欢迎来到文章学习区。阅读和学习完整的文章。',
+    EN: 'Read articles to improve comprehension',
+    ZH: '阅读文章提高理解能力',
   },
   imagesDesc: {
-    EN: 'Welcome to the Images section. Learn with visual content.',
-    ZH: '欢迎来到图片学习区。通过视觉内容学习。',
+    EN: 'Visual learning with images',
+    ZH: '通过图片进行视觉学习',
   },
   videosDesc: {
-    EN: 'Welcome to the Videos section. Learn through video content.',
-    ZH: '欢迎来到视频学习区。通过视频内容学习。',
+    EN: 'Watch educational videos',
+    ZH: '观看教育视频',
   },
   audiosDesc: {
-    EN: 'Welcome to the Audios section. Learn through listening.',
-    ZH: '欢迎来到音频学习区。通过听力学习。',
+    EN: 'Listen to audio materials',
+    ZH: '聆听音频材料',
   },
   multipleChoiceDesc: {
-    EN: 'Welcome to the Multiple Choice Questions section. Test your knowledge with multiple choice quizzes.',
-    ZH: '欢迎来到选择题区。通过选择题测试您的知识。',
+    EN: 'Test your knowledge with multiple choice questions',
+    ZH: '通过选择题测试您的知识',
   },
   freeTextDesc: {
-    EN: 'Welcome to the Free Text Questions section. Practice your writing skills.',
-    ZH: '欢迎来到问答题区。练习您的写作技能。',
+    EN: 'Practice writing with free text questions',
+    ZH: '通过问答题练习写作',
   },
-  fillBlanksDesc: {
-    EN: 'Welcome to the Fill Blank Questions section. Complete sentences with the correct words.',
-    ZH: '欢迎来到填空题区。用正确的词汇完成句子。',
+  fillBlankDesc: {
+    EN: 'Fill in the blanks exercises',
+    ZH: '填空练习',
   },
   trueFalseDesc: {
-    EN: 'Welcome to the True/False Questions section. Test your understanding with true or false statements.',
-    ZH: '欢迎来到判断题区。通过判断对错来测试您的理解。',
+    EN: 'True or false questions',
+    ZH: '判断题',
   },
   
   // Vocabulary Page

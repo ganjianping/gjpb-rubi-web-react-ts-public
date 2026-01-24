@@ -1,7 +1,7 @@
 import { createBrowserRouter } from 'react-router-dom'
 import PublicLayout from './layouts/PublicLayout'
 import NotFoundPage from '@/shared/components/NotFoundPage'
-import HomePage from '@/pages/HomePage'
+import DashboardPage from '@/pages/DashboardPage'
 import VocabulariesPage from '@/pages/vocabularies'
 import ExpressionsPage from '@/pages/ExpressionsPage'
 import SentencesPage from '@/pages/SentencesPage'
@@ -22,7 +22,7 @@ export const router = createBrowserRouter([
     children: [
       {
         index: true,
-        element: <HomePage />,
+        element: <DashboardPage />,
       },
       // Learning Content
       {
