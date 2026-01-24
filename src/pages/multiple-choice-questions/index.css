@@ -1,0 +1,77 @@
+.mcq-page {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 1rem;
+}
+
+/* Error State */
+.mcq-error {
+  background: #fee;
+  color: #c33;
+  padding: 1.5rem;
+  border-radius: 8px;
+  margin-bottom: 2rem;
+  border: 1px solid #fcc;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.retry-button {
+  padding: 0.5rem 1rem;
+  background: #c33;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: all 0.2s;
+}
+
+.retry-button:hover {
+  background: #a22;
+}
+
+/* Grid */
+.mcq-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(780px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+/* Empty State */
+.mcq-empty {
+  text-align: center;
+  padding: 4rem 2rem;
+  font-size: 1.1rem;
+  color: var(--text-secondary);
+}
+
+/* Pagination */
+.mcq-pagination {
+  margin-top: 2rem;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .mcq-page {
+    padding: 1.5rem;
+  }
+
+  .mcq-grid {
+    gap: 1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .mcq-page {
+    padding: 1rem;
+  }
+
+  .mcq-grid {
+    grid-template-columns: 1fr;
+  }
+}

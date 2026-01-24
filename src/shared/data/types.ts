@@ -336,3 +336,46 @@ export interface ImageFilters {
   sort?: 'displayOrder' | 'name' | 'updatedAt'
   direction?: 'asc' | 'desc'
 }
+
+// Multiple Choice Question Types
+export interface MultipleChoiceQuestion {
+  id: string
+  question: string
+  optionA: string
+  optionB: string
+  optionC: string
+  optionD: string
+  answer: string
+  explanation: string
+  difficultyLevel: string
+  failCount: number
+  successCount: number
+  term: number
+  week: number
+  tags: string
+  lang: 'EN' | 'ZH'
+  displayOrder: number
+  updatedAt: string
+}
+
+export interface MultipleChoiceQuestionPageData {
+  content: MultipleChoiceQuestion[]
+  page: number
+  size: number
+  totalElements: number
+  totalPages: number
+}
+
+export type MultipleChoiceQuestionResponse = ApiResponse<MultipleChoiceQuestionPageData>
+
+export interface MultipleChoiceQuestionFilters {
+  term?: number | string
+  week?: number | string
+  lang?: 'EN' | 'ZH'
+  difficultyLevel?: string
+  tags?: string
+  page?: number
+  size?: number
+  sort?: 'displayOrder' | 'updatedAt' | 'difficultyLevel'
+  direction?: 'asc' | 'desc'
+}
