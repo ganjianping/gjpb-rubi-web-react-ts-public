@@ -2,158 +2,184 @@
   max-width: 1400px;
   margin: 0 auto;
   padding: 2rem;
+  font-family: 'Nunito', 'Segoe UI', system-ui, sans-serif; /* Friendly font */
 }
 
-.dashboard-header {
+.dashboard-welcome {
   text-align: center;
   margin-bottom: 3rem;
-  padding-bottom: 2rem;
-  border-bottom: 2px solid var(--border-color);
+  padding: 3rem 1rem;
+  background: linear-gradient(135deg, var(--bg-elevated), var(--bg-secondary));
+  border-radius: 24px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+  border: 1px solid var(--border-color);
 }
 
-.dashboard-title {
+.dashboard-welcome h1 {
   font-size: 2.5rem;
-  font-weight: 700;
-  color: var(--text-primary);
-  margin-bottom: 1rem;
+  font-weight: 800;
+  margin-bottom: 0.5rem;
   background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
 }
 
-.dashboard-subtitle {
-  font-size: 1.1rem;
+.dashboard-welcome p {
+  font-size: 1.2rem;
   color: var(--text-secondary);
-  max-width: 600px;
-  margin: 0 auto;
-  line-height: 1.6;
 }
 
 .dashboard-category {
-  margin-bottom: 3rem;
+  margin-bottom: 4rem;
 }
 
 .category-title {
-  font-size: 1.5rem;
-  font-weight: 600;
-  color: var(--text-primary);
-  margin-bottom: 1.5rem;
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-  padding-bottom: 0.75rem;
-  border-bottom: 2px solid var(--primary-color);
-}
-
-.category-icon {
   font-size: 1.75rem;
-}
-
-.shortcuts-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-  gap: 1.5rem;
-}
-
-.shortcut-card {
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 2rem;
   display: flex;
   align-items: center;
   gap: 1rem;
-  padding: 1.5rem;
-  background: var(--bg-secondary);
-  border: 1px solid var(--border-color);
+}
+
+.category-icon-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
   border-radius: 12px;
+  background-color: var(--bg-elevated);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+.category-icon-wrapper .shortcut-icon-svg {
+  width: 28px;
+  height: 28px;
+}
+
+/* Category Specific Colors */
+.category-learning .category-icon-wrapper { color: #4F46E5; background-color: rgba(79, 70, 229, 0.1); }
+.category-media .category-icon-wrapper { color: #EC4899; background-color: rgba(236, 72, 153, 0.1); }
+.category-questions .category-icon-wrapper { color: #F59E0B; background-color: rgba(245, 158, 11, 0.1); }
+
+/* Grid Layout */
+.shortcuts-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1.5rem;
+}
+
+/* Card Styling */
+.shortcut-card {
+  display: flex;
+  flex-direction: column; /* Stack verticall for better focus */
+  align-items: center;
+  text-align: center;
+  padding: 2rem;
+  background: var(--bg-secondary);
+  border: 2px solid transparent; /* Prepare for border color */
+  border-radius: 24px; /* More rounded */
   text-decoration: none;
   color: var(--text-primary);
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1); /* Bouncy spring transition */
   cursor: pointer;
   position: relative;
   overflow: hidden;
-}
-
-.shortcut-card::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 4px;
-  background: linear-gradient(90deg, var(--primary-color), var(--accent-color));
-  transform: scaleX(0);
-  transition: transform 0.3s ease;
-  transform-origin: left;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.02);
 }
 
 .shortcut-card:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
-  border-color: var(--primary-color);
+  transform: translateY(-8px) scale(1.02);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.1);
   background: var(--bg-elevated);
 }
 
-.shortcut-card:hover::before {
-  transform: scaleX(1);
+/* Card Icon Wrapper */
+.card-icon-wrapper {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 1.5rem;
+  transition: all 0.4s ease;
+  background-color: var(--bg-primary);
 }
 
-.shortcut-card:active {
-  transform: translateY(-2px);
+.card-icon-wrapper .shortcut-icon-svg {
+  width: 40px;
+  height: 40px;
+  transition: transform 0.4s ease;
 }
 
-.shortcut-icon {
-  font-size: 2.5rem;
-  flex-shrink: 0;
-  transition: transform 0.3s ease;
-}
-
-.shortcut-icon-svg {
-  width: 2.5rem;
-  height: 2.5rem;
-  color: var(--primary-color);
-  transition: transform 0.3s ease, color 0.3s ease;
-}
-
-.shortcut-card:hover .shortcut-icon-svg {
+.shortcut-card:hover .card-icon-wrapper {
   transform: scale(1.1) rotate(5deg);
-  color: var(--accent-color);
 }
 
+/* Specific Card Colors */
+.card-learning { border-color: rgba(79, 70, 229, 0.2); }
+.card-learning .card-icon-wrapper { color: #4F46E5; background-color: rgba(79, 70, 229, 0.1); }
+.card-learning:hover { border-color: #4F46E5; }
+
+.card-media { border-color: rgba(236, 72, 153, 0.2); }
+.card-media .card-icon-wrapper { color: #EC4899; background-color: rgba(236, 72, 153, 0.1); }
+.card-media:hover { border-color: #EC4899; }
+
+.card-questions { border-color: rgba(245, 158, 11, 0.2); }
+.card-questions .card-icon-wrapper { color: #F59E0B; background-color: rgba(245, 158, 11, 0.1); }
+.card-questions:hover { border-color: #F59E0B; }
+
+
+/* Text Content */
 .shortcut-content {
-  flex: 1;
-  min-width: 0;
+  width: 100%;
 }
 
 .shortcut-label {
-  font-size: 1.125rem;
-  font-weight: 600;
-  color: var(--text-primary);
-  margin: 0 0 0.5rem 0;
+  font-size: 1.25rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
   transition: color 0.3s ease;
 }
 
-.shortcut-card:hover .shortcut-label {
-  color: var(--primary-color);
-}
-
 .shortcut-description {
-  font-size: 0.875rem;
+  font-size: 0.95rem;
   color: var(--text-secondary);
-  margin: 0;
   line-height: 1.5;
+  margin-bottom: 1rem;
 }
 
+/* Arrow */
 .shortcut-arrow {
+  margin-top: auto;
   font-size: 1.5rem;
-  color: var(--text-tertiary);
-  flex-shrink: 0;
+  opacity: 0;
+  transform: translateY(10px);
   transition: all 0.3s ease;
-  opacity: 0.6;
+  color: currentColor; 
+  font-weight: bold;
 }
 
-.shortcut-card:hover .shortcut-arrow {
-  transform: translateX(4px);
-  color: var(--primary-color);
-  opacity: 1;
+/* Color arrow based on category on hover */
+.card-learning:hover .shortcut-arrow { color: #4F46E5; opacity: 1; transform: translateY(0); }
+.card-media:hover .shortcut-arrow { color: #EC4899; opacity: 1; transform: translateY(0); }
+.card-questions:hover .shortcut-arrow { color: #F59E0B; opacity: 1; transform: translateY(0); }
+
+
+/* Responsiveness */
+@media (max-width: 768px) {
+  .dashboard-page { padding: 1rem; }
+  .dashboard-welcome { padding: 2rem 1rem; border-radius: 16px; margin-bottom: 2rem; }
+  .dashboard-welcome h1 { font-size: 1.75rem; }
+  .shortcuts-grid { grid-template-columns: 1fr; gap: 1rem; }
+  .shortcut-card { flex-direction: row; text-align: left; padding: 1.25rem; align-items: flex-start; }
+  .card-icon-wrapper { width: 48px; height: 48px; margin-bottom: 0; margin-right: 1rem; }
+  .card-icon-wrapper .shortcut-icon-svg { width: 24px; height: 24px; }
+  .shortcut-arrow { display: none; }
 }
 
 /* Responsive */

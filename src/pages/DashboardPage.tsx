@@ -266,12 +266,13 @@ function DashboardPage() {
   }
 
   return (
-    <div className="dashboard-page">
-      
+    <div className="dashboard-page">  
       {Object.entries(groupedShortcuts).map(([categoryKey, shortcuts]) => (
-        <section key={categoryKey} className="dashboard-category">
+        <section key={categoryKey} className={`dashboard-category category-${categoryKey}`}>
           <h2 className="category-title">
-            <span className="category-icon">{renderIcon(categories[categoryKey as keyof typeof categories].icon)}</span>
+            <span className="category-icon-wrapper">
+              {renderIcon(categories[categoryKey as keyof typeof categories].icon)}
+            </span>
             {categories[categoryKey as keyof typeof categories].title}
           </h2>
           <div className="shortcuts-grid">
@@ -279,9 +280,11 @@ function DashboardPage() {
               <Link
                 key={shortcut.path}
                 to={shortcut.path}
-                className="shortcut-card"
+                className={`shortcut-card card-${shortcut.category}`}
               >
-                <div className="shortcut-icon">{renderIcon(shortcut.icon)}</div>
+                <div className="card-icon-wrapper">
+                  {renderIcon(shortcut.icon)}
+                </div>
                 <div className="shortcut-content">
                   <h3 className="shortcut-label">{shortcut.label}</h3>
                   <p className="shortcut-description">{shortcut.description}</p>
