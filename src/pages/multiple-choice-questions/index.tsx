@@ -26,6 +26,7 @@ export default function MultipleChoiceQuestionsPage() {
   
   const [filters, setFilters] = useState<MultipleChoiceQuestionFilters>(initialFilters)
   const [selectedTags, setSelectedTags] = useState<string[]>([])
+  const [isExpandedView, setIsExpandedView] = useState(false)
   
   // Use ref to track if component is mounted
   const isMountedRef = useRef(true)
@@ -175,6 +176,10 @@ export default function MultipleChoiceQuestionsPage() {
     window.scrollTo({ top: 0, behavior: 'smooth' })
   }
 
+  const handleToggleView = () => {
+    setIsExpandedView(prev => !prev)
+  }
+
   return (
     <div className="mcq-page">
       {/* Header and Filters */}
@@ -188,6 +193,33 @@ export default function MultipleChoiceQuestionsPage() {
         onTagSelect={handleTagClick}
         onReset={handleReset}
         totalElements={totalElements}
+        customActions={
+          <button 
+            onClick={handleToggleView}
+            title={isExpandedView ? t('showCompactView', language) : t('showDetailedView', language)}
+            aria-label={isExpandedView ? t('showCompactView', language) : t('showDetailedView', language)}
+            className={`action-btn ${isExpandedView ? 'active' : ''}`}
+            type="button"
+          >
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              {isExpandedView ? (
+                // Compact view icon: single card with minimal content
+                <g>
+                  <rect x="3" y="4" width="18" height="16" rx="2" stroke="currentColor" strokeWidth="2" fill="none"/>
+                  <line x1="6" y1="8" x2="18" y2="8" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
+                </g>
+              ) : (
+                // Detailed view icon: card with multiple lines
+                <g>
+                  <rect x="3" y="4" width="18" height="16" rx="2" stroke="currentColor" strokeWidth="2" fill="none"/>
+                  <line x1="6" y1="8" x2="18" y2="8" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
+                  <line x1="6" y1="12" x2="14" y2="12" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
+                  <line x1="6" y1="16" x2="16" y2="16" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
+                </g>
+              )}
+            </svg>
+          </button>
+        }
       />
 
       {/* Loading State */}
@@ -208,12 +240,11 @@ export default function MultipleChoiceQuestionsPage() {
       {/* Questions Grid */}
       {!loading && !error && questions.length > 0 && (
         <div className="mcq-grid">
-          {questions.map((question, index) => (
+          {questions.map((question) => (
             <MultipleChoiceQuestionCard 
               key={question.id} 
               question={question}
-              allQuestions={questions}
-              currentIndex={index}
+              isExpandedView={isExpandedView}
             />
           ))}
         </div>

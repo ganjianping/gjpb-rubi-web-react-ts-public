@@ -635,6 +635,34 @@ const translations: Translations = {
     EN: 'Your browser does not support the video tag.',
     ZH: '您的浏览器不支持视频标签。',
   },
+  multipleChoiceQuestions: {
+    EN: 'Multiple Choice Questions',
+    ZH: '选择题',
+  },
+  noQuestions: {
+    EN: 'No questions found',
+    ZH: '未找到问题',
+  },
+  correctAnswer: {
+    EN: 'Correct!',
+    ZH: '正确！',
+  },
+  incorrectAnswer: {
+    EN: 'Incorrect. The correct answer is',
+    ZH: '错误。正确答案是',
+  },
+  explanation: {
+    EN: 'Explanation',
+    ZH: '解释',
+  },
+  selectAnswer: {
+    EN: 'Select an answer',
+    ZH: '选择答案',
+  },
+  answer: {
+    EN: 'Answer',
+    ZH: '答案',
+  },
 }
 
 /**
