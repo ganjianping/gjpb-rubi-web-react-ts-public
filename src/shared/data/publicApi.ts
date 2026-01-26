@@ -1,7 +1,7 @@
 import type { AppSetting, AppSettingsResponse, VocabularyResponse, VocabularyFilters, ExpressionResponse, ExpressionFilters, SentenceResponse, SentenceFilters, ArticleResponse, ArticleFilters, Article, VideoResponse, VideoFilters, Video, AudioResponse, AudioFilters, ImageResponse, ImageFilters, MultipleChoiceQuestionResponse, MultipleChoiceQuestionFilters } from './types'
 
 // Remove trailing slash from base URL to prevent double slashes
-const API_BASE_URL = (import.meta.env.VITE_PUBLIC_API_BASE_URL || '/v1/public').replace(/\/$/, '')
+const API_BASE_URL = (import.meta.env.VITE_PUBLIC_API_BASE_URL || '/blog/v1/public').replace(/\/$/, '')
 
 const APP_SETTINGS_CACHE_KEY = 'gjp_app_settings_cache'
 const APP_SETTINGS_CACHE_DURATION = 24 * 60 * 60 * 1000 // 24 hours in milliseconds
