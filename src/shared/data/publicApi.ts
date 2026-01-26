@@ -1,4 +1,4 @@
-import type { AppSetting, AppSettingsResponse, VocabularyResponse, VocabularyFilters, ExpressionResponse, ExpressionFilters, SentenceResponse, SentenceFilters, ArticleResponse, ArticleFilters, Article, VideoResponse, VideoFilters, Video, AudioResponse, AudioFilters, ImageResponse, ImageFilters, MultipleChoiceQuestionResponse, MultipleChoiceQuestionFilters } from './types'
+import type { AppSetting, AppSettingsResponse, VocabularyResponse, VocabularyFilters, ExpressionResponse, ExpressionFilters, SentenceResponse, SentenceFilters, ArticleResponse, ArticleFilters, Article, VideoResponse, VideoFilters, Video, AudioResponse, AudioFilters, ImageResponse, ImageFilters, MultipleChoiceQuestionResponse, MultipleChoiceQuestionFilters, FreeTextQuestionResponse, FreeTextQuestionFilters, FillBlankQuestionResponse, FillBlankQuestionFilters, TrueFalseQuestionResponse, TrueFalseQuestionFilters } from './types'
 
 // Remove trailing slash from base URL to prevent double slashes
 const API_BASE_URL = (import.meta.env.VITE_PUBLIC_API_BASE_URL || '/blog/v1/public').replace(/\/$/, '')
@@ -541,5 +541,254 @@ export async function markMultipleChoiceQuestionSuccessful(id: string | number):
   } catch (error) {
     console.error('Multiple choice question success update error:', error)
     throw error
+  }
+}
+
+/**
+ * Fetch free text questions with filters
+ * @param filters - Free text question filters
+ * @returns Promise<FreeTextQuestionResponse>
+ */
+export async function fetchFreeTextQuestions(filters: FreeTextQuestionFilters = {}): Promise<FreeTextQuestionResponse> {
+  try {
+    const params = new URLSearchParams()
+    
+    if (filters.term) params.append('term', filters.term.toString())
+    if (filters.week) params.append('week', filters.week.toString())
+    if (filters.lang) params.append('lang', filters.lang)
+    if (filters.difficultyLevel && filters.difficultyLevel !== '') params.append('difficultyLevel', filters.difficultyLevel)
+    if (filters.tags) params.append('tags', filters.tags)
+    params.append('page', (filters.page ?? 0).toString())
+    params.append('size', (filters.size ?? 20).toString())
+    if (filters.sort) params.append('sort', filters.sort)
+    if (filters.direction) params.append('direction', filters.direction)
+    
+    const response = await fetch(`${API_BASE_URL}/free-text-question-rus?${params.toString()}`)
+    
+    if (!response.ok) {
+      const errorBody = await response.text().catch(() => 'Unable to read error response')
+      throw new Error(`Failed to fetch free text questions: ${response.status} ${response.statusText} - ${errorBody}`)
+    }
+    
+    const data = await response.json()
+    
+    if (data.status?.code !== 200) {
+      throw new Error(data.status?.message || 'API returned error status')
+    }
+    
+    return data
+  } catch (error) {
+    console.error('Free text question fetch error:', error)
+    throw error
+  }
+}
+
+/**
+ * Fetch fill blank questions with filters
+ * @param filters - Fill blank question filters
+ * @returns Promise<FillBlankQuestionResponse>
+ */
+export async function fetchFillBlankQuestions(filters: FillBlankQuestionFilters = {}): Promise<FillBlankQuestionResponse> {
+  try {
+    const params = new URLSearchParams()
+    
+    if (filters.term) params.append('term', filters.term.toString())
+    if (filters.week) params.append('week', filters.week.toString())
+    if (filters.lang) params.append('lang', filters.lang)
+    if (filters.difficultyLevel && filters.difficultyLevel !== '') params.append('difficultyLevel', filters.difficultyLevel)
+    if (filters.tags) params.append('tags', filters.tags)
+    params.append('page', (filters.page ?? 0).toString())
+    params.append('size', (filters.size ?? 20).toString())
+    if (filters.sort) params.append('sort', filters.sort)
+    if (filters.direction) params.append('direction', filters.direction)
+    
+    const response = await fetch(`${API_BASE_URL}/fill-blank-question-rus?${params.toString()}`)
+    
+    if (!response.ok) {
+      const errorBody = await response.text().catch(() => 'Unable to read error response')
+      throw new Error(`Failed to fetch fill blank questions: ${response.status} ${response.statusText} - ${errorBody}`)
+    }
+    
+    const data = await response.json()
+    
+    if (data.status?.code !== 200) {
+      throw new Error(data.status?.message || 'API returned error status')
+    }
+    
+    return data
+  } catch (error) {
+    console.error('Fill blank question fetch error:', error)
+    throw error
+  }
+}
+
+/**
+ * Mark a fill blank question as failed (wrong answer)
+ * @param id - Question ID
+ * @returns Promise<void>
+ */
+export async function markFillBlankQuestionFailed(id: string | number): Promise<void> {
+  try {
+    const response = await fetch(`${API_BASE_URL}/fill-blank-question-rus/${id}/fail`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    })
+    
+    if (!response.ok) {
+      console.warn(`Failed to mark question as failed: ${response.status} ${response.statusText}`)
+      return // Silently fail - this is an analytics endpoint
+    }
+    
+    // Check if response has content
+    const contentType = response.headers.get('content-type')
+    if (contentType && contentType.includes('application/json')) {
+      const data = await response.json()
+      if (data.status?.code !== 200) {
+        console.warn('API returned error status for fail tracking:', data.status?.message)
+      }
+    }
+  } catch (error) {
+    // Silently catch errors - tracking should not break user experience
+    console.warn('Fill blank question fail tracking error (ignored):', error)
+  }
+}
+
+/**
+ * Mark a fill blank question as successful (correct answer)
+ * @param id - Question ID
+ * @returns Promise<void>
+ */
+export async function markFillBlankQuestionSuccessful(id: string | number): Promise<void> {
+  try {
+    const response = await fetch(`${API_BASE_URL}/fill-blank-question-rus/${id}/success`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    })
+    
+    if (!response.ok) {
+      console.warn(`Failed to mark question as successful: ${response.status} ${response.statusText}`)
+      return // Silently fail - this is an analytics endpoint
+    }
+    
+    // Check if response has content
+    const contentType = response.headers.get('content-type')
+    if (contentType && contentType.includes('application/json')) {
+      const data = await response.json()
+      if (data.status?.code !== 200) {
+        console.warn('API returned error status for success tracking:', data.status?.message)
+      }
+    }
+  } catch (error) {
+    // Silently catch errors - tracking should not break user experience
+    console.warn('Fill blank question success tracking error (ignored):', error)
+  }
+}
+
+/**
+ * Fetch true/false questions with filters
+ * @param filters - True/false question filters
+ * @returns Promise<TrueFalseQuestionResponse>
+ */
+export async function fetchTrueFalseQuestions(filters: TrueFalseQuestionFilters = {}): Promise<TrueFalseQuestionResponse> {
+  try {
+    const params = new URLSearchParams()
+    
+    if (filters.term) params.append('term', filters.term.toString())
+    if (filters.week) params.append('week', filters.week.toString())
+    if (filters.lang) params.append('lang', filters.lang)
+    if (filters.difficultyLevel && filters.difficultyLevel !== '') params.append('difficultyLevel', filters.difficultyLevel)
+    if (filters.tags) params.append('tags', filters.tags)
+    params.append('page', (filters.page ?? 0).toString())
+    params.append('size', (filters.size ?? 20).toString())
+    if (filters.sort) params.append('sort', filters.sort)
+    if (filters.direction) params.append('direction', filters.direction)
+    
+    const response = await fetch(`${API_BASE_URL}/true-false-question-rus?${params.toString()}`)
+    
+    if (!response.ok) {
+      const errorBody = await response.text().catch(() => 'Unable to read error response')
+      throw new Error(`Failed to fetch true/false questions: ${response.status} ${response.statusText} - ${errorBody}`)
+    }
+    
+    const data = await response.json()
+    
+    if (data.status?.code !== 200) {
+      throw new Error(data.status?.message || 'API returned error status')
+    }
+    
+    return data
+  } catch (error) {
+    console.error('True/false question fetch error:', error)
+    throw error
+  }
+}
+
+/**
+ * Mark a true/false question as failed (wrong answer)
+ * @param id - Question ID
+ * @returns Promise<void>
+ */
+export async function markTrueFalseQuestionFailed(id: string | number): Promise<void> {
+  try {
+    const response = await fetch(`${API_BASE_URL}/true-false-question-rus/${id}/fail`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    })
+    
+    if (!response.ok) {
+      console.warn(`Failed to mark question as failed: ${response.status} ${response.statusText}`)
+      return // Silently fail - this is an analytics endpoint
+    }
+    
+    // Check if response has content
+    const contentType = response.headers.get('content-type')
+    if (contentType && contentType.includes('application/json')) {
+      const data = await response.json()
+      if (data.status?.code !== 200) {
+        console.warn('API returned error status for fail tracking:', data.status?.message)
+      }
+    }
+  } catch (error) {
+    // Silently catch errors - tracking should not break user experience
+    console.warn('True/false question fail tracking error (ignored):', error)
+  }
+}
+
+/**
+ * Mark a true/false question as successful (correct answer)
+ * @param id - Question ID
+ * @returns Promise<void>
+ */
+export async function markTrueFalseQuestionSuccessful(id: string | number): Promise<void> {
+  try {
+    const response = await fetch(`${API_BASE_URL}/true-false-question-rus/${id}/success`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    })
+    
+    if (!response.ok) {
+      console.warn(`Failed to mark question as successful: ${response.status} ${response.statusText}`)
+      return // Silently fail - this is an analytics endpoint
+    }
+    
+    // Check if response has content
+    const contentType = response.headers.get('content-type')
+    if (contentType && contentType.includes('application/json')) {
+      const data = await response.json()
+      if (data.status?.code !== 200) {
+        console.warn('API returned error status for success tracking:', data.status?.message)
+      }
+    }
+  } catch (error) {
+    // Silently catch errors - tracking should not break user experience
+    console.warn('True/false question success tracking error (ignored):', error)
   }
 }

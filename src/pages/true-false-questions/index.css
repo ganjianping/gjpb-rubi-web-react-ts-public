@@ -1,0 +1,63 @@
+.tfq-page {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 2rem;
+}
+
+.tfq-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 600px), 1fr));
+  gap: 1.5rem;
+  margin-top: 2rem;
+}
+
+.tfq-error,
+.tfq-empty {
+  text-align: center;
+  padding: 3rem;
+  background: var(--bg-secondary);
+  border-radius: 12px;
+  margin-top: 2rem;
+  font-size: 1.1rem;
+  color: var(--text-secondary);
+}
+
+.tfq-error {
+  color: var(--error-color);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+}
+
+.retry-button {
+  padding: 0.5rem 1.5rem;
+  background: var(--primary-color);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.retry-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.tfq-pagination {
+  margin-top: 2rem;
+}
+
+@media (max-width: 768px) {
+  .tfq-page {
+    padding: 1rem;
+  }
+
+  .tfq-grid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+}

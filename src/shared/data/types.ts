@@ -379,3 +379,118 @@ export interface MultipleChoiceQuestionFilters {
   sort?: 'displayOrder' | 'updatedAt' | 'difficultyLevel' | 'successCount' | 'failCount'
   direction?: 'asc' | 'desc'
 }
+
+// Free Text Question Types
+export interface FreeTextQuestion {
+  id: string
+  question: string
+  answer: string
+  explanation: string | null
+  difficultyLevel: string | null
+  term: number | null
+  week: number | null
+  tags: string
+  lang: 'EN' | 'ZH'
+  displayOrder: number
+  updatedAt: string
+}
+
+export interface FreeTextQuestionPageData {
+  content: FreeTextQuestion[]
+  page: number
+  size: number
+  totalElements: number
+  totalPages: number
+}
+
+export type FreeTextQuestionResponse = ApiResponse<FreeTextQuestionPageData>
+
+export interface FreeTextQuestionFilters {
+  term?: number | string
+  week?: number | string
+  lang?: 'EN' | 'ZH'
+  difficultyLevel?: string
+  tags?: string
+  page?: number
+  size?: number
+  sort?: 'displayOrder' | 'updatedAt' | 'difficultyLevel'
+  direction?: 'asc' | 'desc'
+}
+
+// Fill Blank Question Types
+export interface FillBlankQuestion {
+  id: string
+  question: string
+  answer: string
+  explanation: string
+  difficultyLevel: string
+  failCount: number
+  successCount: number
+  term: number
+  week: number
+  tags: string
+  lang: 'EN' | 'ZH'
+  displayOrder: number
+  updatedAt: string
+}
+
+export interface FillBlankQuestionPageData {
+  content: FillBlankQuestion[]
+  page: number
+  size: number
+  totalElements: number
+  totalPages: number
+}
+
+export type FillBlankQuestionResponse = ApiResponse<FillBlankQuestionPageData>
+
+export interface FillBlankQuestionFilters {
+  term?: number | string
+  week?: number | string
+  lang?: 'EN' | 'ZH'
+  difficultyLevel?: string
+  tags?: string
+  page?: number
+  size?: number
+  sort?: 'displayOrder' | 'updatedAt' | 'difficultyLevel' | 'successCount' | 'failCount'
+  direction?: 'asc' | 'desc'
+}
+
+// True/False Question Types
+export interface TrueFalseQuestion {
+  id: string
+  question: string
+  answer: string
+  explanation: string
+  difficultyLevel: string
+  failCount: number
+  successCount: number
+  term: number | null
+  week: number | null
+  tags: string
+  lang: 'EN' | 'ZH'
+  displayOrder: number
+  updatedAt: string
+}
+
+export interface TrueFalseQuestionPageData {
+  content: TrueFalseQuestion[]
+  page: number
+  size: number
+  totalElements: number
+  totalPages: number
+}
+
+export type TrueFalseQuestionResponse = ApiResponse<TrueFalseQuestionPageData>
+
+export interface TrueFalseQuestionFilters {
+  term?: number | string
+  week?: number | string
+  lang?: 'EN' | 'ZH'
+  difficultyLevel?: string
+  tags?: string
+  page?: number
+  size?: number
+  sort?: 'displayOrder' | 'updatedAt' | 'difficultyLevel' | 'successCount' | 'failCount'
+  direction?: 'asc' | 'desc'
+}

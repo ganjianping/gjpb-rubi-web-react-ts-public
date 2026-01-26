@@ -647,13 +647,33 @@ const translations: Translations = {
     EN: 'Multiple Choice Questions',
     ZH: '选择题',
   },
+  freeTextQuestions: {
+    EN: 'Free Text Questions',
+    ZH: '问答题',
+  },
+  fillBlankQuestions: {
+    EN: 'Fill in the Blank Questions',
+    ZH: '填空题',
+  },
+  trueFalseQuestions: {
+    EN: 'True/False Questions',
+    ZH: '判断题',
+  },
   noQuestions: {
     EN: 'No questions found',
     ZH: '未找到问题',
   },
   correctAnswer: {
-    EN: 'Correct!',
-    ZH: '正确！',
+    EN: 'Correct Answer',
+    ZH: '正确答案',
+  },
+  correct: {
+    EN: 'Correct',
+    ZH: '正确',
+  },
+  incorrect: {
+    EN: 'Incorrect',
+    ZH: '错误',
   },
   incorrectAnswer: {
     EN: 'Incorrect. The correct answer is',
@@ -670,6 +690,22 @@ const translations: Translations = {
   answer: {
     EN: 'Answer',
     ZH: '答案',
+  },
+  showAnswer: {
+    EN: 'Show Answer',
+    ZH: '显示答案',
+  },
+  checkAnswer: {
+    EN: 'Check Answer',
+    ZH: '检查答案',
+  },
+  fillInTheBlank: {
+    EN: 'Fill in the blank...',
+    ZH: '填写空白...',
+  },
+  tryAgain: {
+    EN: 'Try Again',
+    ZH: '再试一次',
   },
 }
 
