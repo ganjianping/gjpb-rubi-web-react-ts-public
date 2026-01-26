@@ -71,7 +71,9 @@ export default function MultipleChoiceQuestionsPage() {
       options: [
         { value: 'displayOrder', label: t('displayOrder', language) },
         { value: 'updatedAt', label: t('updatedAt', language) },
-        { value: 'difficultyLevel', label: t('difficultyLevel', language) }
+        { value: 'difficultyLevel', label: t('difficultyLevel', language) },
+        { value: 'successCount', label: t('successCount', language) },
+        { value: 'failCount', label: t('failCount', language) }
       ]
     },
     {

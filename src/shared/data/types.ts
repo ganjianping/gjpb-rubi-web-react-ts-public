@@ -376,6 +376,6 @@ export interface MultipleChoiceQuestionFilters {
   tags?: string
   page?: number
   size?: number
-  sort?: 'displayOrder' | 'updatedAt' | 'difficultyLevel'
+  sort?: 'displayOrder' | 'updatedAt' | 'difficultyLevel' | 'successCount' | 'failCount'
   direction?: 'asc' | 'desc'
 }
