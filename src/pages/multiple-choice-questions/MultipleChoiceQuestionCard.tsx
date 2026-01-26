@@ -27,7 +27,7 @@ export default function MultipleChoiceQuestionCard({ question, isExpandedView: d
   const [isExpanded, setIsExpanded] = useState(defaultExpanded)
   const [selectedAnswers, setSelectedAnswers] = useState<string[]>([])
   const [isCorrect, setIsCorrect] = useState(false)
-  const [errorMessage, setErrorMessage] = useState<string | null>(null)
+  const [errorOption, setErrorOption] = useState<string | null>(null)
   const errorTimeoutRef = useRef<number | null>(null)
 
   // Sync isExpanded with prop changes (for toggle view functionality)
@@ -44,35 +44,40 @@ export default function MultipleChoiceQuestionCard({ question, isExpandedView: d
   const handleOptionClick = useCallback((e: React.MouseEvent, option: string) => {
     e.stopPropagation()
     if (!isCorrect && !selectedAnswers.includes(option)) {
-      // Clear any existing error message when selecting a new option
+      // Clear any existing error styling and remove previous wrong selections when selecting a new option
       if (errorTimeoutRef.current) {
         clearTimeout(errorTimeoutRef.current)
         errorTimeoutRef.current = null
       }
-      setErrorMessage(null)
+      setErrorOption(null)
+      // Remove any previous wrong answers from selectedAnswers
+      setSelectedAnswers(prev => prev.filter(ans => ans === question.answer))
       
-      const newAnswers = [...selectedAnswers, option]
+      const newAnswers = [...selectedAnswers.filter(ans => ans === question.answer), option]
       setSelectedAnswers(newAnswers)
       if (option === question.answer) {
         setIsCorrect(true)
       } else {
-        // Show error message for wrong answer
-        setErrorMessage(t('incorrectAnswer', language))
-        // Auto-dismiss after 2 seconds
+        // Show error style for wrong answer
+        setErrorOption(option)
+        // Auto-remove error style and unselect the wrong option after 2 seconds
         errorTimeoutRef.current = window.setTimeout(() => {
-          setErrorMessage(null)
+          setErrorOption(null)
+          setSelectedAnswers(prev => prev.filter(ans => ans !== option))
           errorTimeoutRef.current = null
         }, 2000)
       }
     }
-  }, [isCorrect, selectedAnswers, question.answer, language])
+  }, [isCorrect, selectedAnswers, question.answer])
 
   const getOptionClass = useCallback((option: string) => {
     const wasSelected = selectedAnswers.includes(option)
     if (!wasSelected) return 'mcq-option'
+    if (option === errorOption) return 'mcq-option error'
     if (option === question.answer) return 'mcq-option correct'
-    return 'mcq-option incorrect'
-  }, [selectedAnswers, question.answer])
+    // This shouldn't happen with current logic, but fallback
+    return 'mcq-option selected'
+  }, [selectedAnswers, question.answer, errorOption])
 
   const toggleExpanded = useCallback((e: React.MouseEvent) => {
     e.stopPropagation()
@@ -81,7 +86,7 @@ export default function MultipleChoiceQuestionCard({ question, isExpandedView: d
       // Reset answer state when collapsing
       setSelectedAnswers([])
       setIsCorrect(false)
-      setErrorMessage(null)
+      setErrorOption(null)
       if (errorTimeoutRef.current) {
         clearTimeout(errorTimeoutRef.current)
         errorTimeoutRef.current = null
@@ -183,14 +188,6 @@ export default function MultipleChoiceQuestionCard({ question, isExpandedView: d
               {selectedAnswers.includes('D') && question.answer !== 'D' && <span className="option-indicator incorrect-indicator">✗</span>}
             </button>
           </div>
-
-          {/* Error Message */}
-          {errorMessage && (
-            <div className="mcq-error-message">
-              <span className="error-icon">✗</span>
-              <span className="error-text">{errorMessage}</span>
-            </div>
-          )}
 
           {/* Answer Feedback */}
           {isCorrect && (
