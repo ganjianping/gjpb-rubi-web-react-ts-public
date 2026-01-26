@@ -298,6 +298,69 @@
   flex: 1;
 }
 
+/* Question Metadata */
+.mcq-metadata {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.75rem 1rem;
+  background: var(--bg-primary);
+  border-radius: 8px;
+  border: 1px solid var(--border-color);
+  margin-bottom: 1rem;
+  font-size: 0.8rem;
+}
+
+.mcq-meta-item {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  font-weight: 500;
+}
+
+.meta-icon {
+  font-size: 0.75rem;
+  opacity: 0.7;
+}
+
+.meta-icon.success {
+  color: #10b981;
+}
+
+.meta-icon.fail {
+  color: #ef4444;
+}
+
+.meta-value {
+  color: var(--text-primary);
+  font-weight: 600;
+}
+
+.meta-value.difficulty {
+  color: #0ea5e9;
+}
+
+.meta-value.success {
+  color: #10b981;
+}
+
+.meta-value.fail {
+  color: #ef4444;
+}
+
+:root[data-theme="dark"] .meta-value.difficulty {
+  color: #60a5fa;
+}
+
+:root[data-theme="dark"] .meta-value.success {
+  color: #6ee7b7;
+}
+
+:root[data-theme="dark"] .meta-value.fail {
+  color: #fca5a5;
+}
+
 /* Feedback */
 .mcq-feedback {
   display: flex;

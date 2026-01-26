@@ -403,6 +403,14 @@ const translations: Translations = {
     EN: 'Difficulty',
     ZH: '难度',
   },
+  successCount: {
+    EN: 'Success Count',
+    ZH: '成功次数',
+  },
+  failCount: {
+    EN: 'Fail Count',
+    ZH: '失败次数',
+  },
   allLevels: {
     EN: 'All Levels',
     ZH: '所有难度',
