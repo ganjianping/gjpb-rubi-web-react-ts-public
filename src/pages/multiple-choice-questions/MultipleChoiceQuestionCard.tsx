@@ -30,6 +30,11 @@ export default function MultipleChoiceQuestionCard({ question, isExpandedView: d
   const [errorMessage, setErrorMessage] = useState<string | null>(null)
   const errorTimeoutRef = useRef<number | null>(null)
 
+  // Sync isExpanded with prop changes (for toggle view functionality)
+  useEffect(() => {
+    setIsExpanded(defaultExpanded)
+  }, [defaultExpanded])
+
   const handleCardClick = useCallback(() => {
     if (!isExpanded) {
       setIsExpanded(true)
