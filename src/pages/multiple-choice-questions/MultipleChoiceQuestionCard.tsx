@@ -194,22 +194,6 @@ export default function MultipleChoiceQuestionCard({ question, isExpandedView: d
             </button>
           </div>
 
-          {/* Question Metadata */}
-          <div className="mcq-metadata">
-            <div className="mcq-meta-item">
-              <span className="meta-icon">📊</span>
-              <span className="meta-value difficulty">{question.difficultyLevel}</span>
-            </div>
-            <div className="mcq-meta-item">
-              <span className="meta-icon success">✓</span>
-              <span className="meta-value success">{question.successCount}</span>
-            </div>
-            <div className="mcq-meta-item">
-              <span className="meta-icon fail">✗</span>
-              <span className="meta-value fail">{question.failCount}</span>
-            </div>
-          </div>
-
           {/* Answer Feedback */}
           {isCorrect && (
             <div className="mcq-feedback correct">
@@ -225,6 +209,22 @@ export default function MultipleChoiceQuestionCard({ question, isExpandedView: d
               <div className="explanation-content" dangerouslySetInnerHTML={renderHTML(question.explanation)} />
             </div>
           )}
+
+          {/* Question Metadata */}
+          <div className="mcq-metadata">
+            <div className="mcq-meta-item">
+              <span className="meta-icon">📊</span>
+              <span className="meta-value difficulty">{question.difficultyLevel}</span>
+            </div>
+            <div className="mcq-meta-item">
+              <span className="meta-icon success">✓</span>
+              <span className="meta-value success">{question.successCount}</span>
+            </div>
+            <div className="mcq-meta-item">
+              <span className="meta-icon fail">✗</span>
+              <span className="meta-value fail">{question.failCount}</span>
+            </div>
+          </div>
         </div>
       )}
     </div>
