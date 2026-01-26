@@ -477,3 +477,69 @@ export async function fetchMultipleChoiceQuestions(filters: MultipleChoiceQuesti
     throw error
   }
 }
+
+/**
+ * Mark a multiple choice question as failed (wrong answer selected)
+ * @param id - Question ID
+ * @returns Promise<void>
+ */
+export async function markMultipleChoiceQuestionFailed(id: string | number): Promise<void> {
+  try {
+    const response = await fetch(`${API_BASE_URL}/multiple-choice-question-rus/${id}/fail`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    })
+    
+    if (!response.ok) {
+      const errorBody = await response.text().catch(() => 'Unable to read error response')
+      throw new Error(`Failed to mark question as failed: ${response.status} ${response.statusText} - ${errorBody}`)
+    }
+    
+    // Check if response has content
+    const contentType = response.headers.get('content-type')
+    if (contentType && contentType.includes('application/json')) {
+      const data = await response.json()
+      if (data.status?.code !== 200) {
+        throw new Error(data.status?.message || 'API returned error status')
+      }
+    }
+  } catch (error) {
+    console.error('Multiple choice question fail update error:', error)
+    throw error
+  }
+}
+
+/**
+ * Mark a multiple choice question as successful (correct answer selected)
+ * @param id - Question ID
+ * @returns Promise<void>
+ */
+export async function markMultipleChoiceQuestionSuccessful(id: string | number): Promise<void> {
+  try {
+    const response = await fetch(`${API_BASE_URL}/multiple-choice-question-rus/${id}/success`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    })
+    
+    if (!response.ok) {
+      const errorBody = await response.text().catch(() => 'Unable to read error response')
+      throw new Error(`Failed to mark question as successful: ${response.status} ${response.statusText} - ${errorBody}`)
+    }
+    
+    // Check if response has content
+    const contentType = response.headers.get('content-type')
+    if (contentType && contentType.includes('application/json')) {
+      const data = await response.json()
+      if (data.status?.code !== 200) {
+        throw new Error(data.status?.message || 'API returned error status')
+      }
+    }
+  } catch (error) {
+    console.error('Multiple choice question success update error:', error)
+    throw error
+  }
+}

@@ -3,6 +3,7 @@ import DOMPurify from 'dompurify'
 import { useAppSettings } from '@/shared/contexts/AppSettingsContext'
 import { t } from '@/shared/i18n'
 import type { MultipleChoiceQuestion } from '@/shared/data/types'
+import { markMultipleChoiceQuestionFailed, markMultipleChoiceQuestionSuccessful } from '@/shared/data/publicApi'
 import './MultipleChoiceQuestionCard.css'
 
 interface MultipleChoiceQuestionCardProps {
@@ -41,7 +42,7 @@ export default function MultipleChoiceQuestionCard({ question, isExpandedView: d
     }
   }, [isExpanded])
 
-  const handleOptionClick = useCallback((e: React.MouseEvent, option: string) => {
+  const handleOptionClick = useCallback(async (e: React.MouseEvent, option: string) => {
     e.stopPropagation()
     if (!isCorrect && !selectedAnswers.includes(option)) {
       // Clear any existing error styling and remove previous wrong selections when selecting a new option
@@ -57,9 +58,17 @@ export default function MultipleChoiceQuestionCard({ question, isExpandedView: d
       setSelectedAnswers(newAnswers)
       if (option === question.answer) {
         setIsCorrect(true)
+        // Mark question as successful (fire and forget, don't block UI)
+        markMultipleChoiceQuestionSuccessful(question.id).catch(error => {
+          console.error('Failed to mark question as successful:', error)
+        })
       } else {
         // Show error style for wrong answer
         setErrorOption(option)
+        // Mark question as failed (fire and forget, don't block UI)
+        markMultipleChoiceQuestionFailed(question.id).catch(error => {
+          console.error('Failed to mark question as failed:', error)
+        })
         // Auto-remove error style and unselect the wrong option after 2 seconds
         errorTimeoutRef.current = window.setTimeout(() => {
           setErrorOption(null)
@@ -68,7 +77,7 @@ export default function MultipleChoiceQuestionCard({ question, isExpandedView: d
         }, 2000)
       }
     }
-  }, [isCorrect, selectedAnswers, question.answer])
+  }, [isCorrect, selectedAnswers, question.answer, question.id])
 
   const getOptionClass = useCallback((option: string) => {
     const wasSelected = selectedAnswers.includes(option)
