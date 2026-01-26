@@ -27,15 +27,27 @@ export default defineConfig({
         target: 'https://www.ganjianping.com',
         changeOrigin: true,
         secure: false,
+        // Forward all headers
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+        },
         configure: (proxy, _options) => {
           proxy.on('error', (err, _req, _res) => {
             console.log('proxy error', err);
           });
-          proxy.on('proxyReq', (proxyReq, _req, _res) => {
+          proxy.on('proxyReq', (proxyReq, req, _res) => {
             console.log('Proxying request to:', proxyReq.path);
+            console.log('Original method:', req.method);
+            console.log('Proxy method:', proxyReq.method);
+            // Ensure the method is preserved
+            if (req.method) {
+              proxyReq.method = req.method;
+            }
           });
-          proxy.on('proxyRes', (proxyRes, _req, _res) => {
+          proxy.on('proxyRes', (proxyRes, req, _res) => {
             console.log('Proxy response status:', proxyRes.statusCode);
+            console.log('Request method:', req.method);
           });
         },
       },
