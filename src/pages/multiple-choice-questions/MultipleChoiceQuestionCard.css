@@ -153,7 +153,7 @@
   position: relative;
 }
 
-.mcq-option:hover:not(:disabled) {
+.mcq-option:hover {
   border-color: var(--primary-color);
   transform: translateX(4px);
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
@@ -164,24 +164,24 @@
 }
 
 .mcq-option.correct {
-  background: #d1fae5;
   border-color: #10b981;
+  background: var(--bg-primary);
 }
 
 .mcq-option.incorrect {
-  background: #fee2e2;
   border-color: #ef4444;
+  background: var(--bg-primary);
 }
 
 .mcq-option.error {
-  background: #fee2e2;
   border-color: #ef4444;
+  background: var(--bg-primary);
   animation: shake 0.5s ease-in-out;
 }
 
 .mcq-option.selected {
-  background: #f3f4f6;
   border-color: #d1d5db;
+  background: var(--bg-primary);
   opacity: 0.7;
 }
 
@@ -192,23 +192,23 @@
 }
 
 :root[data-theme="dark"] .mcq-option.correct {
-  background: #064e3b;
   border-color: #10b981;
+  background: var(--bg-primary);
 }
 
 :root[data-theme="dark"] .mcq-option.incorrect {
-  background: #7f1d1d;
   border-color: #ef4444;
+  background: var(--bg-primary);
 }
 
 :root[data-theme="dark"] .mcq-option.error {
-  background: #7f1d1d;
   border-color: #ef4444;
+  background: var(--bg-primary);
 }
 
 :root[data-theme="dark"] .mcq-option.selected {
-  background: #374151;
   border-color: #6b7280;
+  background: var(--bg-primary);
 }
 
 .option-letter {

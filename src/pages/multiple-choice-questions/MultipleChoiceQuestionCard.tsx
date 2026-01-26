@@ -144,7 +144,6 @@ export default function MultipleChoiceQuestionCard({ question, isExpandedView: d
               className={getOptionClass('A')}
               onClick={(e) => handleOptionClick(e, 'A')}
               type="button"
-              disabled={isCorrect || selectedAnswers.includes('A')}
             >
               <span className="option-letter">A</span>
               <span className="option-content" dangerouslySetInnerHTML={renderHTML(question.optionA)} />
@@ -156,7 +155,6 @@ export default function MultipleChoiceQuestionCard({ question, isExpandedView: d
               className={getOptionClass('B')}
               onClick={(e) => handleOptionClick(e, 'B')}
               type="button"
-              disabled={isCorrect || selectedAnswers.includes('B')}
             >
               <span className="option-letter">B</span>
               <span className="option-content" dangerouslySetInnerHTML={renderHTML(question.optionB)} />
@@ -168,7 +166,6 @@ export default function MultipleChoiceQuestionCard({ question, isExpandedView: d
               className={getOptionClass('C')}
               onClick={(e) => handleOptionClick(e, 'C')}
               type="button"
-              disabled={isCorrect || selectedAnswers.includes('C')}
             >
               <span className="option-letter">C</span>
               <span className="option-content" dangerouslySetInnerHTML={renderHTML(question.optionC)} />
@@ -180,7 +177,6 @@ export default function MultipleChoiceQuestionCard({ question, isExpandedView: d
               className={getOptionClass('D')}
               onClick={(e) => handleOptionClick(e, 'D')}
               type="button"
-              disabled={isCorrect || selectedAnswers.includes('D')}
             >
               <span className="option-letter">D</span>
               <span className="option-content" dangerouslySetInnerHTML={renderHTML(question.optionD)} />
