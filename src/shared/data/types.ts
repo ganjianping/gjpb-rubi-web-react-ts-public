@@ -385,8 +385,23 @@ export interface FreeTextQuestion {
   id: string
   question: string
   answer: string
+  description: string | null
+  questiona: string | null
+  answera: string | null
+  questionb: string | null
+  answerb: string | null
+  questionc: string | null
+  answerc: string | null
+  questiond: string | null
+  answerd: string | null
+  questione: string | null
+  answere: string | null
+  questionf: string | null
+  answerf: string | null
   explanation: string | null
   difficultyLevel: string | null
+  failCount: number
+  successCount: number
   term: number | null
   week: number | null
   tags: string
