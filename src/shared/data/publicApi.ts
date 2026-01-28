@@ -584,6 +584,38 @@ export async function fetchFreeTextQuestions(filters: FreeTextQuestionFilters = 
 }
 
 /**
+ * Update free text question success count
+ * @param id - Question ID
+ */
+export async function updateFreeTextQuestionSuccess(id: string): Promise<boolean> {
+  try {
+    const response = await fetch(`${API_BASE_URL}/free-text-question-rus/${id}/success`, {
+      method: 'PUT'
+    })
+    return response.ok
+  } catch (error) {
+    console.error(`Error updating success count for question ${id}:`, error)
+    return false
+  }
+}
+
+/**
+ * Update free text question fail count
+ * @param id - Question ID
+ */
+export async function updateFreeTextQuestionFail(id: string): Promise<boolean> {
+  try {
+    const response = await fetch(`${API_BASE_URL}/free-text-question-rus/${id}/fail`, {
+      method: 'PUT'
+    })
+    return response.ok
+  } catch (error) {
+    console.error(`Error updating fail count for question ${id}:`, error)
+    return false
+  }
+}
+
+/**
  * Fetch fill blank questions with filters
  * @param filters - Fill blank question filters
  * @returns Promise<FillBlankQuestionResponse>

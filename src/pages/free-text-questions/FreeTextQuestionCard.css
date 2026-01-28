@@ -119,20 +119,104 @@
 
 /* Button - Minimal text link style */
 .ftq-exam-show-btn {
-  background: none;
-  border: none;
-  color: var(--primary-color);
-  font-size: 0.9rem;
-  cursor: pointer;
-  padding: 0;
-  margin-left: 0.5rem;
-  text-decoration: none;
-  font-weight: 500;
-  white-space: nowrap;
+  display: none; /* Deprecated in favor of icon button, but keeping for safety if referenced */
 }
 
-.ftq-exam-show-btn:hover {
-  text-decoration: underline;
+/* User Answer Input */
+.ftq-user-input {
+  width: 100%;
+  min-height: 80px;
+  padding: 0.75rem;
+  margin: 0.5rem 0;
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  font-family: inherit;
+  font-size: 0.95rem;
+  line-height: 1.5;
+  resize: vertical;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.ftq-user-input:focus {
+  outline: none;
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 2px rgba(var(--primary-rgb, 59, 130, 246), 0.1);
+}
+
+/* Interaction Row (Input + Button) */
+.ftq-exam-interaction-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  margin-top: 0.5rem;
+}
+
+.ftq-exam-interaction-row .ftq-user-input {
+  margin: 0; /* Reset margin when in flex row */
+  flex: 1;
+}
+
+/* Icon Button for Show Answer */
+.ftq-action-buttons {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.ftq-icon-btn {
+  background: var(--bg-primary);
+  border: 1px solid var(--border-color);
+  color: var(--text-secondary);
+  cursor: pointer;
+  padding: 0;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+  height: 42px;
+  width: 42px;
+}
+
+.ftq-icon-btn:hover {
+  border-color: var(--primary-color);
+  background-color: var(--bg-secondary);
+}
+
+.ftq-icon-btn.active {
+  background-color: var(--bg-secondary);
+  color: var(--primary-color);
+  border-color: var(--primary-color);
+}
+
+.ftq-success-btn:hover {
+  color: #10b981; /* Green */
+  border-color: #10b981;
+  background-color: rgba(16, 185, 129, 0.1);
+}
+
+.ftq-success-btn.selected {
+  background-color: #d1fae5;
+  color: #059669;
+  border-color: #059669;
+}
+
+.ftq-fail-btn:hover {
+  color: #ef4444; /* Red */
+  border-color: #ef4444;
+  background-color: rgba(239, 68, 68, 0.1);
+}
+
+.ftq-fail-btn.selected {
+  background-color: #fee2e2;
+  color: #b91c1c;
+  border-color: #b91c1c;
+}
+
+.ftq-icon-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
 }
 
 /* Answer Box */

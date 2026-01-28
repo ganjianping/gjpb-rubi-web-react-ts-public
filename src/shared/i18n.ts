@@ -703,6 +703,10 @@ const translations: Translations = {
     EN: 'Fill in the blank...',
     ZH: '填写空白...',
   },
+  yourAnswer: {
+    EN: 'Your Answer...',
+    ZH: '您的答案...',
+  },
   tryAgain: {
     EN: 'Try Again',
     ZH: '再试一次',
