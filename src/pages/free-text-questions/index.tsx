@@ -183,7 +183,7 @@ export default function FreeTextQuestionsPage() {
   return (
     <div className="ftq-page">
       <Filters
-        title={t('freeTextQuestions', language)}
+        title={t('questions', language)}
         filters={filters}
         onFilterChange={handleFilterChange}
         filterFields={filterFields}

@@ -58,6 +58,32 @@ export function generatePrintExamSheet({ questions, title, language }: PrintExam
       font-size: 10pt;
       color: #333;
     }
+
+    .print-controls {
+      display: flex;
+      justify-content: flex-end;
+      gap: 0.5rem;
+      margin: 0.6cm 0 0 0;
+    }
+
+    .print-button {
+      appearance: none;
+      border: 1px solid #333;
+      background: transparent;
+      padding: 0.4rem 0.6rem;
+      font-size: 11pt;
+      cursor: pointer;
+    }
+
+    /* Screen preview wrapper: adds margins and subtle card look for browser preview */
+    .screen-wrapper {
+      max-width: 1000px;
+      margin: 24px auto;
+      padding: 20px;
+      background: #ffffff;
+      box-shadow: 0 6px 18px rgba(0,0,0,0.06);
+      border-radius: 6px;
+    }
     
     .student-info {
       display: flex;
@@ -181,10 +207,23 @@ export function generatePrintExamSheet({ questions, title, language }: PrintExam
       .page-break {
         page-break-after: always;
       }
+      /* remove screen-only wrapper for print */
+      .screen-wrapper {
+        margin: 0;
+        padding: 0;
+        box-shadow: none;
+        border-radius: 0;
+        background: transparent;
+      }
     }
   </style>
 </head>
 <body>
+  <div class="screen-wrapper">
+    <div class="print-controls no-print">
+    <button class="print-button" onclick="window.print()" aria-label="${language === 'ZH' ? '打印' : 'Print'}">${language === 'ZH' ? '打印' : 'Print'}</button>
+  </div>
+
   <div class="questions-container">
     ${questions.map((q, index) => {
       let questionHtml = `<div class="question-block">`
@@ -261,14 +300,8 @@ export function generatePrintExamSheet({ questions, title, language }: PrintExam
       return questionHtml
     }).join('')}
   </div>
+  </div>
 
-  <script>
-    window.onload = function() {
-      setTimeout(function() {
-        window.print()
-      }, 500)
-    }
-  </script>
 </body>
 </html>
   `
