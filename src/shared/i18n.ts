@@ -711,6 +711,14 @@ const translations: Translations = {
     EN: 'Print Exam Sheet',
     ZH: '打印试卷',
   },
+  printOptions: {
+    EN: 'Print Options',
+    ZH: '打印选项',
+  },
+  showExplanation: {
+    EN: 'Show Explanation',
+    ZH: '显示解释',
+  },
   tryAgain: {
     EN: 'Try Again',
     ZH: '再试一次',

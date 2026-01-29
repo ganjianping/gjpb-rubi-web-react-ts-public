@@ -4,9 +4,11 @@ interface PrintExamSheetOptions {
   questions: FreeTextQuestion[]
   title: string
   language: 'EN' | 'ZH'
+  showAnswer?: boolean
+  showExplanation?: boolean
 }
 
-export function generatePrintExamSheet({ questions, title, language }: PrintExamSheetOptions): string {
+export function generatePrintExamSheet({ questions, title, language, showAnswer = false, showExplanation = false }: PrintExamSheetOptions): string {
   // inline date in template to avoid unused-variable linter errors
 
   return `
@@ -182,8 +184,28 @@ export function generatePrintExamSheet({ questions, title, language }: PrintExam
     
     .answer-line {
       border-bottom: 1px solid #666;
-      height: 0.8cm;
+      min-height: 0.8cm;
       margin: 0.3cm 0;
+      padding: 0.2cm 0;
+      line-height: 1.4;
+      font-weight: 500;
+    }
+    
+    .answer-section {
+      margin-top: 0.3cm;
+      padding: 0.3cm;
+      background: #f0f9ff;
+      border-left: 3px solid #0369a1;
+      font-size: 11pt;
+    }
+    
+    .explanation-section {
+      margin-top: 0.5cm;
+      padding: 0.4cm;
+      background: #fef3c7;
+      border-left: 3px solid #d97706;
+      font-size: 11pt;
+      line-height: 1.7;
     }
     
     .footer {
@@ -220,13 +242,10 @@ export function generatePrintExamSheet({ questions, title, language }: PrintExam
 </head>
 <body>
   <div class="screen-wrapper">
-    <div class="print-controls no-print">
-    <button class="print-button" onclick="window.print()" aria-label="${language === 'ZH' ? '打印' : 'Print'}">${language === 'ZH' ? '打印' : 'Print'}</button>
-  </div>
 
-  <div class="questions-container">
-    ${questions.map((q, index) => {
-      let questionHtml = `<div class="question-block">`
+    <div class="questions-container">
+        ${questions.map((q, index) => {
+        let questionHtml = `<div class="question-block">`
 
       questionHtml += `<div class="question-content">`
 
@@ -253,22 +272,27 @@ export function generatePrintExamSheet({ questions, title, language }: PrintExam
           qtext = numHtml + ' ' + qtext
         }
         questionHtml += `<div class="question-text">${qtext}</div>`
+        
         questionHtml += `
           <div class="answer-space">
+            <div class="answer-line">${showAnswer && q.answer ? q.answer : ''}</div>${!showAnswer ? `
             <div class="answer-line"></div>
-            <div class="answer-line"></div>
-            <div class="answer-line"></div>
+            <div class="answer-line"></div>` : ''}
           </div>`
+      }
+      
+      if (showExplanation && q.explanation) {
+        questionHtml += `<div class="explanation-section"><strong>${language === 'ZH' ? '解释' : 'Explanation'}:</strong> ${q.explanation}</div>`
       }
       
       // Sub-questions
       const subQuestions = [
-        { label: 'a)', text: q.questiona },
-        { label: 'b)', text: q.questionb },
-        { label: 'c)', text: q.questionc },
-        { label: 'd)', text: q.questiond },
-        { label: 'e)', text: q.questione },
-        { label: 'f)', text: q.questionf }
+        { label: 'a)', text: q.questiona, answer: q.answera },
+        { label: 'b)', text: q.questionb, answer: q.answerb },
+        { label: 'c)', text: q.questionc, answer: q.answerc },
+        { label: 'd)', text: q.questiond, answer: q.answerd },
+        { label: 'e)', text: q.questione, answer: q.answere },
+        { label: 'f)', text: q.questionf, answer: q.answerf }
       ].filter(sq => sq.text)
       
       if (subQuestions.length > 0) {
@@ -286,8 +310,8 @@ export function generatePrintExamSheet({ questions, title, language }: PrintExam
             <div class="sub-question">
               <span class="sub-question-text">${subText}</span>
               <div class="answer-space">
-                <div class="answer-line"></div>
-                <div class="answer-line"></div>
+                <div class="answer-line">${showAnswer && sq.answer ? sq.answer : ''}</div>${!showAnswer ? `
+                <div class="answer-line"></div>` : ''}
               </div>
             </div>`
         })
@@ -300,10 +324,6 @@ export function generatePrintExamSheet({ questions, title, language }: PrintExam
       return questionHtml
     }).join('')}
   </div>
-  </div>
-
-</body>
-</html>
   `
 }
 

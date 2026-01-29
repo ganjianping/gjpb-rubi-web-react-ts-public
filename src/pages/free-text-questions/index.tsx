@@ -28,6 +28,8 @@ export default function FreeTextQuestionsPage() {
   const [filters, setFilters] = useState<FreeTextQuestionFilters>(initialFilters)
   const [selectedTags, setSelectedTags] = useState<string[]>([])
   const [isExpandedView, setIsExpandedView] = useState(false)
+  const [showPrintDialog, setShowPrintDialog] = useState(false)
+  const [printOptions, setPrintOptions] = useState({ showAnswer: false, showExplanation: false })
   
   const isMountedRef = useRef(true)
   
@@ -171,13 +173,20 @@ export default function FreeTextQuestionsPage() {
     setIsExpandedView(prev => !prev)
   }
 
+  const handleShowPrintDialog = () => {
+    setShowPrintDialog(true)
+  }
+
   const handlePrintExam = () => {
     const htmlContent = generatePrintExamSheet({
       questions,
-      title: t('freeTextQuestions', language),
-      language
+      title: t('questions', language),
+      language,
+      showAnswer: printOptions.showAnswer,
+      showExplanation: printOptions.showExplanation
     })
     openPrintWindow(htmlContent)
+    setShowPrintDialog(false)
   }
 
   return (
@@ -195,7 +204,7 @@ export default function FreeTextQuestionsPage() {
         customActions={
           <>
             <button 
-              onClick={handlePrintExam}
+              onClick={handleShowPrintDialog}
               title={t('printExamSheet', language)}
               aria-label={t('printExamSheet', language)}
               className="action-btn"
@@ -274,6 +283,40 @@ export default function FreeTextQuestionsPage() {
             onPageSizeChange={handlePageSizeChange}
             totalElements={totalElements}
           />
+        </div>
+      )}
+
+      {showPrintDialog && (
+        <div className="print-dialog-overlay" onClick={() => setShowPrintDialog(false)}>
+          <div className="print-dialog" onClick={(e) => e.stopPropagation()}>
+            <h3>{t('printOptions', language)}</h3>
+            <div className="print-options">
+              <label>
+                <input
+                  type="checkbox"
+                  checked={printOptions.showAnswer}
+                  onChange={(e) => setPrintOptions(prev => ({ ...prev, showAnswer: e.target.checked }))}
+                />
+                {t('showAnswer', language)}
+              </label>
+              <label>
+                <input
+                  type="checkbox"
+                  checked={printOptions.showExplanation}
+                  onChange={(e) => setPrintOptions(prev => ({ ...prev, showExplanation: e.target.checked }))}
+                />
+                {t('showExplanation', language)}
+              </label>
+            </div>
+            <div className="print-dialog-actions">
+              <button onClick={() => setShowPrintDialog(false)} className="cancel-btn">
+                {t('cancel', language)}
+              </button>
+              <button onClick={handlePrintExam} className="print-btn">
+                {t('print', language)}
+              </button>
+            </div>
+          </div>
         </div>
       )}
     </div>
