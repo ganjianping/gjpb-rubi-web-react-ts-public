@@ -108,7 +108,8 @@ export default function FillBlankQuestionCard({ question, isExpandedView: defaul
 
   // Render question with inline input fields
   const renderQuestionWithInputs = useCallback(() => {
-    let sanitizedQuestion = DOMPurify.sanitize(question.question)
+    // Sanitize and strip all paragraph tags to prevent nesting issues
+    let sanitizedQuestion = DOMPurify.sanitize(question.question).replace(/<\/?p[^>]*>/g, '')
     let blankIndex = 0
     
     // Replace each ____ with a placeholder for input
