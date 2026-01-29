@@ -7,6 +7,7 @@ import MultipleChoiceQuestionCard from './MultipleChoiceQuestionCard'
 import Filters from '@/shared/ui/Filters'
 import Pagination from '@/shared/ui/Pagination'
 import { SkeletonGrid } from '@/shared/ui/Skeleton'
+import { generatePrintExamSheet, openPrintWindow } from './printExamSheet'
 import './index.css'
 
 export default function MultipleChoiceQuestionsPage() {
@@ -27,6 +28,11 @@ export default function MultipleChoiceQuestionsPage() {
   const [filters, setFilters] = useState<MultipleChoiceQuestionFilters>(initialFilters)
   const [selectedTags, setSelectedTags] = useState<string[]>([])
   const [isExpandedView, setIsExpandedView] = useState(false)
+  const [showPrintDialog, setShowPrintDialog] = useState(false)
+  const [printOptions, setPrintOptions] = useState({
+    showAnswer: false,
+    showExplanation: false
+  })
   
   // Use ref to track if component is mounted
   const isMountedRef = useRef(true)
@@ -182,11 +188,28 @@ export default function MultipleChoiceQuestionsPage() {
     setIsExpandedView(prev => !prev)
   }
 
+  const handleShowPrintDialog = () => {
+    setShowPrintDialog(true)
+  }
+
+  const handlePrintExam = () => {
+    const htmlContent = generatePrintExamSheet({
+      questions,
+      title: t('multipleChoiceQuestions', language),
+      language,
+      showAnswer: printOptions.showAnswer,
+      showExplanation: printOptions.showExplanation
+    })
+    
+    openPrintWindow(htmlContent)
+    setShowPrintDialog(false)
+  }
+
   return (
     <div className="mcq-page">
       {/* Header and Filters */}
       <Filters
-        title={t('multipleChoiceQuestions', language)}
+        title={t('questions', language)}
         filters={filters}
         onFilterChange={handleFilterChange}
         filterFields={filterFields}
@@ -196,31 +219,46 @@ export default function MultipleChoiceQuestionsPage() {
         onReset={handleReset}
         totalElements={totalElements}
         customActions={
-          <button 
-            onClick={handleToggleView}
-            title={isExpandedView ? t('showCompactView', language) : t('showDetailedView', language)}
-            aria-label={isExpandedView ? t('showCompactView', language) : t('showDetailedView', language)}
-            className={`action-btn ${isExpandedView ? 'active' : ''}`}
-            type="button"
-          >
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-              {isExpandedView ? (
-                // Compact view icon: single card with minimal content
-                <g>
-                  <rect x="3" y="4" width="18" height="16" rx="2" stroke="currentColor" strokeWidth="2" fill="none"/>
-                  <line x1="6" y1="8" x2="18" y2="8" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
-                </g>
-              ) : (
-                // Detailed view icon: card with multiple lines
-                <g>
-                  <rect x="3" y="4" width="18" height="16" rx="2" stroke="currentColor" strokeWidth="2" fill="none"/>
-                  <line x1="6" y1="8" x2="18" y2="8" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
-                  <line x1="6" y1="12" x2="14" y2="12" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
-                  <line x1="6" y1="16" x2="16" y2="16" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
-                </g>
-              )}
-            </svg>
-          </button>
+          <>
+            <button 
+              onClick={handleToggleView}
+              title={isExpandedView ? t('showCompactView', language) : t('showDetailedView', language)}
+              aria-label={isExpandedView ? t('showCompactView', language) : t('showDetailedView', language)}
+              className={`action-btn ${isExpandedView ? 'active' : ''}`}
+              type="button"
+            >
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                {isExpandedView ? (
+                  // Compact view icon: single card with minimal content
+                  <g>
+                    <rect x="3" y="4" width="18" height="16" rx="2" stroke="currentColor" strokeWidth="2" fill="none"/>
+                    <line x1="6" y1="8" x2="18" y2="8" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
+                  </g>
+                ) : (
+                  // Detailed view icon: card with multiple lines
+                  <g>
+                    <rect x="3" y="4" width="18" height="16" rx="2" stroke="currentColor" strokeWidth="2" fill="none"/>
+                    <line x1="6" y1="8" x2="18" y2="8" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
+                    <line x1="6" y1="12" x2="14" y2="12" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
+                    <line x1="6" y1="16" x2="16" y2="16" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
+                  </g>
+                )}
+              </svg>
+            </button>
+            <button 
+              onClick={handleShowPrintDialog}
+              title={t('printExamSheet', language)}
+              aria-label={t('printExamSheet', language)}
+              className="action-btn"
+              type="button"
+            >
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M6 9V2h12v7" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                <path d="M6 14h12v8H6z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+              </svg>
+            </button>
+          </>
         }
       />
 
@@ -270,6 +308,41 @@ export default function MultipleChoiceQuestionsPage() {
             onPageSizeChange={handlePageSizeChange}
             totalElements={totalElements}
           />
+        </div>
+      )}
+
+      {/* Print Dialog */}
+      {showPrintDialog && (
+        <div className="print-dialog-overlay" onClick={() => setShowPrintDialog(false)}>
+          <div className="print-dialog" onClick={(e) => e.stopPropagation()}>
+            <h3>{t('printOptions', language)}</h3>
+            <div className="print-options">
+              <label>
+                <input
+                  type="checkbox"
+                  checked={printOptions.showAnswer}
+                  onChange={(e) => setPrintOptions({ ...printOptions, showAnswer: e.target.checked })}
+                />
+                <span>{t('showAnswer', language)}</span>
+              </label>
+              <label>
+                <input
+                  type="checkbox"
+                  checked={printOptions.showExplanation}
+                  onChange={(e) => setPrintOptions({ ...printOptions, showExplanation: e.target.checked })}
+                />
+                <span>{t('showExplanation', language)}</span>
+              </label>
+            </div>
+            <div className="print-dialog-actions">
+              <button className="btn-secondary" onClick={() => setShowPrintDialog(false)}>
+                {t('cancel', language)}
+              </button>
+              <button className="btn-primary" onClick={handlePrintExam}>
+                {t('print', language)}
+              </button>
+            </div>
+          </div>
         </div>
       )}
     </div>
