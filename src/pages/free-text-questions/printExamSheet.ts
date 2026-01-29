@@ -7,11 +7,7 @@ interface PrintExamSheetOptions {
 }
 
 export function generatePrintExamSheet({ questions, title, language }: PrintExamSheetOptions): string {
-  const currentDate = new Date().toLocaleDateString(language === 'ZH' ? 'zh-CN' : 'en-US', {
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric'
-  })
+  // inline date in template to avoid unused-variable linter errors
 
   return `
 <!DOCTYPE html>
