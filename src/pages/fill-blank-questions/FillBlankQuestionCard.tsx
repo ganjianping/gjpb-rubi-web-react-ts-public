@@ -47,16 +47,6 @@ export default function FillBlankQuestionCard({ question, isExpandedView: defaul
     inputRefs.current = new Array(blankCount).fill(null)
   }, [blankCount])
 
-  // Auto-check when all inputs are filled
-  useEffect(() => {
-    if (isAnswered || blankCount === 0) return
-    
-    const allFilled = userAnswers.length === blankCount && userAnswers.every(ans => ans.trim() !== '')
-    if (allFilled) {
-      checkAnswers()
-    }
-  }, [userAnswers, blankCount, isAnswered])
-
   const checkAnswers = useCallback(async () => {
     const allCorrect = userAnswers.every((ans, idx) => 
       ans.trim().toLowerCase() === (correctAnswers[idx] || '').toLowerCase()
@@ -95,6 +85,15 @@ export default function FillBlankQuestionCard({ question, isExpandedView: defaul
       return newAnswers
     })
   }, [])
+
+  const handleCheckAnswers = useCallback(async (e: React.MouseEvent) => {
+    e.stopPropagation()
+    // Check if all inputs are filled
+    const allFilled = userAnswers.length === blankCount && userAnswers.every(ans => ans.trim() !== '')
+    if (!allFilled) return
+    
+    await checkAnswers()
+  }, [userAnswers, blankCount, checkAnswers])
 
   const handleReset = useCallback((e: React.MouseEvent) => {
     e.stopPropagation()
@@ -200,8 +199,22 @@ export default function FillBlankQuestionCard({ question, isExpandedView: defaul
             </div>
           </div>
 
-          {isAnswered && (
-            <div className="fbq-actions">
+          <div className="fbq-actions">
+            {!isAnswered && (
+              <button 
+                className="fbq-check-btn"
+                onClick={handleCheckAnswers}
+                disabled={userAnswers.length !== blankCount || !userAnswers.every(ans => ans.trim() !== '')}
+                type="button"
+                title={t('checkAnswer', language)}
+                aria-label={t('checkAnswer', language)}
+              >
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M20 6L9 17l-5-5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                </svg>
+              </button>
+            )}
+            {isAnswered && (
               <button 
                 className="fbq-reset-btn"
                 onClick={handleReset}
@@ -209,8 +222,8 @@ export default function FillBlankQuestionCard({ question, isExpandedView: defaul
               >
                 {t('tryAgain', language)}
               </button>
-            </div>
-          )}
+            )}
+          </div>
 
           {isAnswered && (
             <>

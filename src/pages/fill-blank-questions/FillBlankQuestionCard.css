@@ -246,11 +246,19 @@
   cursor: pointer;
   transition: all 0.2s;
   white-space: nowrap;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
 }
 
 .fbq-check-btn {
   background: var(--primary-color);
   color: white;
+  width: 48px;
+  height: 48px;
+  padding: 0;
+  border-radius: 50%;
 }
 
 .fbq-check-btn:hover:not(:disabled) {
