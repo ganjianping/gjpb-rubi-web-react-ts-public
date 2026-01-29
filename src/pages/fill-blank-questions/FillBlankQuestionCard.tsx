@@ -1,4 +1,4 @@
-import { useState, useCallback, useEffect } from 'react'
+import { useState, useCallback, useEffect, useMemo, useRef } from 'react'
 import DOMPurify from 'dompurify'
 import { useAppSettings } from '@/shared/contexts/AppSettingsContext'
 import { t } from '@/shared/i18n'
@@ -24,13 +24,53 @@ const renderHTML = (html: string) => {
 export default function FillBlankQuestionCard({ question, isExpandedView: defaultExpanded = false }: FillBlankQuestionCardProps) {
   const { language } = useAppSettings()
   const [isExpanded, setIsExpanded] = useState(defaultExpanded)
-  const [userAnswer, setUserAnswer] = useState('')
+  const [userAnswers, setUserAnswers] = useState<string[]>([])
   const [isAnswered, setIsAnswered] = useState(false)
   const [isCorrect, setIsCorrect] = useState<boolean | null>(null)
+  const inputRefs = useRef<(HTMLInputElement | null)[]>([])
+
+  // Parse blanks count and correct answers
+  const { blankCount, correctAnswers } = useMemo(() => {
+    const sanitized = DOMPurify.sanitize(question.question, { ALLOWED_TAGS: [] })
+    const count = (sanitized.match(/____/g) || []).length
+    const answers = question.answer.split(',').map(a => a.trim())
+    return { blankCount: count, correctAnswers: answers }
+  }, [question.question, question.answer])
 
   useEffect(() => {
     setIsExpanded(defaultExpanded)
   }, [defaultExpanded])
+
+  useEffect(() => {
+    // Initialize user answers array when blank count changes
+    setUserAnswers(new Array(blankCount).fill(''))
+    inputRefs.current = new Array(blankCount).fill(null)
+  }, [blankCount])
+
+  // Auto-check when all inputs are filled
+  useEffect(() => {
+    if (isAnswered || blankCount === 0) return
+    
+    const allFilled = userAnswers.length === blankCount && userAnswers.every(ans => ans.trim() !== '')
+    if (allFilled) {
+      checkAnswers()
+    }
+  }, [userAnswers, blankCount, isAnswered])
+
+  const checkAnswers = useCallback(async () => {
+    const allCorrect = userAnswers.every((ans, idx) => 
+      ans.trim().toLowerCase() === (correctAnswers[idx] || '').toLowerCase()
+    )
+    setIsCorrect(allCorrect)
+    setIsAnswered(true)
+
+    // Track success/fail
+    if (allCorrect) {
+      await markFillBlankQuestionSuccessful(question.id)
+    } else {
+      await markFillBlankQuestionFailed(question.id)
+    }
+  }, [userAnswers, correctAnswers, question.id])
 
   const handleCardClick = useCallback(() => {
     if (!isExpanded) {
@@ -42,34 +82,74 @@ export default function FillBlankQuestionCard({ question, isExpandedView: defaul
     e.stopPropagation()
     setIsExpanded(!isExpanded)
     if (isExpanded) {
-      setUserAnswer('')
+      setUserAnswers(new Array(blankCount).fill(''))
       setIsAnswered(false)
       setIsCorrect(null)
     }
-  }, [isExpanded])
+  }, [isExpanded, blankCount])
 
-  const handleCheckAnswer = useCallback(async (e: React.MouseEvent) => {
-    e.stopPropagation()
-    if (!userAnswer.trim()) return
-
-    const correct = userAnswer.trim().toLowerCase() === question.answer.toLowerCase()
-    setIsCorrect(correct)
-    setIsAnswered(true)
-
-    // Track success/fail
-    if (correct) {
-      await markFillBlankQuestionSuccessful(question.id)
-    } else {
-      await markFillBlankQuestionFailed(question.id)
-    }
-  }, [userAnswer, question.id, question.answer])
+  const handleInputChange = useCallback((index: number, value: string) => {
+    setUserAnswers(prev => {
+      const newAnswers = [...prev]
+      newAnswers[index] = value
+      return newAnswers
+    })
+  }, [])
 
   const handleReset = useCallback((e: React.MouseEvent) => {
     e.stopPropagation()
-    setUserAnswer('')
+    setUserAnswers(new Array(blankCount).fill(''))
     setIsAnswered(false)
     setIsCorrect(null)
-  }, [])
+    // Focus first input after reset
+    setTimeout(() => {
+      inputRefs.current[0]?.focus()
+    }, 0)
+  }, [blankCount])
+
+  // Render question with inline input fields
+  const renderQuestionWithInputs = useCallback(() => {
+    let sanitizedQuestion = DOMPurify.sanitize(question.question)
+    let blankIndex = 0
+    
+    // Replace each ____ with a placeholder for input
+    sanitizedQuestion = sanitizedQuestion.replace(/____/g, () => {
+      const placeholder = `<!--BLANK_${blankIndex}-->`
+      blankIndex++
+      return placeholder
+    })
+
+    // Split by placeholders
+    const parts = sanitizedQuestion.split(/<!--BLANK_(\d+)-->/)
+    
+    return (
+      <div className="fbq-card-question-interactive">
+        {parts.map((part, idx) => {
+          // Odd indices are blank numbers
+          if (idx % 2 === 1) {
+            const blankIdx = parseInt(part)
+            const isIncorrect = isAnswered && userAnswers[blankIdx]?.trim().toLowerCase() !== (correctAnswers[blankIdx] || '').toLowerCase()
+            
+            return (
+              <input
+                key={`blank-${blankIdx}`}
+                ref={el => { inputRefs.current[blankIdx] = el }}
+                type="text"
+                className={`fbq-inline-input ${isAnswered ? (isIncorrect ? 'incorrect' : 'correct') : ''}`}
+                value={userAnswers[blankIdx] || ''}
+                onChange={(e) => handleInputChange(blankIdx, e.target.value)}
+                disabled={isAnswered}
+                placeholder="____"
+                autoComplete="off"
+              />
+            )
+          }
+          // Even indices are HTML content
+          return <span key={`text-${idx}`} dangerouslySetInnerHTML={{ __html: part }} />
+        })}
+      </div>
+    )
+  }, [question.question, userAnswers, isAnswered, correctAnswers, handleInputChange])
 
   return (
     <div className={`fbq-card ${isExpanded ? 'expanded' : 'collapsed'}`}>
@@ -90,7 +170,7 @@ export default function FillBlankQuestionCard({ question, isExpandedView: defaul
       {isExpanded && (
         <div className="fbq-card-expanded">
           <div className="fbq-card-header-expanded">
-            <div className="fbq-card-question-full" dangerouslySetInnerHTML={renderHTML(question.question)} />
+            {renderQuestionWithInputs()}
             <button 
               className="collapse-btn"
               onClick={toggleExpanded}
@@ -120,31 +200,8 @@ export default function FillBlankQuestionCard({ question, isExpandedView: defaul
             </div>
           </div>
 
-          <div className="fbq-answer-section">
-            <input
-              type="text"
-              className="fbq-input"
-              value={userAnswer}
-              onChange={(e) => setUserAnswer(e.target.value)}
-              placeholder={t('fillInTheBlank', language)}
-              disabled={isAnswered}
-              onKeyDown={(e) => {
-                if (e.key === 'Enter' && !isAnswered) {
-                  handleCheckAnswer(e as unknown as React.MouseEvent)
-                }
-              }}
-            />
-            {!isAnswered && (
-              <button 
-                className="fbq-check-btn"
-                onClick={handleCheckAnswer}
-                disabled={!userAnswer.trim()}
-                type="button"
-              >
-                {t('checkAnswer', language)}
-              </button>
-            )}
-            {isAnswered && (
+          {isAnswered && (
+            <div className="fbq-actions">
               <button 
                 className="fbq-reset-btn"
                 onClick={handleReset}
@@ -152,8 +209,8 @@ export default function FillBlankQuestionCard({ question, isExpandedView: defaul
               >
                 {t('tryAgain', language)}
               </button>
-            )}
-          </div>
+            </div>
+          )}
 
           {isAnswered && (
             <>
@@ -174,7 +231,13 @@ export default function FillBlankQuestionCard({ question, isExpandedView: defaul
               {!isCorrect && (
                 <div className="fbq-answer">
                   <h4>{t('correctAnswer', language)}</h4>
-                  <div className="answer-content" dangerouslySetInnerHTML={renderHTML(question.answer)} />
+                  <div className="answer-content">
+                    {correctAnswers.map((ans, idx) => (
+                      <div key={idx} className="answer-item">
+                        <span className="answer-label">({idx + 1})</span> {ans}
+                      </div>
+                    ))}
+                  </div>
                 </div>
               )}
 

@@ -175,7 +175,7 @@ export default function FillBlankQuestionsPage() {
   return (
     <div className="fbq-page">
       <Filters
-        title={t('fillBlankQuestions', language)}
+        title={t('questions', language)}
         filters={filters}
         onFilterChange={handleFilterChange}
         filterFields={filterFields}
