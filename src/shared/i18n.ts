@@ -707,6 +707,10 @@ const translations: Translations = {
     EN: 'Your Answer...',
     ZH: '您的答案...',
   },
+  printExamSheet: {
+    EN: 'Print Exam Sheet',
+    ZH: '打印试卷',
+  },
   tryAgain: {
     EN: 'Try Again',
     ZH: '再试一次',

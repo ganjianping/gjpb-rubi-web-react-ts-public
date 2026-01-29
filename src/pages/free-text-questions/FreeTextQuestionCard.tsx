@@ -221,28 +221,37 @@ export default function FreeTextQuestionCard({ question, isExpandedView: default
 
       {isExpanded && (
         <div className="ftq-card-expanded">
-          <div className="ftq-card-header-expanded">
-            <button 
-              className="collapse-btn"
-              onClick={toggleExpanded}
-              type="button"
-              aria-label={t('hide', language)}
-            >
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M5 15l7-7 7 7" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-              </svg>
-            </button>
-          </div>
-
           {/* Show description if main question is empty */}
           {!question.question && question.description && (
-            <div className="ftq-exam-description" dangerouslySetInnerHTML={renderHTML(question.description)} />
+            <div className="ftq-exam-description">
+              <button 
+                className="collapse-btn"
+                onClick={toggleExpanded}
+                type="button"
+                aria-label={t('hide', language)}
+              >
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M5 15l7-7 7 7" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                </svg>
+              </button>
+              <div dangerouslySetInnerHTML={renderHTML(question.description)} />
+            </div>
           )}
 
           {/* Main question and answer (if present) */}
           {question.question && (
             <div className="ftq-exam-main-question">
               <div className="ftq-exam-question-line">
+                <button 
+                  className="collapse-btn"
+                  onClick={toggleExpanded}
+                  type="button"
+                  aria-label={t('hide', language)}
+                >
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M5 15l7-7 7 7" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                  </svg>
+                </button>
                 <div className="ftq-exam-text" dangerouslySetInnerHTML={renderHTML(question.question)} />
               </div>
               <div className="ftq-exam-interaction-row">
@@ -376,15 +385,6 @@ export default function FreeTextQuestionCard({ question, isExpandedView: default
             <div className="ftq-explanation">
               <h4>{t('explanation', language)}</h4>
               <div className="explanation-content" dangerouslySetInnerHTML={renderHTML(question.explanation)} />
-            </div>
-          )}
-
-          {question.difficultyLevel && (
-            <div className="ftq-metadata">
-              <div className="ftq-meta-item">
-                <span className="meta-icon">📊</span>
-                <span className="meta-value difficulty">{question.difficultyLevel}</span>
-              </div>
             </div>
           )}
         </div>

@@ -62,12 +62,6 @@
   padding: 0 1rem;
 }
 
-.ftq-card-header-expanded {
-  display: flex;
-  justify-content: flex-end;
-  margin-bottom: 0; /* Tighten up */
-}
-
 /* Description (Passage/Context) */
 .ftq-exam-description {
   font-family: ui-serif, Georgia, Cambria, "Times New Roman", Times, serif;
@@ -79,6 +73,13 @@
   border-radius: 4px;
   border-left: 3px solid var(--primary-color);
   margin-bottom: 1rem;
+  position: relative;
+}
+
+.ftq-exam-description .collapse-btn {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
 }
 
 .ftq-exam-description img {
@@ -91,6 +92,13 @@
 /* Main Main Question (if exists) */
 .ftq-exam-main-question {
   margin-bottom: 1.5rem;
+  position: relative;
+}
+
+.ftq-exam-main-question .collapse-btn {
+  position: absolute;
+  top: 0;
+  right: 0;
 }
 
 /* Common Question Line Layout */
@@ -99,6 +107,7 @@
   flex-wrap: wrap;
   align-items: baseline;
   gap: 0.5rem;
+  padding-right: 3rem; /* Make room for collapse button */
 }
 
 .ftq-exam-text {
