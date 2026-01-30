@@ -65,7 +65,6 @@ export default function TrueFalseQuestionCard({ question, isExpandedView: defaul
     e.stopPropagation()
     setIsAnswered(false)
     setIsCorrect(null)
-    setIsCorrect(null)
   }, [])
 
   return (
@@ -88,32 +87,17 @@ export default function TrueFalseQuestionCard({ question, isExpandedView: defaul
         <div className="tfq-card-expanded">
           <div className="tfq-card-header-expanded">
             <div className="tfq-card-question-full" dangerouslySetInnerHTML={renderHTML(question.question)} />
-            <button 
-              className="collapse-btn"
-              onClick={toggleExpanded}
-              type="button"
-              aria-label={t('hide', language)}
-            >
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M5 15l7-7 7 7" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-              </svg>
-            </button>
-          </div>
-
-          <div className="tfq-metadata">
-            {question.difficultyLevel && (
-              <div className="tfq-meta-item">
-                <span className="meta-icon">📊</span>
-                <span className="meta-value difficulty">{question.difficultyLevel}</span>
-              </div>
-            )}
-            <div className="tfq-meta-item">
-              <span className="meta-icon">✅</span>
-              <span className="meta-value success">{question.successCount}</span>
-            </div>
-            <div className="tfq-meta-item">
-              <span className="meta-icon">❌</span>
-              <span className="meta-value fail">{question.failCount}</span>
+            <div className="tfq-header-controls">
+              <button 
+                className="collapse-btn"
+                onClick={toggleExpanded}
+                type="button"
+                aria-label={t('hide', language)}
+              >
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M5 15l7-7 7 7" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                </svg>
+              </button>
             </div>
           </div>
 
@@ -135,6 +119,18 @@ export default function TrueFalseQuestionCard({ question, isExpandedView: defaul
               </button>
             </div>
           )}
+
+          <div className="tfq-actions">
+            {isAnswered && (
+              <button 
+                className="tfq-reset-btn"
+                onClick={handleReset}
+                type="button"
+              >
+                {t('tryAgain', language)}
+              </button>
+            )}
+          </div>
 
           {isAnswered && (
             <>
@@ -167,16 +163,25 @@ export default function TrueFalseQuestionCard({ question, isExpandedView: defaul
                   <div className="explanation-content" dangerouslySetInnerHTML={renderHTML(question.explanation)} />
                 </div>
               )}
-
-              <button 
-                className="tfq-reset-btn"
-                onClick={handleReset}
-                type="button"
-              >
-                {t('tryAgain', language)}
-              </button>
             </>
           )}
+
+          <div className="tfq-metadata">
+            {question.difficultyLevel && (
+              <div className="tfq-meta-item">
+                <span className="meta-icon">📊</span>
+                <span className="meta-value difficulty">{question.difficultyLevel}</span>
+              </div>
+            )}
+            <div className="tfq-meta-item">
+              <span className="meta-icon">✅</span>
+              <span className="meta-value success">{question.successCount}</span>
+            </div>
+            <div className="tfq-meta-item">
+              <span className="meta-icon">❌</span>
+              <span className="meta-value fail">{question.failCount}</span>
+            </div>
+          </div>
         </div>
       )}
     </div>
