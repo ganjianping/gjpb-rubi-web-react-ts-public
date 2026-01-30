@@ -166,6 +166,18 @@ export function generatePrintExamSheet({ questions, title, language, showAnswer 
       justify-content: center;
       font-size: 14px;
     }
+
+    .correct-icon {
+      color: #0b6623;
+      font-weight: 700;
+      margin-left: 0.25rem;
+    }
+
+    .wrong-icon {
+      color: #b91c1c;
+      font-weight: 700;
+      margin-left: 0.25rem;
+    }
     
     .answer-section {
       margin-top: 0.5cm;
@@ -177,7 +189,7 @@ export function generatePrintExamSheet({ questions, title, language, showAnswer 
     
     .explanation-section {
       margin-top: 0.5cm;
-      padding: 0.4cm;
+      padding: 0.1cm 0.4cm 0.1cm
       border-left: 3px solid #000;
       font-size: 11pt;
       line-height: 1.7;
@@ -217,33 +229,45 @@ export function generatePrintExamSheet({ questions, title, language, showAnswer 
   <div class="screen-wrapper">
     <div class="questions-container">
       ${questions.map((q, index) => {
-        const isTrue = q.answer === 'TRUE';
-        const checkTrue = showAnswer && isTrue ? '✓' : '';
-        const checkFalse = showAnswer && !isTrue ? '✓' : '';
-        
+        const isTrue = q.answer === 'TRUE'
+        const iconHtml = showAnswer ? (isTrue ? '<span class="correct-icon">✓</span>' : '<span class="wrong-icon">✗</span>') : ''
+
+        // prepare question HTML - inject index and icon appropriately
+        let questionHtml = (q.question || '').trim()
+
+        if (/^<p[^>]*>/i.test(questionHtml)) {
+          // inject number after opening <p...>
+          questionHtml = questionHtml.replace(/^<p([^>]*)>/i, `<p$1>${index + 1}. `)
+
+          // if need to show icon and the question ends with </p>, insert before </p>
+          if (iconHtml) {
+            questionHtml = questionHtml.replace(/<\/p>\s*$/i, `${iconHtml}</p>`)
+          }
+        } else {
+          // no enclosing <p> - prefix the number and append icon if needed
+          questionHtml = `${index + 1}. ${questionHtml}${iconHtml ? ' ' + iconHtml : ''}`
+        }
+
         return `
         <div class="question-block">
-          <div class="question-number">${language === 'ZH' ? '问题' : 'Question'} ${index + 1}</div>
           <div class="question-content">
-            <div class="question-text">${q.question}</div>
-            <div class="tf-options">
-              <div class="tf-option">
-                <span class="checkbox">${checkTrue}</span>
-                <span>${language === 'ZH' ? '正确' : 'True'}</span>
-              </div>
-              <div class="tf-option">
-                <span class="checkbox">${checkFalse}</span>
-                <span>${language === 'ZH' ? '错误' : 'False'}</span>
-              </div>
-            </div>
+            <div class="question-text">${questionHtml}</div>
           </div>
-          
-          ${showExplanation && q.explanation ? `
+
+          ${showExplanation && q.explanation ? (() => {
+            const label = language === 'ZH' ? '解释' : 'Explanation'
+            let explanationHtml = (q.explanation || '').trim()
+            if (/^<p[^>]*>/i.test(explanationHtml)) {
+              explanationHtml = explanationHtml.replace(/^<p([^>]*)>/i, `<p$1><strong>${label}:</strong> `)
+            } else {
+              explanationHtml = `<strong>${label}:</strong> ${explanationHtml}`
+            }
+            return `
             <div class="explanation-section">
-              <strong>${language === 'ZH' ? '解释' : 'Explanation'}:</strong>
-              <div>${q.explanation}</div>
+              ${explanationHtml}
             </div>
-          ` : ''}
+          `
+          })() : ''}
         </div>
         `
       }).join('')}
