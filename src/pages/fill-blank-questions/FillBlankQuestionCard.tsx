@@ -171,16 +171,32 @@ export default function FillBlankQuestionCard({ question, isExpandedView: defaul
         <div className="fbq-card-expanded">
           <div className="fbq-card-header-expanded">
             {renderQuestionWithInputs()}
-            <button 
-              className="collapse-btn"
-              onClick={toggleExpanded}
-              type="button"
-              aria-label={t('hide', language)}
-            >
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M5 15l7-7 7 7" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-              </svg>
-            </button>
+            <div className="fbq-header-controls">
+              {!isAnswered && (
+                <button 
+                  className="fbq-check-btn"
+                  onClick={handleCheckAnswers}
+                  disabled={userAnswers.length !== blankCount || !userAnswers.every(ans => ans.trim() !== '')}
+                  type="button"
+                  title={t('checkAnswer', language)}
+                  aria-label={t('checkAnswer', language)}
+                >
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M20 6L9 17l-5-5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                  </svg>
+                </button>
+              )}
+              <button 
+                className="collapse-btn"
+                onClick={toggleExpanded}
+                type="button"
+                aria-label={t('hide', language)}
+              >
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M5 15l7-7 7 7" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                </svg>
+              </button>
+            </div>
           </div>
 
           <div className="fbq-metadata">
@@ -201,20 +217,6 @@ export default function FillBlankQuestionCard({ question, isExpandedView: defaul
           </div>
 
           <div className="fbq-actions">
-            {!isAnswered && (
-              <button 
-                className="fbq-check-btn"
-                onClick={handleCheckAnswers}
-                disabled={userAnswers.length !== blankCount || !userAnswers.every(ans => ans.trim() !== '')}
-                type="button"
-                title={t('checkAnswer', language)}
-                aria-label={t('checkAnswer', language)}
-              >
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <path d="M20 6L9 17l-5-5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                </svg>
-              </button>
-            )}
             {isAnswered && (
               <button 
                 className="fbq-reset-btn"
