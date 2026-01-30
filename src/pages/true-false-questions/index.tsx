@@ -182,7 +182,7 @@ export default function TrueFalseQuestionsPage() {
   const handlePrintExam = () => {
     const htmlContent = generatePrintExamSheet({
       questions,
-      title: t('trueFalseQuestions', language),
+      title: t('questions', language),
       language,
       showAnswer: printOptions.showAnswer,
       showExplanation: printOptions.showExplanation

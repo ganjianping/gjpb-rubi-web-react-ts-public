@@ -148,15 +148,6 @@ export default function TrueFalseQuestionCard({ question, isExpandedView: defaul
                 )}
               </div>
 
-              {!isCorrect && (
-                <div className="tfq-answer">
-                  <h4>{t('correctAnswer', language)}</h4>
-                  <div className="answer-content">
-                    {question.answer === 'TRUE' ? (t('trueFalse', language).split('/')[0] || 'TRUE') : (t('trueFalse', language).split('/')[1] || 'FALSE')}
-                  </div>
-                </div>
-              )}
-
               {question.explanation && (
                 <div className="tfq-explanation">
                   <h4>{t('explanation', language)}</h4>
