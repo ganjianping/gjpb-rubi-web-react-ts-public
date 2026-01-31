@@ -20,6 +20,8 @@ export default function ArticleDetail() {
   const [article, setArticle] = useState<Article | null>(passedArticle || null)
   const [loading, setLoading] = useState(!passedArticle)
   const [error, setError] = useState<string | null>(null)
+  const [showPrintDialog, setShowPrintDialog] = useState(false)
+  const [printWithImages, setPrintWithImages] = useState(true)
 
   useEffect(() => {
     // If article data was passed via state and has content, don't fetch again
@@ -57,7 +59,32 @@ export default function ArticleDetail() {
   }
 
   const handlePrint = () => {
-    window.print()
+    setShowPrintDialog(true)
+  }
+
+  const handlePrintWithOptions = () => {
+    setShowPrintDialog(false)
+    
+    // Add CSS to hide images if user chose to remove them
+    if (!printWithImages) {
+      const style = document.createElement('style')
+      style.id = 'print-no-images-style'
+      style.textContent = '@media print { .article-content img { display: none !important; } }'
+      document.head.appendChild(style)
+    }
+    
+    // Trigger print
+    setTimeout(() => {
+      window.print()
+      
+      // Remove the style after print dialog closes
+      setTimeout(() => {
+        const style = document.getElementById('print-no-images-style')
+        if (style) {
+          style.remove()
+        }
+      }, 1000)
+    }, 100)
   }
 
   const renderHTML = (html: string) => {
@@ -124,6 +151,41 @@ export default function ArticleDetail() {
             </div>
         </div>
       </article>
+
+      {/* Print Dialog */}
+      {showPrintDialog && (
+        <div className="print-dialog-overlay" onClick={() => setShowPrintDialog(false)}>
+          <div className="print-dialog" onClick={(e) => e.stopPropagation()}>
+            <h3>{t('printOptions', language)}</h3>
+            <div className="print-options">
+              <label>
+                <input
+                  type="radio"
+                  checked={printWithImages}
+                  onChange={() => setPrintWithImages(true)}
+                />
+                {t('printWithImages', language) || 'Print with images'}
+              </label>
+              <label>
+                <input
+                  type="radio"
+                  checked={!printWithImages}
+                  onChange={() => setPrintWithImages(false)}
+                />
+                {t('printWithoutImages', language) || 'Print without images'}
+              </label>
+            </div>
+            <div className="print-dialog-actions">
+              <button onClick={() => setShowPrintDialog(false)} className="cancel-btn">
+                {t('cancel', language)}
+              </button>
+              <button onClick={handlePrintWithOptions} className="print-btn">
+                {t('print', language)}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   )
 }
