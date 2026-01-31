@@ -715,6 +715,14 @@ const translations: Translations = {
     EN: 'Print Options',
     ZH: '打印选项',
   },
+  printWithImages: {
+    EN: 'Print with images',
+    ZH: '包含图片打印',
+  },
+  printWithoutImages: {
+    EN: 'Print without images',
+    ZH: '不包含图片打印',
+  },
   showExplanation: {
     EN: 'Show Explanation',
     ZH: '显示解释',
