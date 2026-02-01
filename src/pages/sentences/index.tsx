@@ -7,6 +7,7 @@ import SentenceCard from './SentenceCard'
 import Filters from '@/shared/ui/Filters'
 import Pagination from '@/shared/ui/Pagination'
 import { SkeletonGrid } from '@/shared/ui/Skeleton'
+import { generatePrintSheet, openPrintWindow } from './printSheet'
 import './index.css'
 
 export default function SentencesPage() {
@@ -176,6 +177,18 @@ export default function SentencesPage() {
     window.scrollTo({ top: 0, behavior: 'smooth' })
   }
 
+  const handlePrint = () => {
+    if (sentences.length === 0) return
+    
+    const title = t('sentences', language)
+    const printContent = generatePrintSheet({
+      sentences,
+      title,
+      language
+    })
+    openPrintWindow(printContent)
+  }
+
   return (
     <div className="sentences-page">
       {/* Header and Filters */}
@@ -189,6 +202,21 @@ export default function SentencesPage() {
         onTagSelect={handleTagClick}
         onReset={handleReset}
         totalElements={totalElements}
+        customActions={
+          <button 
+            onClick={handlePrint}
+            title={t('print', language)}
+            aria-label={t('print', language)}
+            className="action-btn"
+            type="button"
+            disabled={sentences.length === 0}
+          >
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M6 9V2h12v7M6 18H4a2 2 0 01-2-2v-5a2 2 0 012-2h16a2 2 0 012 2v5a2 2 0 01-2 2h-2" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+              <path d="M6 14h12v8H6z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+            </svg>
+          </button>
+        }
       />
 
       {/* Loading State */}

@@ -7,6 +7,7 @@ import ExpressionCard from './ExpressionCard'
 import Filters from '@/shared/ui/Filters'
 import Pagination from '@/shared/ui/Pagination'
 import { SkeletonGrid } from '@/shared/ui/Skeleton'
+import { generatePrintSheet, openPrintWindow } from './printSheet'
 import './index.css'
 
 export default function ExpressionsPage() {
@@ -269,6 +270,18 @@ export default function ExpressionsPage() {
     window.scrollTo({ top: 0, behavior: 'smooth' })
   }
 
+  const handlePrint = () => {
+    if (expressions.length === 0) return
+    
+    const title = t('expressions', language)
+    const printContent = generatePrintSheet({
+      expressions,
+      title,
+      language
+    })
+    openPrintWindow(printContent)
+  }
+
   return (
     <div className="expressions-page">
       {/* Interval Selection Modal */}
@@ -278,14 +291,11 @@ export default function ExpressionsPage() {
             <h3>{t('selectPlayInterval', language)}</h3>
             <p>{t('choosePlayIntervalDescription', language)}</p>
             <div className="interval-options">
-              <button onClick={() => startAutoPlay(3000)} className="interval-btn">
-                3 {t('seconds', language)}
+              <button onClick={() => startAutoPlay(2000)} className="interval-btn">
+                2 {t('seconds', language)}
               </button>
               <button onClick={() => startAutoPlay(5000)} className="interval-btn">
                 5 {t('seconds', language)}
-              </button>
-              <button onClick={() => startAutoPlay(8000)} className="interval-btn">
-                8 {t('seconds', language)}
               </button>
               <button onClick={() => startAutoPlay(10000)} className="interval-btn">
                 10 {t('seconds', language)}
@@ -337,6 +347,19 @@ export default function ExpressionsPage() {
                     <line x1="6" y1="16" x2="16" y2="16" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
                   </g>
                 )}
+              </svg>
+            </button>
+            <button 
+              onClick={handlePrint}
+              title={t('print', language)}
+              aria-label={t('print', language)}
+              className="action-btn"
+              type="button"
+              disabled={expressions.length === 0}
+            >
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M6 9V2h12v7M6 18H4a2 2 0 01-2-2v-5a2 2 0 012-2h16a2 2 0 012 2v5a2 2 0 01-2 2h-2" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                <path d="M6 14h12v8H6z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
               </svg>
             </button>
             <button 
