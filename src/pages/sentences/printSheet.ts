@@ -6,6 +6,11 @@ interface PrintSheetOptions {
   language: 'EN' | 'ZH'
 }
 
+// Helper function to remove <p> tags from start and end
+function stripParagraphTags(text: string): string {
+  return text.replace(/^<p>|<\/p>$/g, '').trim()
+}
+
 export function generatePrintSheet({ sentences, title, language }: PrintSheetOptions): string {
   return `
 <!DOCTYPE html>
@@ -201,7 +206,7 @@ export function generatePrintSheet({ sentences, title, language }: PrintSheetOpt
             ${sent.explanation ? `
               <div class="sent-row">
                 <span class="sent-label">${language === 'ZH' ? '解释' : 'Explanation'}:</span>
-                <div class="sent-explanation">${sent.explanation}</div>
+                <div class="sent-explanation">${stripParagraphTags(sent.explanation)}</div>
               </div>
             ` : ''}
           </div>

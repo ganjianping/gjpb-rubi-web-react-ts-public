@@ -6,6 +6,11 @@ interface PrintSheetOptions {
   language: 'EN' | 'ZH'
 }
 
+// Helper function to remove <p> tags from start and end
+function stripParagraphTags(text: string): string {
+  return text.replace(/^<p>|<\/p>$/g, '').trim()
+}
+
 export function generatePrintSheet({ vocabularies, title, language }: PrintSheetOptions): string {
   return `
 <!DOCTYPE html>
@@ -35,7 +40,7 @@ export function generatePrintSheet({ vocabularies, title, language }: PrintSheet
     }
     
     .header {
-      text-align: center;
+      text-align: left;
       margin-bottom: 1.2cm;
       border-bottom: 2px solid #000;
       padding-bottom: 0.4cm;
@@ -182,17 +187,7 @@ export function generatePrintSheet({ vocabularies, title, language }: PrintSheet
 </head>
 <body>
   <div class="screen-wrapper">
-    <div class="print-controls no-print">
-      <button onclick="window.print()" class="print-button">
-        ${language === 'ZH' ? '🖨️ 打印' : '🖨️ Print'}
-      </button>
-    </div>
-
     <div class="header">
-      <h1>${title}</h1>
-      <div class="date">${new Date().toLocaleDateString(language === 'ZH' ? 'zh-CN' : 'en-US', { year: 'numeric', month: 'long', day: 'numeric' })}</div>
-    </div>
-    
     <div class="vocabulary-list">
       ${vocabularies.map((v) => {
         const parts = []
@@ -207,13 +202,13 @@ export function generatePrintSheet({ vocabularies, title, language }: PrintSheet
           </div>
           <div class="vocabulary-content">
         `)
-        
-        // Translation
-        if (v.translation) {
+
+        // Synonyms
+        if (v.synonyms) {
           parts.push(`
             <div class="vocab-row">
-              <span class="vocab-label">${language === 'ZH' ? '翻译' : 'Translation'}:</span>
-              <span class="vocab-value">${v.translation}</span>
+              <span class="vocab-label">${language === 'ZH' ? '同义词' : 'Synonyms'}:</span>
+              <span class="vocab-value">${v.synonyms}</span>
             </div>
           `)
         }
@@ -223,17 +218,17 @@ export function generatePrintSheet({ vocabularies, title, language }: PrintSheet
           parts.push(`
             <div class="vocab-row">
               <span class="vocab-label">${language === 'ZH' ? '定义' : 'Definition'}:</span>
-              <span class="vocab-value">${v.definition}</span>
+              <span class="vocab-value">${stripParagraphTags(v.definition)}</span>
             </div>
           `)
         }
-        
+
         // Example
         if (v.example) {
           parts.push(`
             <div class="vocab-row">
               <span class="vocab-label">${language === 'ZH' ? '例句' : 'Example'}:</span>
-              <div class="vocab-example">${v.example}</div>
+              <div class="vocab-example">${stripParagraphTags(v.example)}</div>
             </div>
           `)
         }
@@ -294,16 +289,6 @@ export function generatePrintSheet({ vocabularies, title, language }: PrintSheet
               </div>
             `)
           }
-        }
-        
-        // Synonyms
-        if (v.synonyms) {
-          parts.push(`
-            <div class="vocab-row">
-              <span class="vocab-label">${language === 'ZH' ? '同义词' : 'Synonyms'}:</span>
-              <span class="vocab-value">${v.synonyms}</span>
-            </div>
-          `)
         }
         
         parts.push(`
