@@ -178,23 +178,12 @@ export function generatePrintSheet({ sentences, title, language }: PrintSheetOpt
 </head>
 <body>
   <div class="screen-wrapper">
-    <div class="print-controls no-print">
-      <button onclick="window.print()" class="print-button">
-        ${language === 'ZH' ? '🖨️ 打印' : '🖨️ Print'}
-      </button>
-    </div>
-
-    <div class="header">
-      <h1>${title}</h1>
-      <div class="date">${new Date().toLocaleDateString(language === 'ZH' ? 'zh-CN' : 'en-US', { year: 'numeric', month: 'long', day: 'numeric' })}</div>
-    </div>
-    
+     
     <div class="sentence-list">
       ${sentences.map((sent, index) => `
         <div class="sentence-item">
           <div class="sentence-header">
-            <span class="sentence-name">${index + 1}. ${sent.name}</span>
-            ${sent.phonetic ? `<span class="sentence-phonetic">${sent.phonetic}</span>` : ''}
+            <span class="sentence-name">${index + 1}. ${stripParagraphTags(sent.name)}</span>
           </div>
           <div class="sentence-content">
             ${sent.translation ? `
@@ -205,7 +194,7 @@ export function generatePrintSheet({ sentences, title, language }: PrintSheetOpt
             ` : ''}
             ${sent.explanation ? `
               <div class="sent-row">
-                <span class="sent-label">${language === 'ZH' ? '解释' : 'Explanation'}:</span>
+                <span class="sent-label">${language === 'ZH' ? '解释' : 'Keywords'}:</span>
                 <div class="sent-explanation">${stripParagraphTags(sent.explanation)}</div>
               </div>
             ` : ''}

@@ -203,6 +203,16 @@ export function generatePrintSheet({ vocabularies, title, language }: PrintSheet
           <div class="vocabulary-content">
         `)
 
+        // Translation
+        if (v.translation) {
+          parts.push(`
+            <div class="vocab-row">
+              <span class="vocab-label">${language === 'ZH' ? '翻译' : 'Translation'}:</span>
+              <span class="vocab-value">${v.translation}</span>
+            </div>
+          `)
+        }
+
         // Synonyms
         if (v.synonyms) {
           parts.push(`
@@ -233,16 +243,8 @@ export function generatePrintSheet({ vocabularies, title, language }: PrintSheet
           `)
         }
         
-        // Part of speech specific content
-        if (v.partOfSpeech === 'noun') {
-          if (v.nounMeaning) {
-            parts.push(`
-              <div class="vocab-row">
-                <span class="vocab-label">${language === 'ZH' ? '名词释义' : 'Noun Meaning'}:</span>
-                <span class="vocab-value">${v.nounMeaning}</span>
-              </div>
-            `)
-          }
+        // Part of speech specific content (legacy fields)
+        if (v.partOfSpeech === 'Noun') {
           if (v.nounPluralForm) {
             parts.push(`
               <div class="vocab-row">
@@ -253,34 +255,18 @@ export function generatePrintSheet({ vocabularies, title, language }: PrintSheet
           }
         }
         
-        if (v.partOfSpeech === 'verb') {
-          if (v.verbMeaning) {
-            parts.push(`
-              <div class="vocab-row">
-                <span class="vocab-label">${language === 'ZH' ? '动词释义' : 'Verb Meaning'}:</span>
-                <span class="vocab-value">${v.verbMeaning}</span>
-              </div>
-            `)
-          }
+        if (v.partOfSpeech === 'Verb') {
           if (v.verbSimplePastTense || v.verbPastPerfectTense || v.verbPresentParticiple) {
             parts.push(`
               <div class="vocab-row">
-                <span class="vocab-label">${language === 'ZH' ? '动词形式' : 'Forms'}:</span>
+                <span class="vocab-label">${language === 'ZH' ? '动词变化形式' : 'Simple Past / Past Perfect / Present Participle'}:</span>
                 <span class="vocab-value">${[v.verbSimplePastTense, v.verbPastPerfectTense, v.verbPresentParticiple].filter(Boolean).join(', ')}</span>
               </div>
             `)
           }
         }
         
-        if (v.partOfSpeech === 'adjective') {
-          if (v.adjectiveMeaning) {
-            parts.push(`
-              <div class="vocab-row">
-                <span class="vocab-label">${language === 'ZH' ? '形容词释义' : 'Adj. Meaning'}:</span>
-                <span class="vocab-value">${v.adjectiveMeaning}</span>
-              </div>
-            `)
-          }
+        if (v.partOfSpeech === 'Adjective') {
           if (v.adjectiveComparativeForm || v.adjectiveSuperlativeForm) {
             parts.push(`
               <div class="vocab-row">
@@ -289,6 +275,50 @@ export function generatePrintSheet({ vocabularies, title, language }: PrintSheet
               </div>
             `)
           }
+        }
+
+        // Noun form section
+        if (v.nounForm) {
+          parts.push(`
+            <div class="vocab-row">
+              <span class="vocab-label">${language === 'ZH' ? '名词形式' : 'Noun Form'}:</span>
+              <span class="vocab-value"><b>${v.nounForm}</b> - ${stripParagraphTags(v.nounMeaning)} <br/> 
+                ${language === 'ZH' ? '名词例句' : 'Example'} : ${stripParagraphTags(v.nounExample)}</span>
+            </div>
+          `)
+        }
+        
+        // Verb form section
+        if (v.verbForm) {
+          parts.push(`
+            <div class="vocab-row">
+              <span class="vocab-label">${language === 'ZH' ? '动词形式' : 'Verb Form'}:</span>
+              <span class="vocab-value"><b>${v.verbForm}</b> - ${stripParagraphTags(v.verbMeaning)} <br/> 
+                ${language === 'ZH' ? '动词例句' : 'Example'} : ${stripParagraphTags(v.verbExample)}</span>
+            </div>
+          `)
+        }
+        
+        // Adjective form section
+        if (v.adjectiveForm) {
+          parts.push(`
+            <div class="vocab-row">
+              <span class="vocab-label">${language === 'ZH' ? '形容词形式' : 'Adjective Form'}:</span>
+              <span class="vocab-value"><b>${v.adjectiveForm}</b> - ${stripParagraphTags(v.adjectiveMeaning)} <br/> 
+                ${language === 'ZH' ? '形容词例句' : 'Example'} : ${stripParagraphTags(v.adjectiveExample)}</span>
+            </div>
+          `)
+        }
+        
+        // Adverb form section
+        if (v.adverbForm) {
+          parts.push(`
+            <div class="vocab-row">
+              <span class="vocab-label">${language === 'ZH' ? '副词形式' : 'Adverb Form'}:</span>
+              <span class="vocab-value"><b>${v.adverbForm}</b> - ${stripParagraphTags(v.adverbMeaning)} <br/> 
+                ${language === 'ZH' ? '副词例句' : 'Example'} : ${stripParagraphTags(v.adverbExample)}</span>
+            </div>
+          `)
         }
         
         parts.push(`

@@ -178,17 +178,6 @@ export function generatePrintSheet({ expressions, title, language }: PrintSheetO
 </head>
 <body>
   <div class="screen-wrapper">
-    <div class="print-controls no-print">
-      <button onclick="window.print()" class="print-button">
-        ${language === 'ZH' ? '🖨️ 打印' : '🖨️ Print'}
-      </button>
-    </div>
-
-    <div class="header">
-      <h1>${title}</h1>
-      <div class="date">${new Date().toLocaleDateString(language === 'ZH' ? 'zh-CN' : 'en-US', { year: 'numeric', month: 'long', day: 'numeric' })}</div>
-    </div>
-    
     <div class="expression-list">
       ${expressions.map((expr) => `
         <div class="expression-item">
@@ -205,7 +194,7 @@ export function generatePrintSheet({ expressions, title, language }: PrintSheetO
             ` : ''}
             ${expr.explanation ? `
               <div class="expr-row">
-                <span class="expr-label">${language === 'ZH' ? '解释' : 'Explanation'}:</span>
+                <span class="expr-label">${language === 'ZH' ? '解释' : 'Meaning'}:</span>
                 <span class="expr-value">${stripParagraphTags(expr.explanation)}</span>
               </div>
             ` : ''}
