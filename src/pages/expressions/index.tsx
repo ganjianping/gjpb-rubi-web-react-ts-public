@@ -303,6 +303,12 @@ export default function ExpressionsPage() {
               <button onClick={() => startAutoPlay(15000)} className="interval-btn">
                 15 {t('seconds', language)}
               </button>
+              <button onClick={() => startAutoPlay(20000)} className="interval-btn">
+                20 {t('seconds', language)}
+              </button>
+              <button onClick={() => startAutoPlay(25000)} className="interval-btn">
+                25 {t('seconds', language)}
+              </button>
             </div>
             <button onClick={() => setShowIntervalModal(false)} className="interval-cancel-btn">
               {t('cancel', language)}
