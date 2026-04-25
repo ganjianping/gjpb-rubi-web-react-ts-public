@@ -514,3 +514,23 @@
   filter: brightness(1.1);
   transform: translateY(-1px);
 }
+
+/* Light mode: pure black font color */
+:root[data-theme="light"] .article-title,
+:root[data-theme="light"] .article-summary p,
+:root[data-theme="light"] .article-content,
+:root[data-theme="light"] .article-content h1,
+:root[data-theme="light"] .article-content h2,
+:root[data-theme="light"] .article-content h3,
+:root[data-theme="light"] .article-content h4,
+:root[data-theme="light"] .article-content p,
+:root[data-theme="light"] .article-content li,
+:root[data-theme="light"] .action-btn,
+:root[data-theme="light"] .meta-tag,
+:root[data-theme="light"] .meta-item,
+:root[data-theme="light"] .meta-source,
+:root[data-theme="light"] .print-dialog h3,
+:root[data-theme="light"] .print-options label,
+:root[data-theme="light"] .cancel-btn {
+  color: #000000;
+}
