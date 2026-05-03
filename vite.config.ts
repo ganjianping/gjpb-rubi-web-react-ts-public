@@ -22,7 +22,7 @@ export default defineConfig({
     cors: true,
     host: true,
     proxy: {
-      '/blog': {
+      '/blog-api': {
         // target: 'http://localhost:8082',
         target: 'https://www.ganjianping.com',
         changeOrigin: true,

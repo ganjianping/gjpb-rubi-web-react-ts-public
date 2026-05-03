@@ -94,9 +94,9 @@ Added translations:
 - True/False Questions: `tfq-`
 
 ### API Endpoints
-- Free Text: `/blog/v1/public/free-text-question-rus`
-- Fill Blank: `/blog/v1/public/fill-blank-question-rus`
-- True/False: `/blog/v1/public/true-false-question-rus`
+- Free Text: `/blog-api/v1/public/free-text-question-rus`
+- Fill Blank: `/blog-api/v1/public/fill-blank-question-rus`
+- True/False: `/blog-api/v1/public/true-false-question-rus`
 
 ### Success/Fail Tracking
 - Fill blank and true/false questions track user performance
